@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best Deals — Ricky's Realty Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Albert+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --ink: #1a1814;
+  --ink2: #4a463f;
+  --ink3: #8a857c;
+  --gold: #c4902a;
+  --gold-l: #f5e8ce;
+  --red: #c0392b;
+  --red-l: #fdecea;
+  --green: #1e7e4f;
+  --green-l: #e6f5ee;
+  --blue: #1d5fa6;
+  --blue-l: #e5eef8;
+  --border: #e5e0d8;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Albert Sans', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); }
+
+/* ── Header ── */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.logo span { color: var(--gold); }
+
+.header-cta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-secondary {
+  padding: 9px 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink2);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.btn-secondary:hover {
+  background: var(--bg);
+  border-color: var(--ink3);
+}
+
+.btn-primary {
+  padding: 9px 20px;
+  border: none;
+  border-radius: 6px;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.btn-primary:hover { background: var(--gold); }
+
+/* ── Hero ── */
+.hero {
+  background: var(--ink);
+  padding: 72px 48px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(196,144,42,0.15) 0%, transparent 70%);
+}
+
+.hero-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.hero-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.55);
+  max-width: 520px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+  position: relative;
+}
+
+/* ── Search bar ── */
+.search-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.search-box {
+  display: flex;
+  background: var(--white);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.3);
+}
+
+.search-input {
+  flex: 1;
+  padding: 18px 20px;
+  border: none;
+  outline: none;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink);
+  background: transparent;
+}
+
+.search-input::placeholder { color: var(--ink3); }
+
+.search-btn {
+  padding: 18px 28px;
+  background: var(--gold);
+  border: none;
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.search-btn:hover { background: #b07d20; }
+
+/* ── Filters ── */
+.filters-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.filter-select {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink2);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+  appearance: none;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a857c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.filter-select:focus { border-color: var(--gold); }
+
+.filter-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+
+.sort-btn {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sort-btn.active, .sort-btn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+/* ── Main grid ── */
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 48px;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.result-count {
+  font-size: 13px;
+  color: var(--ink3);
+}
+
+/* ── Property cards ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(26,24,20,0.12);
+  border-color: var(--gold);
+}
+
+.card-img {
+  height: 200px;
+  background: linear-gradient(135deg, #e8e4dc, #d5cfc4);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: rgba(255,255,255,0.3);
+}
+
+.card-badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cbadge {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 100px;
+  letter-spacing: 0.03em;
+}
+
+.cbadge.drop { background: var(--red); color: #fff; }
+.cbadge.below { background: var(--green); color: #fff; }
+.cbadge.new { background: var(--blue); color: #fff; }
+.cbadge.stale { background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.8); }
+
+.deal-score-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: var(--gold);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.03em;
+}
+
+.card-body { padding: 20px; }
+
+.card-price {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.card-address {
+  font-size: 14px;
+  color: var(--ink2);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-location {
+  font-size: 12px;
+  color: var(--ink3);
+  margin-bottom: 14px;
+}
+
+.card-specs {
+  display: flex;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.card-spec {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+.card-spec-val { font-weight: 600; color: var(--ink); }
+
+.card-explanation {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+  padding: 8px 10px;
+  background: var(--green-l);
+  border-radius: 6px;
+  line-height: 1.4;
+}
+
+/* ── Lead capture modal ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,24,20,0.7);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--white);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  margin: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  background: var(--ink);
+  padding: 28px 32px 24px;
+}
+
+.modal-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.modal-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+}
+
+.modal-body { padding: 28px 32px; }
+
+.form-row { display: flex; gap: 14px; }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.form-input, .form-select {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: var(--gold);
+  background: var(--white);
+}
+
+.form-select { appearance: none; }
+
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.form-checkbox input { width: 16px; height: 16px; accent-color: var(--gold); }
+.form-checkbox span { font-size: 14px; color: var(--ink2); }
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.submit-btn:hover { background: var(--gold); }
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-header { position: relative; }
+
+.success-msg {
+  text-align: center;
+  padding: 32px;
+  display: none;
+}
+
+.success-icon {
+  width: 56px; height: 56px;
+  background: var(--green-l);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 24px;
+  color: var(--green);
+}
+
+.success-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.success-sub {
+  font-size: 14px;
+  color: var(--ink3);
+  line-height: 1.6;
+}
+
+/* ── Footer ── */
+.cta-band {
+  background: var(--ink);
+  padding: 64px 48px;
+  text-align: center;
+  margin-top: 60px;
+}
+
+.cta-band h2 {
+  font-family: var(--serif);
+  font-size: 36px;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.cta-band p {
+  font-size: 16px;
+  color: rgba(255,255,255,0.5);
+  max-width: 480px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+
+.cta-band .btn-primary {
+  font-size: 15px;
+  padding: 14px 32px;
+  border-radius: 8px;
+}
+
+/* Loading / empty */
+.skeleton { background: linear-gradient(90deg, #eeebe4 25%, #e3dfd7 50%, #eeebe4 75%); background-size: 200%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.empty-state { text-align: center; padding: 80px 40px; color: var(--ink3); }
+.empty-state h3 { font-family: var(--serif); font-size: 22px; color: var(--ink2); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header">
+  <div class="logo">Ricky's <span>Realty</span> Group</div>
+  <div class="header-cta">
+    <a class="btn-secondary" href="/">Dashboard (Internal)</a>
+    <button class="btn-primary" onclick="openModal()">Book a Call</button>
+  </div>
+</header>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-label">Real Estate Intelligence · Williams Lake & Region</div>
+  <h1>Find the <em>Best Deals</em><br>Before Anyone Else</h1>
+  <p class="hero-sub">Every listing scored, ranked, and explained. We surface below-market deals, price drops, and motivated sellers — automatically.</p>
+  <div class="search-wrap">
+    <div class="search-box">
+      <input class="search-input" id="search-input" type="text" placeholder="Search by area, city, or neighbourhood…" onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="search-btn" onclick="doSearch()">Search Listings →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── Filters ── -->
+<div class="filters-bar">
+  <span class="filter-label">Filter</span>
+  <select class="filter-select" id="filter-beds" onchange="applyFilters()">
+    <option value="">Any Beds</option>
+    <option value="1">1+ Beds</option>
+    <option value="2">2+ Beds</option>
+    <option value="3">3+ Beds</option>
+    <option value="4">4+ Beds</option>
+  </select>
+  <select class="filter-select" id="filter-type" onchange="applyFilters()">
+    <option value="">Any Type</option>
+    <option value="detached">Detached</option>
+    <option value="condo">Condo</option>
+    <option value="townhouse">Townhouse</option>
+    <option value="semi-detached">Semi-Detached</option>
+    <option value="land">Land</option>
+  </select>
+  <select class="filter-select" id="filter-maxprice" onchange="applyFilters()">
+    <option value="">Any Price</option>
+    <option value="300000">Under $300K</option>
+    <option value="500000">Under $500K</option>
+    <option value="750000">Under $750K</option>
+    <option value="1000000">Under $1M</option>
+    <option value="1500000">Under $1.5M</option>
+  </select>
+  <div class="filter-divider"></div>
+  <span class="filter-label">Sort</span>
+  <button class="sort-btn active" onclick="setSort('deal_score', this)">Best Deal</button>
+  <button class="sort-btn" onclick="setSort('newest', this)">Newest</button>
+  <button class="sort-btn" onclick="setSort('price_asc', this)">Price ↑</button>
+  <button class="sort-btn" onclick="setSort('price_desc', this)">Price ↓</button>
+  <button class="sort-btn" onclick="setSort('days_on_market', this)">Days Listed</button>
+</div>
+
+<!-- ── Listings ── -->
+<div class="content">
+  <div class="section-header">
+    <div class="section-title" id="results-title">Best Deals</div>
+    <div class="result-count" id="results-count">Loading…</div>
+  </div>
+  <div class="cards-grid" id="cards-grid">
+    <!-- skeleton -->
+    ${[...Array(6)].map(() => '<div class="card"><div class="card-img skeleton" style="height:200px"></div><div class="card-body"><div class="skeleton" style="height:24px;margin-bottom:10px"></div><div class="skeleton" style="height:14px;width:70%;margin-bottom:6px"></div><div class="skeleton" style="height:14px;width:50%"></div></div></div>').join('')}
+  </div>
+</div>
+
+<!-- ── CTA band ── -->
+<div class="cta-band">
+  <h2>Ready to Make a Move?</h2>
+  <p>Ricky knows the local market. Book a no-pressure call and get a personalized shortlist of the best properties for your needs.</p>
+  <button class="btn-primary" onclick="openModal()">Book a Free Consultation</button>
+</div>
+
+<!-- ── Lead capture modal ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Let's Find Your Property</div>
+      <div class="modal-sub">Ricky will reach out within a few hours.</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="lead-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input class="form-input" id="f-name" type="text" placeholder="Jane Smith">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-input" id="f-phone" type="tel" placeholder="(250) 555-0100">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" id="f-email" type="email" placeholder="jane@email.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Max Budget</label>
+            <input class="form-input" id="f-budget" type="number" placeholder="650000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Timeline</label>
+            <select class="form-select" id="f-timeline">
+              <option value="">Select…</option>
+              <option value="ASAP">ASAP / 30 days</option>
+              <option value="3 months">3 months</option>
+              <option value="6 months">6 months</option>
+              <option value="browsing">Just browsing</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Area</label>
+          <input class="form-input" id="f-area" type="text" placeholder="Williams Lake, 150 Mile House…">
+        </div>
+        <label class="form-checkbox">
+          <input type="checkbox" id="f-preapproved">
+          <span>I have mortgage pre-approval</span>
+        </label>
+        <div class="form-group" style="margin-top:8px">
+          <label class="form-label">Notes / Questions</label>
+          <input class="form-input" id="f-notes" type="text" placeholder="Looking for 3 bed, rural preferred…">
+        </div>
+        <button class="submit-btn" onclick="submitLead()">Get In Touch →</button>
+      </div>
+      <div class="success-msg" id="success-msg">
+        <div class="success-icon">✓</div>
+        <div class="success-title">You're in the queue!</div>
+        <p class="success-sub">Ricky has been notified and will reach out shortly. We've matched your criteria to our current best deals.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let currentSort = 'deal_score';
+let currentSearch = '';
+
+function fmtPrice(n) {
+  if (!n) return 'Price TBD';
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
+  if (n >= 1000) return '$' + Math.round(n/1000) + 'K';
+  return '$' + n.toLocaleString();
+}
+
+function getDom(date_listed) {
+  if (!date_listed) return null;
+  return Math.floor((Date.now() - new Date(date_listed + 'T00:00:00Z')) / 86400000);
+}
+
+function getBadges(listing) {
+  const badges = [];
+  const exp = listing.deal_explanation || {};
+  const comps = exp.components || {};
+  
+  if (comps.price_drop?.score > 0.1) badges.push('<span class="cbadge drop">Price Drop</span>');
+  if (comps.under_market?.description?.includes('below')) badges.push('<span class="cbadge below">Below Market</span>');
+  
+  const dom = getDom(listing.date_listed);
+  if (dom !== null && dom <= 3) badges.push('<span class="cbadge new">New</span>');
+  else if (dom !== null && dom > 60) badges.push('<span class="cbadge stale">60+ Days</span>');
+  
+  return badges.join('');
+}
+
+function getExplanation(listing) {
+  const exp = listing.deal_explanation;
+  if (!exp || !exp.summary || !exp.summary.length) return '';
+  return exp.summary[0];
+}
+
+function renderCards(listings) {
+  const grid = document.getElementById('cards-grid');
+  if (!listings.length) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <h3>No listings found</h3>
+        <p>Try adjusting your filters or search a different area.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = listings.map(l => `
+    <div class="card" onclick="window.open('/listing/${l.listing_id}','_self')">
+      <div class="card-img">
+        <div class="card-badges">${getBadges(l)}</div>
+        ${l.photos && l.photos.length ? `<img src="${l.photos[0]}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">` : '🏠'}
+        ${l.deal_score > 0.5 ? `<div class="deal-score-badge">Deal Score ${Math.round(l.deal_score * 100)}%</div>` : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-price">${fmtPrice(l.list_price)}</div>
+        <div class="card-address">${l.address}</div>
+        <div class="card-location">${l.city}, ${l.province || 'BC'}</div>
+        ${getExplanation(l) ? `<div class="card-explanation">◆ ${getExplanation(l)}</div>` : ''}
+        <div class="card-specs">
+          <div class="card-spec"><span class="card-spec-val">${l.beds || '?'}</span> bed</div>
+          <div class="card-spec"><span class="card-spec-val">${l.baths || '?'}</span> bath</div>
+          ${l.sqft ? `<div class="card-spec"><span class="card-spec-val">${l.sqft.toLocaleString()}</span> sqft</div>` : ''}
+          ${getDom(l.date_listed) !== null ? `<div class="card-spec" style="margin-left:auto;color:#8a857c;font-size:12px">${getDom(l.date_listed)}d</div>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadListings() {
+  const city = currentSearch;
+  const beds = document.getElementById('filter-beds').value;
+  const type = document.getElementById('filter-type').value;
+  const maxPrice = document.getElementById('filter-maxprice').value;
+
+  const params = new URLSearchParams({ sort: currentSort, limit: 48 });
+  if (city) params.set('city', city);
+  if (beds) params.set('beds', beds);
+  if (type) params.set('property_type', type);
+  if (maxPrice) params.set('max_price', maxPrice);
+
+  try {
+    const r = await fetch(API + '/api/listings?' + params);
+    const d = await r.json();
+    document.getElementById('results-count').textContent = `${d.count} listings found`;
+    renderCards(d.listings || []);
+  } catch(e) {
+    document.getElementById('cards-grid').innerHTML =
+      '<div class="empty-state" style="grid-column:1/-1"><h3>Connect the API</h3><p>Run the server: <code>uvicorn arc.api.main:app --reload</code></p></div>';
+    document.getElementById('results-count').textContent = 'API offline';
+  }
+}
+
+function doSearch() {
+  currentSearch = document.getElementById('search-input').value.trim();
+  document.getElementById('results-title').textContent =
+    currentSearch ? `Results for "${currentSearch}"` : 'Best Deals';
+  loadListings();
+}
+
+function applyFilters() { loadListings(); }
+
+function setSort(s, btn) {
+  currentSort = s;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadListings();
+}
+
+// Modal
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('lead-form').style.display = 'block';
+  document.getElementById('success-msg').style.display = 'none';
+}
+
+async function submitLead() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('Please enter your name.'); return; }
+
+  const area = document.getElementById('f-area').value.trim();
+  const budget = parseFloat(document.getElementById('f-budget').value) || null;
+
+  const payload = {
+    name,
+    phone: document.getElementById('f-phone').value,
+    email: document.getElementById('f-email').value,
+    budget_max: budget,
+    target_areas: area ? [area] : [],
+    timeline: document.getElementById('f-timeline').value,
+    preapproved: document.getElementById('f-preapproved').checked,
+    notes: document.getElementById('f-notes').value,
+    source: 'website',
+  };
+
+  try {
+    const r = await fetch(API + '/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (r.ok) {
+      document.getElementById('lead-form').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+    }
+  } catch(e) {
+    alert('Submission error — please call us directly.');
+  }
+}
+
+loadListings();
+</script>
+</body>
+</html>

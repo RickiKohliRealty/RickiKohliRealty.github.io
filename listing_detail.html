@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Property Details — RRG</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Albert+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f5f0; --white: #ffffff; --ink: #1a1814; --ink2: #4a463f;
+  --ink3: #8a857c; --gold: #c4902a; --red: #c0392b; --green: #1e7e4f;
+  --green-l: #e6f5ee; --border: #e5e0d8;
+  --serif: 'Playfair Display', Georgia, serif; --sans: 'Albert Sans', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); }
+
+.header {
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 0 48px; display: flex; align-items: center;
+  justify-content: space-between; height: 70px; position: sticky; top: 0; z-index: 100;
+}
+.logo { font-family: var(--serif); font-size: 20px; font-weight: 700; }
+.logo span { color: var(--gold); }
+.back-btn {
+  padding: 9px 20px; border: 1px solid var(--border); border-radius: 6px;
+  background: transparent; color: var(--ink2); font-family: var(--sans); font-size: 13px;
+  font-weight: 500; cursor: pointer; text-decoration: none; transition: all 0.15s;
+}
+.back-btn:hover { background: var(--bg); }
+.cta-btn {
+  padding: 9px 20px; background: var(--ink); color: #fff; border: none;
+  border-radius: 6px; font-family: var(--sans); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: background 0.15s;
+}
+.cta-btn:hover { background: var(--gold); }
+
+.content { max-width: 1100px; margin: 0 auto; padding: 40px 48px; }
+
+/* Photo area */
+.photo-area {
+  background: linear-gradient(135deg, #e8e4dc, #d5cfc4);
+  height: 400px; border-radius: 12px; margin-bottom: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 80px; color: rgba(255,255,255,0.3); position: relative; overflow: hidden;
+}
+
+.photo-area img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+
+/* Layout */
+.detail-grid { display: grid; grid-template-columns: 1fr 360px; gap: 40px; }
+.col-main { }
+.col-aside { }
+
+/* Badges */
+.badges { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.badge {
+  font-family: var(--sans); font-size: 11px; font-weight: 600;
+  padding: 5px 12px; border-radius: 100px; letter-spacing: 0.04em;
+}
+.badge.drop { background: var(--red); color: #fff; }
+.badge.below { background: var(--green); color: #fff; }
+.badge.new { background: #1d5fa6; color: #fff; }
+.badge.stale { background: #888; color: #fff; }
+
+/* Headline */
+.listing-price { font-family: var(--serif); font-size: 40px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.listing-address { font-size: 18px; color: var(--ink2); margin-bottom: 4px; }
+.listing-location { font-size: 14px; color: var(--ink3); margin-bottom: 24px; }
+
+/* Specs row */
+.specs-row {
+  display: flex; gap: 0; border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; margin-bottom: 32px; background: var(--white);
+}
+.spec-item {
+  flex: 1; padding: 18px 20px; text-align: center; border-right: 1px solid var(--border);
+}
+.spec-item:last-child { border-right: none; }
+.spec-val { font-family: var(--serif); font-size: 24px; font-weight: 700; color: var(--ink); }
+.spec-label { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+
+/* Description */
+.section-title { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
+.description { font-size: 15px; color: var(--ink2); line-height: 1.7; margin-bottom: 32px; }
+
+/* Deal score breakdown */
+.score-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; margin-bottom: 32px;
+}
+.score-header {
+  background: var(--ink); padding: 20px 24px; display: flex;
+  align-items: center; justify-content: space-between;
+}
+.score-title { font-family: var(--serif); font-size: 16px; color: #fff; }
+.score-number {
+  font-family: var(--serif); font-size: 36px; font-weight: 700;
+  color: var(--gold); line-height: 1;
+}
+.score-number small { font-size: 16px; color: rgba(255,255,255,0.4); }
+.score-body { padding: 20px 24px; }
+
+.score-component { margin-bottom: 16px; }
+.sc-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+.sc-label { font-size: 13px; font-weight: 500; color: var(--ink2); }
+.sc-pct { font-size: 12px; color: var(--ink3); }
+.sc-bar-wrap { display: flex; align-items: center; gap: 10px; }
+.sc-bar { flex: 1; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+.sc-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold), var(--green)); }
+.sc-desc { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+
+.score-bullets { padding: 16px 24px; border-top: 1px solid var(--border); background: var(--green-l); }
+.score-bullet { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--green); margin-bottom: 6px; line-height: 1.5; }
+.score-bullet:last-child { margin-bottom: 0; }
+.score-bullet::before { content: '◆'; flex-shrink: 0; margin-top: 1px; }
+
+/* Price history */
+.price-history { margin-bottom: 32px; }
+.ph-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+}
+.ph-item:last-child { border-bottom: none; }
+.ph-price { font-weight: 600; color: var(--ink); }
+.ph-date { color: var(--ink3); font-size: 12px; }
+.ph-change { font-size: 12px; padding: 3px 8px; border-radius: 100px; }
+.ph-change.down { background: #fdecea; color: var(--red); }
+.ph-change.up { background: var(--green-l); color: var(--green); }
+
+/* Aside */
+.contact-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; position: sticky; top: 90px;
+}
+.contact-header { background: var(--ink); padding: 24px; }
+.contact-title { font-family: var(--serif); font-size: 20px; color: #fff; margin-bottom: 6px; }
+.contact-sub { font-size: 13px; color: rgba(255,255,255,0.5); }
+.contact-body { padding: 24px; }
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px; }
+.form-input, .form-select {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 7px;
+  font-family: var(--sans); font-size: 14px; color: var(--ink); background: var(--bg);
+  outline: none; transition: border-color 0.15s;
+}
+.form-input:focus, .form-select:focus { border-color: var(--gold); background: var(--white); }
+.submit-btn {
+  width: 100%; padding: 14px; background: var(--ink); color: #fff; border: none;
+  border-radius: 8px; font-family: var(--sans); font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+}
+.submit-btn:hover { background: var(--gold); }
+.ricky-info { text-align: center; padding-top: 16px; border-top: 1px solid var(--border); margin-top: 16px; }
+.ricky-name { font-family: var(--serif); font-size: 16px; color: var(--ink); margin-bottom: 4px; }
+.ricky-phone { font-size: 20px; font-weight: 600; color: var(--gold); }
+.ricky-title { font-size: 12px; color: var(--ink3); }
+
+.success-msg { text-align: center; padding: 32px 24px; display: none; }
+.success-icon { font-size: 40px; margin-bottom: 12px; }
+.success-title { font-family: var(--serif); font-size: 20px; color: var(--ink); margin-bottom: 8px; }
+.success-sub { font-size: 13px; color: var(--ink3); line-height: 1.6; }
+
+.loading { text-align: center; padding: 80px; font-size: 14px; color: var(--ink3); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">Ricky's <span>Realty</span> Group</div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <a class="back-btn" href="/deals">← All Listings</a>
+    <button class="cta-btn" onclick="scrollToForm()">Request Info</button>
+  </div>
+</header>
+
+<div id="content-area" class="content">
+  <div class="loading">Loading property details…</div>
+</div>
+
+<script>
+const API = '';
+
+function getListingId() {
+  const parts = window.location.pathname.split('/');
+  return parts[parts.length - 1];
+}
+
+function fmtPrice(n) {
+  if (!n) return 'Price TBD';
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(3).replace(/0+$/, '') + 'M';
+  return '$' + n.toLocaleString();
+}
+
+function fmtDate(s) {
+  if (!s) return '–';
+  return new Date(s + 'T00:00:00').toLocaleDateString('en-CA', {year:'numeric',month:'long',day:'numeric'});
+}
+
+function getDom(dl) {
+  if (!dl) return null;
+  return Math.floor((Date.now() - new Date(dl + 'T00:00:00Z')) / 86400000);
+}
+
+function getBadges(listing) {
+  const badges = [];
+  const exp = listing.deal_explanation || {};
+  const comps = exp.components || {};
+  if (comps.price_drop?.score > 0.1) badges.push('<span class="badge drop">Price Drop</span>');
+  if (comps.under_market?.description?.includes('below')) badges.push('<span class="badge below">Below Market</span>');
+  const dom = getDom(listing.date_listed);
+  if (dom !== null && dom <= 3) badges.push('<span class="badge new">New Listing</span>');
+  else if (dom !== null && dom > 60) badges.push('<span class="badge stale">60+ Days Listed</span>');
+  return badges.join('');
+}
+
+function renderScoreBreakdown(exp) {
+  if (!exp || !exp.components) return '';
+  const comps = exp.components;
+  const order = ['under_market','price_drop','dom','comps','features','freshness'];
+  const labels = {
+    under_market: 'Below Market Value',
+    price_drop: 'Price Reduction',
+    dom: 'Days on Market',
+    comps: 'Comparable Listings',
+    features: 'Property Features',
+    freshness: 'Listing Freshness',
+  };
+
+  const items = order.filter(k => comps[k]).map(k => {
+    const c = comps[k];
+    const pct = Math.round((c.weight || 0) * 100);
+    const barW = Math.round((c.score || 0) * 100);
+    return `
+      <div class="score-component">
+        <div class="sc-header">
+          <span class="sc-label">${labels[k] || k}</span>
+          <span class="sc-pct">${pct}% weight</span>
+        </div>
+        <div class="sc-bar-wrap">
+          <div class="sc-bar"><div class="sc-bar-fill" style="width:${barW}%"></div></div>
+          <span style="font-size:12px;color:var(--ink3);width:30px;text-align:right">${barW}%</span>
+        </div>
+        <div class="sc-desc">${c.description || ''}</div>
+      </div>
+    `;
+  }).join('');
+
+  const bullets = (exp.summary || []).map(b => `<div class="score-bullet">${b}</div>`).join('');
+  const score = Math.round((exp.deal_score || 0) * 100);
+
+  return `
+    <div class="score-card">
+      <div class="score-header">
+        <div class="score-title">Deal Score Breakdown</div>
+        <div class="score-number">${score}<small>%</small></div>
+      </div>
+      <div class="score-body">${items}</div>
+      ${bullets ? `<div class="score-bullets">${bullets}</div>` : ''}
+    </div>
+  `;
+}
+
+function renderPriceHistory(history) {
+  if (!history || history.length < 2) return '';
+  const items = history.map((h, i) => {
+    let change = '';
+    if (i > 0) {
+      const prev = history[i-1].price;
+      const diff = h.price - prev;
+      const pct = ((diff / prev) * 100).toFixed(1);
+      if (diff < 0) change = `<span class="ph-change down">↓ ${Math.abs(pct)}%</span>`;
+      else change = `<span class="ph-change up">↑ ${pct}%</span>`;
+    }
+    return `
+      <div class="ph-item">
+        <div class="ph-price">${fmtPrice(h.price)}</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          ${change}
+          <div class="ph-date">${fmtDate(h.recorded_at?.split('T')[0])}</div>
+        </div>
+      </div>
+    `;
+  }).reverse().join('');
+
+  return `
+    <div class="price-history">
+      <div class="section-title">Price History</div>
+      ${items}
+    </div>
+  `;
+}
+
+function render(listing) {
+  const dom = getDom(listing.date_listed);
+  const exp = listing.deal_explanation || {};
+
+  document.title = `${listing.address} — RRG`;
+
+  document.getElementById('content-area').innerHTML = `
+    <div class="photo-area">
+      ${listing.photos && listing.photos.length ? `<img src="${listing.photos[0]}" alt="${listing.address}">` : '🏠'}
+    </div>
+    <div class="detail-grid">
+      <div class="col-main">
+        <div class="badges">${getBadges(listing)}</div>
+        <div class="listing-price">${fmtPrice(listing.list_price)}</div>
+        <div class="listing-address">${listing.address}</div>
+        <div class="listing-location">${listing.city}, ${listing.province || 'BC'} ${listing.postal_code || ''}</div>
+
+        <div class="specs-row">
+          <div class="spec-item">
+            <div class="spec-val">${listing.beds || '?'}</div>
+            <div class="spec-label">Bedrooms</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-val">${listing.baths || '?'}</div>
+            <div class="spec-label">Bathrooms</div>
+          </div>
+          ${listing.sqft ? `<div class="spec-item"><div class="spec-val">${listing.sqft.toLocaleString()}</div><div class="spec-label">Sqft</div></div>` : ''}
+          ${dom !== null ? `<div class="spec-item"><div class="spec-val">${dom}</div><div class="spec-label">Days Listed</div></div>` : ''}
+          ${listing.year_built ? `<div class="spec-item"><div class="spec-val">${listing.year_built}</div><div class="spec-label">Year Built</div></div>` : ''}
+        </div>
+
+        ${listing.description ? `
+          <div class="section-title">About This Property</div>
+          <div class="description">${listing.description}</div>
+        ` : ''}
+
+        ${renderScoreBreakdown(exp)}
+        ${renderPriceHistory(listing.price_history)}
+      </div>
+
+      <div class="col-aside">
+        <div class="contact-card">
+          <div class="contact-header">
+            <div class="contact-title">Interested in this property?</div>
+            <div class="contact-sub">Ricky will reach out within a few hours.</div>
+          </div>
+          <div class="contact-body" id="contact-body">
+            <div id="contact-form">
+              <div class="form-group">
+                <label class="form-label">Your Name *</label>
+                <input class="form-input" id="f-name" type="text" placeholder="Jane Smith">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input class="form-input" id="f-phone" type="tel" placeholder="(250) 555-0100">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input class="form-input" id="f-email" type="email" placeholder="jane@email.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Message</label>
+                <input class="form-input" id="f-notes" type="text" placeholder="I'd like to book a showing…">
+              </div>
+              <button class="submit-btn" onclick="submitLead()">Request Info →</button>
+            </div>
+            <div class="success-msg" id="success-msg">
+              <div class="success-icon">✓</div>
+              <div class="success-title">Message sent!</div>
+              <p class="success-sub">Ricky will be in touch shortly.</p>
+            </div>
+            <div class="ricky-info">
+              <div class="ricky-name">Ricky</div>
+              <div class="ricky-title">Ricky's Realty Group Ltd.</div>
+              <div class="ricky-phone" style="margin-top:8px">Call Direct</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function submitLead() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('Please enter your name.'); return; }
+
+  const listingId = getListingId();
+  const payload = {
+    name,
+    phone: document.getElementById('f-phone').value,
+    email: document.getElementById('f-email').value,
+    notes: `Inquiry on listing ${listingId}: ${document.getElementById('f-notes').value}`,
+    source: 'listing-detail',
+    intent: 'buying',
+  };
+
+  try {
+    const r = await fetch(API + '/api/leads', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    if (r.ok) {
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+    }
+  } catch(e) {
+    alert('Submission error — please call us directly.');
+  }
+}
+
+function scrollToForm() {
+  document.getElementById('contact-body').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function load() {
+  const id = getListingId();
+  if (!id) { document.getElementById('content-area').innerHTML = '<div class="loading">No listing ID in URL.</div>'; return; }
+  try {
+    const r = await fetch(API + '/api/listings/' + id);
+    if (!r.ok) throw new Error('Not found');
+    const listing = await r.json();
+    render(listing);
+  } catch(e) {
+    document.getElementById('content-area').innerHTML =
+      '<div class="loading">Listing not found or API offline.</div>';
+  }
+}
+
+load();
+</script>
+</body>
+</html>

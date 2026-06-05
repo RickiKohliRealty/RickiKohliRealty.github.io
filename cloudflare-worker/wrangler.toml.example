@@ -1,0 +1,8 @@
+name = "ricky-website-leads"
+main = "src/worker.js"
+compatibility_date = "2026-06-05"
+
+[vars]
+GITHUB_OWNER = "YOUR_GITHUB_USERNAME"
+GITHUB_REPO = "YOUR_REPO_NAME"
+ALLOWED_ORIGIN = "https://YOUR_GITHUB_USERNAME.github.io"

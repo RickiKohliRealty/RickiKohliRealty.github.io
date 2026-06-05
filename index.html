@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ricki Kohli — eXp Realty | Investor-Focused Real Estate in Victoria, BC</title>
+  <meta name="description" content="Ricki Kohli with eXp Realty in Victoria, BC. Investor-friendly acquisition support for rentals, value-add opportunities, and serious buyer/seller representation. Book a free strategy call." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Ricki Kohli — eXp Realty | Victoria, BC" />
+  <meta property="og:description" content="Investor-focused real estate support for acquisitions, rentals, value-add opportunities, and motivated buyers/sellers in Victoria, BC." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="ChatGPT Image Mar 10, 2026, 06_17_10 PM.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!--
+    IMPORTANT (Compliance):
+    - Confirm REALTOR® trademark eligibility before using the mark in marketing materials.
+    - Confirm final brokerage legal disclosure and license info for BC ad compliance.
+    - Replace scheduling URL, brokerage office address, and policy page links before launch.
+  -->
+
+  <style>
+    :root{
+      --bg:#070a0f;
+      --text:#eaf0ff;
+      --muted:#9fb0d0;
+      --muted2:#7f8fb0;
+      --line:rgba(255,255,255,.06);
+      --shadow: 0 18px 55px rgba(0,0,0,.45);
+      --radius2: 26px;
+      --max: 1120px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 800px at 10% 0%, rgba(212,179,91,.14), transparent 55%),
+        radial-gradient(1200px 800px at 90% 20%, rgba(130,170,255,.12), transparent 60%),
+        linear-gradient(180deg, #05070b, var(--bg) 45%, #05070b);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding:24px}
+    .stack{display:grid; gap:16px;}
+    .softSep{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+      opacity:.45;
+      margin: 4px 0;
+    }
+
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; padding:14px 0;
+    }
+    .brand{display:flex; align-items:center; gap:12px; letter-spacing:.2px;}
+    .mark{
+      width:40px; height:40px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(212,179,91,.95), rgba(255,255,255,.06));
+      box-shadow: 0 18px 45px rgba(212,179,91,.14);
+      position:relative; overflow:hidden;
+    }
+    .mark:after{
+      content:""; position:absolute; inset:-40%;
+      background: linear-gradient(135deg, rgba(255,255,255,.22), transparent);
+      transform: rotate(25deg);
+    }
+    .brand h1{ margin:0; font-size:14px; font-weight:900; }
+    .brand p{ margin:0; font-size:12px; color:var(--muted); }
+
+    .nav{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+    .nav a{
+      font-size:13px; color:var(--muted);
+      padding:8px 10px; border-radius:12px;
+      border:1px solid transparent;
+    }
+    .nav a:hover{
+      color:var(--text);
+      border-color:var(--line);
+      background: rgba(255,255,255,.03);
+    }
+
+    .ctaRow{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      padding:11px 14px;
+      border-radius:14px;
+      font-size:13px;
+      font-weight:750;
+      display:inline-flex; gap:10px; align-items:center;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.14);}
+    .btnPrimary{
+      border-color: rgba(212,179,91,.35);
+      background: linear-gradient(135deg, rgba(212,179,91,.95), rgba(212,179,91,.22));
+      color:#0b0f14;
+      box-shadow: 0 18px 50px rgba(212,179,91,.18);
+    }
+    .btnPrimary:hover{border-color: rgba(212,179,91,.55); background: linear-gradient(135deg, rgba(212,179,91,1), rgba(212,179,91,.28));}
+    .btnGhost{border-color: rgba(255,255,255,.12); background: rgba(255,255,255,.02);}
+
+    .hero{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:22px;
+      align-items:stretch;
+    }
+    @media (max-width: 960px){
+      .hero{grid-template-columns:1fr;}
+      .nav{display:none;}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      backdrop-filter: blur(6px);
+    }
+    .card:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent 40%, rgba(0,0,0,.10));
+      opacity:.55;
+      mix-blend-mode: overlay;
+    }
+    .cardInner{position:relative; padding:26px;}
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:7px 10px; border-radius:999px;
+      border:1px solid rgba(212,179,91,.28);
+      background: rgba(212,179,91,.10);
+      color: rgba(255,236,182,.95);
+      font-size:12px;
+      font-weight:800;
+    }
+    .hTitle{ margin:14px 0 8px; font-size:42px; line-height:1.04; letter-spacing:-.9px; }
+    @media (max-width: 540px){ .hTitle{font-size:34px} }
+    .hSub{ margin:0; color: var(--muted); font-size:15px; line-height:1.55; max-width: 62ch; }
+
+    .heroPoints{ margin-top:16px; display:flex; flex-wrap:wrap; gap:10px; }
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      color: var(--muted);
+      padding:9px 10px;
+      border-radius: 999px;
+      font-size:12px;
+      display:inline-flex; gap:8px; align-items:center;
+    }
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-top:18px; }
+    @media (max-width: 650px){ .grid2{grid-template-columns:1fr} }
+
+    .sideCard{
+      background: linear-gradient(180deg, rgba(11,15,20,.85), rgba(11,15,20,.60));
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    /* Photo used properly: centered on you, safe crop */
+    .photo{
+      height: 260px;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.62)),
+        url("ChatGPT Image Mar 10, 2026, 06_17_10 PM.png") 50% 45% / cover no-repeat;
+      border-bottom:1px solid var(--line);
+    }
+
+    .name{ margin:0; font-size:18px; font-weight:950; letter-spacing:-.2px; }
+    .role{ margin:4px 0 0; color: var(--muted); font-size:13px; line-height:1.4; }
+
+    .mini{ margin-top:14px; display:grid; gap:10px; }
+    .miniRow{
+      display:flex; justify-content:space-between; gap:12px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.02);
+      font-size:13px; color: var(--muted);
+    }
+    .miniRow b{color:var(--text); font-weight:900}
+    .divider{height:1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent); opacity:.6; margin:18px 0;}
+
+    .section{ margin-top:16px; display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px; }
+    @media (max-width: 960px){ .section{grid-template-columns:1fr} }
+    .feature h3{ margin:0 0 6px; font-size:15px; letter-spacing:-.2px; }
+    .feature p{ margin:0; color:var(--muted); font-size:13.5px; line-height:1.5; }
+
+    .split{ display:grid; grid-template-columns: 1fr 1fr; gap:16px; align-items:stretch; margin-top:12px; }
+    @media (max-width: 960px){ .split{grid-template-columns:1fr} }
+
+    .list{ display:grid; gap:10px; margin-top:10px; }
+    .li{
+      display:flex; gap:10px; align-items:flex-start;
+      color:var(--muted);
+      background: rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.07);
+      padding:12px;
+      border-radius: 16px;
+      font-size:13.5px;
+      line-height:1.45;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:99px;
+      background: rgba(212,179,91,.9);
+      box-shadow: 0 10px 22px rgba(212,179,91,.18);
+      margin-top:4px; flex:0 0 auto;
+    }
+
+    .kpi{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px; }
+    @media (max-width: 650px){ .kpi{grid-template-columns:1fr} }
+    .kpiCard{
+      border:1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.02);
+      border-radius: 16px;
+      padding:12px;
+    }
+    .kpiCard .t{color:var(--muted2); font-size:12px;}
+    .kpiCard .v{font-weight:950; font-size:16px; margin-top:4px;}
+    .kpiCard .d{color:var(--muted); font-size:12.5px; margin-top:6px; line-height:1.45;}
+
+    .gallery{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top:12px;
+      align-items:stretch;
+    }
+    @media (max-width: 960px){ .gallery{grid-template-columns:1fr} }
+    @media (max-width: 540px){ .shot .media{max-height: 260px;} }
+    .shot{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(255,255,255,.02);
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    }
+    .shot .media{
+      aspect-ratio: 16 / 10;
+      max-height: 360px;
+      width: 100%;
+      overflow:hidden;
+    }
+    .shot img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+      object-position: 50% 42%;
+      transform: scale(1.02);
+      transition: transform .25s ease;
+    }
+    .shot:hover img{ transform: scale(1.05); }
+    .caption{
+      padding:12px;
+      border-top:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.45;
+    }
+
+    .form{ display:grid; gap:10px; margin-top:12px; }
+    input, textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      color: var(--text);
+      outline:none;
+      font-size:13.5px;
+    }
+    textarea{min-height: 104px; resize: vertical;}
+    input::placeholder, textarea::placeholder{color: rgba(159,176,208,.6)}
+    .hint{color:var(--muted2); font-size:12px; line-height:1.5; margin:8px 0 0;}
+
+    .footer{
+      margin:26px 0 6px;
+      color: rgba(159,176,208,.65);
+      font-size:12px;
+      line-height:1.6;
+      display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    }
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background: rgba(11,15,20,.92);
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px;
+      border-radius: 14px;
+      color: var(--muted);
+      font-size:13px;
+      box-shadow: 0 22px 60px rgba(0,0,0,.45);
+      display:none;
+      z-index:9999;
+      max-width: min(680px, calc(100vw - 24px));
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      padding:2px 6px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: rgba(234,240,255,.92);
+      font-size:12px;
+    }
+  </style>
+
+  <script type="application/ld+json" id="schemaAgent">{}</script>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand" aria-label="Brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Ricki Kohli</h1>
+          <p>eXp Realty • Investor-Focused • Victoria, BC</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navigation">
+        <a href="#investors">Investors</a>
+        <a href="#services">Services</a>
+        <a href="#credibility">Credibility</a>
+        <a href="#victoria">Victoria Focus</a>
+        <a href="#process">Process</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="ctaRow">
+        <a class="btn btnGhost" id="callTop" href="tel:2368699570">Call</a>
+        <a class="btn btnPrimary" data-booking-link href="#contact">Book a Strategy Call</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="card">
+          <div class="cardInner">
+            <div class="badge">eXp Realty • Investor Acquisition • Rentals • Value‑Add</div>
+            <h2 class="hTitle">Serious real estate strategy for Victoria buyers, sellers, and investors.</h2>
+            <p class="hSub">
+              I’m <b>Ricki Kohli</b> with <b>eXp Realty</b>, serving <b>Victoria, BC</b>. I help investors and motivated buyers/sellers
+              move with clear market context, strong negotiation, and a calm, professional process from first call to closing.
+            </p>
+
+            <div class="heroPoints" role="list" aria-label="Key points">
+              <div class="pill" role="listitem">✔ Investor-first communication</div>
+              <div class="pill" role="listitem">✔ Deal screening & comp clarity</div>
+              <div class="pill" role="listitem">✔ Offer strategy + fast execution</div>
+              <div class="pill" role="listitem">✔ Reliable closing coordination</div>
+            </div>
+
+            <div class="grid2">
+              <a class="btn btnPrimary" data-booking-link href="#contact">Book a Free 15‑Min Call</a>
+              <button class="btn" id="copyBtn" type="button">Copy Contact Info</button>
+            </div>
+
+            <div class="kpi" aria-label="Investor outcomes">
+              <div class="kpiCard">
+                <div class="t">Goal</div>
+                <div class="v">Better entry points</div>
+                <div class="d">Filter noise and focus only on opportunities aligned with your buy box.</div>
+              </div>
+              <div class="kpiCard">
+                <div class="t">Edge</div>
+                <div class="v">Clean execution</div>
+                <div class="d">When a deal appears, speed + certainty matters. We move efficiently.</div>
+              </div>
+            </div>
+
+            <p class="hint">Launch-ready base is complete. Add your final scheduling link, license details, and policy pages to go live.</p>
+          </div>
+        </div>
+
+        <aside class="card sideCard" aria-label="Profile and quick facts">
+          <div class="photo" title="Your hero photo"></div>
+          <div class="cardInner">
+            <p class="name">Ricki Kohli</p>
+            <p class="role">eXp Realty • Victoria, BC<br/>Investor-focused acquisitions, advisory, and client representation</p>
+
+            <div class="mini" aria-label="Quick info">
+              <div class="miniRow"><span>Response time</span><b>Same day</b></div>
+              <div class="miniRow"><span>Specialty</span><b>Investor Deals</b></div>
+              <div class="miniRow"><span>Markets</span><b>Victoria + Nearby</b></div>
+              <div class="miniRow"><span>Style</span><b>Calm / Direct</b></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <a class="btn btnPrimary" href="#contact" style="width:100%; justify-content:center;">Get Deal Alerts</a>
+            <p class="hint">Get opportunities matched to your buy box and goals. No spam.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section id="investors" class="section" aria-label="Investor value props">
+        <div class="card feature"><div class="cardInner">
+          <h3>Investor Buy Box Setup</h3>
+          <p>Define target neighborhoods, budget, property type, strategy (rental / flip / value-add), and timelines so every lead is filtered first.</p>
+        </div></div>
+        <div class="card feature"><div class="cardInner">
+          <h3>Deal Screening & Comps</h3>
+          <p>Quick sanity-check: pricing, comparable sales, demand signals, risk factors, and exit options—so decisions are clear and defensible.</p>
+        </div></div>
+        <div class="card feature"><div class="cardInner">
+          <h3>Off‑Market + Fast Execution</h3>
+          <p>When an opportunity appears, speed matters. Tight offers, clean terms, and coordinated closing so sellers feel safe choosing you.</p>
+        </div></div>
+      </section>
+
+      <section id="services" class="split" aria-label="Services">
+        <div class="card"><div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Investor Services</h3>
+          <p class="hSub" style="margin-top:8px;">Built for repeat buyers who want clarity, speed, and control.</p>
+          <div class="list">
+            <div class="li"><div class="dot"></div><div><b>Deal alerts</b> aligned to your buy box.</div></div>
+            <div class="li"><div class="dot"></div><div><b>Offer strategy</b> to win without overpaying.</div></div>
+            <div class="li"><div class="dot"></div><div><b>Negotiation</b> focused on price, terms, and closing certainty.</div></div>
+            <div class="li"><div class="dot"></div><div><b>Closing coordination</b> with lenders, lawyers, inspectors, and contractors.</div></div>
+          </div>
+        </div></div>
+
+        <div class="card"><div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Buyer & Seller Services</h3>
+          <p class="hSub" style="margin-top:8px;">A clean, stress-free process with direct communication.</p>
+          <div class="list">
+            <div class="li"><div class="dot"></div><div><b>Buyers:</b> search, showing strategy, offers, and closing support.</div></div>
+            <div class="li"><div class="dot"></div><div><b>Sellers:</b> pricing, presentation, marketing, and negotiation.</div></div>
+            <div class="li"><div class="dot"></div><div><b>Market guidance:</b> no hype—realistic, defensible advice.</div></div>
+            <div class="li"><div class="dot"></div><div><b>Protection:</b> details matter—conditions, clauses, and timelines.</div></div>
+          </div>
+        </div></div>
+      </section>
+
+      <section id="credibility" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Credibility</h3>
+          <p class="hSub" style="margin-top:8px;">
+            I bring a client-first, results-driven approach. I’ll never claim a deal that isn’t real—everything here is about showing how I work: clear communication, clean execution, and professionalism.
+          </p>
+
+          <div class="gallery">
+            <div class="shot">
+              <div class="media"><img src="ChatGPT Image Mar 10, 2026, 06_17_10 PM.png" alt="Ricki Kohli profile image" /></div>
+              <div class="caption">
+                Professional positioning with investor-focused communication and clean execution.
+                <br><span style="color:rgba(159,176,208,.75)">Swap this for your final approved brand/headshot assets before launch.</span>
+              </div>
+            </div>
+
+            <div class="shot">
+              <div class="media"><img src="ChatGPT Image Mar 10, 2026, 06_17_10 PM.png" alt="Ricki Kohli alternate profile image" /></div>
+              <div class="caption">
+                Use this slot for a second approved image, team photo, or branded listing visual.
+              </div>
+            </div>
+          </div>
+
+          <p class="hint">As you close real estate deals, replace/add photos here with sold listings, client testimonials, and permitted marketing materials.</p>
+        </div>
+      </section>
+
+      <section id="victoria" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Victoria, BC focus</h3>
+          <p class="hSub" style="margin-top:8px;">
+            Victoria is neighborhood-driven. If you’re investing, the “why here” matters as much as the property.
+          </p>
+
+          <div class="section" style="margin-top:14px;">
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Rental Strategy</h3>
+              <p>We align vacancy resilience, tenant demand, and long-term appreciation with your risk tolerance and budget.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Value‑Add / Flip</h3>
+              <p>We look for workable upside and avoid cosmetic traps that can destroy timelines and margins.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Strong End‑Buyer Demand</h3>
+              <p>Exit strategy matters. I help you pick deals with real buyer demand at the price you plan to sell.</p>
+            </div></div>
+          </div>
+
+          <p class="hint">Optional: add a “Neighborhoods I cover” grid once you choose your exact target areas (Downtown, Langford, Saanich, etc.).</p>
+        </div>
+      </section>
+
+      <section id="process" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">How it works (Investor-friendly)</h3>
+          <p class="hSub" style="margin-top:8px;">Simple, efficient, and built to scale with you.</p>
+
+          <div class="section" style="margin-top:14px;">
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>1) Quick Call</h3>
+              <p>We define goals and set your buy box (areas, budget, strategy, timelines).</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>2) Filtered Leads</h3>
+              <p>Only opportunities that match your criteria hit your inbox—no noise.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>3) Fast Execution</h3>
+              <p>When it’s a go, we move quickly with clean offers and organized closing.</p>
+            </div></div>
+          </div>
+
+          <p class="hint">Upgrade path: add an investor intake form + automated email + scheduling link.</p>
+        </div>
+      </section>
+
+      <section id="testimonials" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Client experience</h3>
+          <p class="hSub" style="margin-top:8px;">
+            Social proof drives conversions. Add real client reviews and transaction examples once approved for advertising use.
+          </p>
+          <div class="section" style="margin-top:14px;">
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>“Clear communication from day one.”</h3>
+              <p>Placeholder testimonial card — replace with a real review and client first name/initial when permission is granted.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>“Offer strategy helped us move fast.”</h3>
+              <p>Placeholder testimonial card — include transaction type (buyer/seller/investor) for stronger trust signals.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>“Professional, direct, and organized.”</h3>
+              <p>Placeholder testimonial card — add verified Google review snippets with exact wording and date.</p>
+            </div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Frequently asked questions</h3>
+          <div class="list" style="margin-top:12px;">
+            <div class="li"><div class="dot"></div><div><b>Do you work with first-time buyers?</b><br/>Yes — buyer clients get search strategy, showing guidance, and negotiation support through closing.</div></div>
+            <div class="li"><div class="dot"></div><div><b>Do you help investors?</b><br/>Yes — investor clients get buy-box alignment, deal screening context, and execution support.</div></div>
+            <div class="li"><div class="dot"></div><div><b>What areas do you cover?</b><br/>Victoria and nearby Vancouver Island markets. Exact coverage can be narrowed in your first call.</div></div>
+            <div class="li"><div class="dot"></div><div><b>How quickly do you respond?</b><br/>Usually same day. Urgent opportunities should be sent by text for fastest response.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="split" aria-label="Contact section">
+        <div class="card"><div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Book a free strategy call</h3>
+          <p class="hSub" style="margin-top:8px;">
+            Tell me what you’re looking for and I’ll respond fast. Investors: include buy box details.
+          </p>
+
+          <form class="form" id="leadForm">
+            <input name="name" placeholder="Your name" required />
+            <input name="email" placeholder="Email" type="email" required />
+            <input name="phone" placeholder="Phone (optional)" />
+            <select name="type" required>
+              <option value="" disabled selected>What are you looking for?</option>
+              <option>Investor — Rentals</option>
+              <option>Investor — Flip / Value Add</option>
+              <option>Buyer</option>
+              <option>Seller</option>
+              <option>Other</option>
+            </select>
+            <textarea name="message" placeholder="Message (buy box / budget / areas / timelines)"></textarea>
+
+            <button class="btn btnPrimary" type="submit" style="justify-content:center; width:100%;">Send</button>
+            <p class="hint">
+              Prefer text? Message me directly: <span class="kbd" id="phoneText">236-869-9570</span>
+            </p>
+          </form>
+        </div></div>
+
+        <div class="card"><div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Direct contact</h3>
+          <p class="hSub" style="margin-top:8px;">
+            If you’re ready to move quickly on a deal, reach out directly.
+          </p>
+
+          <div class="list">
+            <div class="li"><div class="dot"></div><div><b>Phone:</b> <span id="phoneShow">236-869-9570</span></div></div>
+            <div class="li"><div class="dot"></div><div><b>Email:</b> <span id="emailShow">rkohli09@outlook.com</span></div></div>
+            <div class="li"><div class="dot"></div><div><b>Website:</b> <span id="websiteShow">https://your-domain.com</span></div></div>
+            <div class="li"><div class="dot"></div><div><b>Service Area:</b> Victoria, BC + nearby</div></div>
+            <div class="li"><div class="dot"></div><div><b>Focus:</b> Investor acquisitions, rentals, value‑add, and serious buyers/sellers</div></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <a class="btn btnPrimary" id="smsLink" href="#" style="width:100%; justify-content:center;">Text Ricki</a>
+          <a class="btn" id="mailtoLink" href="#" style="width:100%; justify-content:center; margin-top:10px;">Email Ricki</a>
+          <a class="btn" data-booking-link href="#contact" style="width:100%; justify-content:center; margin-top:10px;">Schedule Call</a>
+
+          <p class="hint">Compliance: confirm brokerage legal name, license info, and privacy policy URL before running ads.</p>
+        </div></div>
+      </section>
+
+      <footer class="footer" aria-label="Footer">
+        <div>
+          © <span id="yr"></span> Ricki Kohli • eXp Realty • Victoria, BC
+          <br/>
+          Brokerage: <b>eXp Realty</b> • License #: <b>[LICENSE #]</b>
+        </div>
+        <div>
+          <span style="opacity:.85;">Privacy:</span> No spam. Your info stays private.
+          <br/>
+          <span style="opacity:.85;">Trademark:</span> Use REALTOR® mark only where permitted.
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // ========= CONFIG (EDIT THESE) =========
+    const RICKY = {
+      name: "Ricki Kohli",
+      city: "Victoria, BC",
+      region: "BC",
+      country: "CA",
+      phone: "236-869-9570",
+      email: "rkohli09@outlook.com",
+      brokerage: "eXp Realty",
+      license: "[LICENSE #]",         // <-- replace
+      bookingUrl: "https://calendly.com/your-link",
+      backendEndpoint: "",            // <-- set to Cloudflare Worker URL when ready
+      website: (window.location.origin && window.location.origin !== "null") ? window.location.origin : "https://your-domain.com"
+    };
+
+    // ========= HELPERS =========
+    const $ = (s)=>document.querySelector(s);
+    const toast = (msg)=>{
+      const t = $("#toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(window.__t);
+      window.__t = setTimeout(()=> t.style.display="none", 2600);
+    };
+
+    // ========= STRUCTURED DATA =========
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": RICKY.name,
+      "areaServed": {
+        "@type": "City",
+        "name": "Victoria",
+        "address": { "@type": "PostalAddress", "addressRegion": RICKY.region, "addressCountry": RICKY.country }
+      },
+      "telephone": RICKY.phone,
+      "email": RICKY.email,
+      "url": RICKY.website,
+      "worksFor": { "@type": "Organization", "name": RICKY.brokerage },
+      "image": RICKY.website.replace(/\/$/,'') + "/ChatGPT%20Image%20Mar%2010,%202026,%2006_17_10%20PM.png"
+    };
+    document.getElementById("schemaAgent").textContent = JSON.stringify(schema);
+
+    // ========= INIT =========
+    $("#yr").textContent = new Date().getFullYear();
+    $("#phoneShow").textContent = RICKY.phone;
+    $("#phoneText").textContent = RICKY.phone;
+    $("#emailShow").textContent = RICKY.email;
+    $("#websiteShow").textContent = RICKY.website;
+
+    const smsHref = `sms:${RICKY.phone.replace(/[^+0-9]/g,"")}`;
+    const mailHref = `mailto:${encodeURIComponent(RICKY.email)}?subject=${encodeURIComponent("Real Estate Inquiry")}`;
+    $("#smsLink").href = smsHref;
+    $("#mailtoLink").href = mailHref;
+    document.querySelectorAll("[data-booking-link]").forEach((a)=>{
+      if (RICKY.bookingUrl && !RICKY.bookingUrl.includes("your-link")) {
+        a.href = RICKY.bookingUrl;
+        a.target = "_blank";
+        a.rel = "noopener";
+      } else {
+        a.href = "#contact";
+      }
+    });
+
+    $("#copyBtn").addEventListener("click", async ()=>{
+      const text = `${RICKY.name} — Real Estate Advisor (${RICKY.city})\nPhone: ${RICKY.phone}\nEmail: ${RICKY.email}`;
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("Copied contact info.");
+      }catch(e){
+        toast("Copy failed. You can manually copy the phone/email.");
+      }
+    });
+
+    const submitLeadViaBackend = async (leadPayload)=>{
+      if (!RICKY.backendEndpoint || !/^https?:\/\//.test(RICKY.backendEndpoint)) return false;
+      const response = await fetch(RICKY.backendEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leadPayload)
+      });
+      if (!response.ok) {
+        const detail = await response.text().catch(()=>"");
+        throw new Error(`Backend submission failed (${response.status}) ${detail}`.trim());
+      }
+      return true;
+    };
+
+    // Lead form: uses backend when configured, otherwise falls back to pre-filled email
+    $("#leadForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const form = e.currentTarget;
+      const data = Object.fromEntries(new FormData(form).entries());
+      if(!data.name || !data.email || !data.type){
+        toast("Please fill name, email, and inquiry type.");
+        return;
+      }
+      const payload = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone || "",
+        type: data.type,
+        message: data.message || "",
+        source: "website",
+        submittedAt: new Date().toISOString()
+      };
+      try {
+        const sent = await submitLeadViaBackend(payload);
+        if (sent) {
+          toast("Lead submitted successfully.");
+          form.reset();
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+        toast("Live form is unavailable. Falling back to email.");
+      }
+      const body =
+`Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone || "(not provided)"}
+Type: ${data.type}
+
+Message:
+${data.message || "(none)"}
+`;
+      const href = `mailto:${encodeURIComponent(RICKY.email)}?subject=${encodeURIComponent("New Lead — " + data.type)}&body=${encodeURIComponent(body)}`;
+      window.location.href = href;
+      toast("Opening your email app…");
+      form.reset();
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener("click",(e)=>{
+        const id = a.getAttribute("href");
+        const el = document.querySelector(id);
+        if(!el) return;
+        e.preventDefault();
+        el.scrollIntoView({behavior:"smooth", block:"start"});
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RRG Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0f;
+  --panel: #111318;
+  --panel2: #16191f;
+  --border: #1e2229;
+  --border2: #252b35;
+  --accent: #e8a022;
+  --accent2: #f0b841;
+  --hot: #f23645;
+  --warm: #e8a022;
+  --cold: #4a90d9;
+  --green: #26c97a;
+  --text: #e2e5eb;
+  --text2: #8b93a1;
+  --text3: #555e6e;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 60px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 13px;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.logo-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.header-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-btn {
+  padding: 7px 16px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text2);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.nav-btn:hover, .nav-btn.active {
+  background: var(--panel2);
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+.nav-btn.active {
+  color: var(--accent);
+  border-color: rgba(232,160,34,0.3);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.timestamp {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 60px);
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-section {
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+
+.sidebar-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  margin-bottom: 6px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.12s;
+  color: var(--text2);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.sidebar-item:hover {
+  background: var(--panel2);
+  color: var(--text);
+}
+
+.sidebar-item.active {
+  background: rgba(232,160,34,0.1);
+  color: var(--accent);
+}
+
+.sidebar-item-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.sidebar-item-left {
+  display: flex;
+  align-items: center;
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 100px;
+  background: rgba(242,54,69,0.15);
+  color: var(--hot);
+}
+
+.badge.warm { background: rgba(232,160,34,0.15); color: var(--warm); }
+.badge.blue { background: rgba(74,144,217,0.15); color: var(--cold); }
+.badge.green { background: rgba(38,201,122,0.15); color: var(--green); }
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 8px 16px;
+}
+
+/* ── Main ── */
+.main {
+  padding: 28px 32px;
+  overflow-y: auto;
+}
+
+.page-title {
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.page-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+/* ── Stat cards ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  transition: border-color 0.2s;
+}
+
+.stat-card:hover { border-color: var(--border2); }
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-value.hot { color: var(--hot); }
+.stat-value.warm { color: var(--warm); }
+.stat-value.green { color: var(--green); }
+
+.stat-delta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.stat-delta.up { color: var(--green); }
+.stat-delta.down { color: var(--hot); }
+
+/* ── Grid layout ── */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+}
+
+.col-left { display: flex; flex-direction: column; gap: 20px; }
+.col-right { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Panel ── */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.panel-action {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: color 0.15s;
+  text-decoration: none;
+}
+
+.panel-action:hover { color: var(--accent); }
+
+/* ── Call queue ── */
+.call-queue-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+  cursor: pointer;
+}
+
+.call-queue-item:last-child { border-bottom: none; }
+.call-queue-item:hover { background: var(--panel2); }
+
+.cq-rank {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  width: 20px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.cq-score-ring {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.cq-score-ring.hot {
+  background: rgba(242,54,69,0.12);
+  border: 1.5px solid rgba(242,54,69,0.4);
+  color: var(--hot);
+}
+
+.cq-score-ring.warm {
+  background: rgba(232,160,34,0.12);
+  border: 1.5px solid rgba(232,160,34,0.4);
+  color: var(--warm);
+}
+
+.cq-score-ring.cold {
+  background: rgba(74,144,217,0.12);
+  border: 1.5px solid rgba(74,144,217,0.4);
+  color: var(--cold);
+}
+
+.cq-info { flex: 1; min-width: 0; }
+
+.cq-name {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cq-detail {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.cq-action {
+  background: var(--panel2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.cq-action:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+/* ── Deals table ── */
+.deals-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.deals-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.deals-table td {
+  padding: 13px 20px;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.deals-table tr:last-child td { border-bottom: none; }
+.deals-table tbody tr { transition: background 0.12s; cursor: pointer; }
+.deals-table tbody tr:hover { background: var(--panel2); }
+
+.deal-address {
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.deal-city {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.deal-price {
+  font-family: var(--display);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.score-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-bar {
+  height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  width: 60px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--warm), var(--green));
+  transition: width 0.8s ease;
+}
+
+.score-text {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+  width: 32px;
+}
+
+/* ── Signal badges ── */
+.signal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.stag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.stag.price-drop { background: rgba(242,54,69,0.1); color: var(--hot); border-color: rgba(242,54,69,0.2); }
+.stag.below-market { background: rgba(38,201,122,0.1); color: var(--green); border-color: rgba(38,201,122,0.2); }
+.stag.new { background: rgba(74,144,217,0.1); color: var(--cold); border-color: rgba(74,144,217,0.2); }
+.stag.stale { background: rgba(139,147,161,0.1); color: var(--text3); border-color: rgba(139,147,161,0.2); }
+.stag.investor { background: rgba(232,160,34,0.1); color: var(--warm); border-color: rgba(232,160,34,0.2); }
+
+/* ── Right panel items ── */
+.signal-feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+
+.signal-feed-item:last-child { border-bottom: none; }
+.signal-feed-item:hover { background: var(--panel2); }
+
+.sig-icon {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.sig-icon.drop { background: rgba(242,54,69,0.1); }
+.sig-icon.new { background: rgba(74,144,217,0.1); }
+.sig-icon.below { background: rgba(38,201,122,0.1); }
+.sig-icon.stale { background: rgba(139,147,161,0.1); }
+
+.sig-body { flex: 1; min-width: 0; }
+
+.sig-address {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sig-desc {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.sig-time {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  white-space: nowrap;
+  margin-top: 3px;
+}
+
+/* ── Worker health ── */
+.worker-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.worker-item:last-child { border-bottom: none; }
+
+.worker-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.worker-dot.success { background: var(--green); }
+.worker-dot.error { background: var(--hot); }
+.worker-dot.running {
+  background: var(--warm);
+  animation: pulse-green 1.5s infinite;
+}
+
+.worker-name {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.worker-stats {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+/* ── Ingest counter ── */
+.ingest-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  background: rgba(232,160,34,0.05);
+  border-bottom: 1px solid rgba(232,160,34,0.1);
+}
+
+.ingest-stat {
+  text-align: center;
+}
+
+.ingest-num {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.ingest-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ingest-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border2);
+}
+
+/* ── Loading ── */
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-family: var(--mono);
+  color: var(--text3);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.loading::after {
+  content: '';
+  animation: dots 1.2s infinite;
+}
+
+@keyframes dots {
+  0% { content: ''; }
+  33% { content: '.'; }
+  66% { content: '..'; }
+  100% { content: '...'; }
+}
+
+/* ── Empty state ── */
+.empty {
+  padding: 32px 20px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* ── Scroll ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+/* ── Animations ── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel { animation: fadeSlideIn 0.3s ease forwards; }
+.stats-row .stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stats-row .stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stats-row .stat-card:nth-child(3) { animation-delay: 0.15s; }
+.stats-row .stat-card:nth-child(4) { animation-delay: 0.2s; }
+.stats-row .stat-card:nth-child(5) { animation-delay: 0.25s; }
+
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-mark">R</div>
+    <div>
+      <div class="logo-text">RRG Command Center</div>
+      <div class="logo-sub">Ricky's Realty Group Ltd.</div>
+    </div>
+  </div>
+  <nav class="header-nav">
+    <a class="nav-btn active" href="/">Dashboard</a>
+    <a class="nav-btn" href="/deals">Deals</a>
+    <a class="nav-btn" href="/leads">Leads</a>
+    <a class="nav-btn" href="/search" target="_blank">Public Search ↗</a>
+  </nav>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <span class="timestamp" id="clock">–</span>
+  </div>
+</header>
+
+<!-- ── Layout ── -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Operations</div>
+      <div class="sidebar-item active">
+        <span class="sidebar-item-left">
+          <svg class="sidebar-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="1.5"/></svg>
+          Overview
+        </span>
+      </div>
+      <div class="sidebar-item" onclick="location.href='/leads'">
+        <span class="sidebar-item-left">
+          <svg class="sidebar-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="1.5"/><circle cx="9" cy="7" r="4" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke-width="1.5"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke-width="1.5"/></svg>
+          Leads
+        </span>
+        <span class="badge" id="sb-hot-count">–</span>
+      </div>
+      <div class="sidebar-item" onclick="location.href='/deals'">
+        <span class="sidebar-item-left">
+          <svg class="sidebar-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-width="1.5"/><polyline points="9 22 9 12 15 12 15 22" stroke-width="1.5"/></svg>
+          Top Deals
+        </span>
+        <span class="badge green" id="sb-deal-count">–</span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Market</div>
+      <div class="sidebar-item">
+        <span class="sidebar-item-left">
+          <svg class="sidebar-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke-width="1.5"/><polyline points="17 6 23 6 23 12" stroke-width="1.5"/></svg>
+          Price Drops
+        </span>
+        <span class="badge warm" id="sb-drop-count">–</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="sidebar-item-left">
+          <svg class="sidebar-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.5"/><polyline points="12 6 12 12 16 14" stroke-width="1.5"/></svg>
+          Stale Listings
+        </span>
+        <span class="badge blue">–</span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">System</div>
+      <div class="sidebar-item" id="sb-recompute" onclick="triggerRecompute()">
+        <span class="sidebar-item-left">
+          <svg class="sidebar-item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10" stroke-width="1.5"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="1.5"/></svg>
+          Recompute Scores
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+    <div class="page-title">Command Center</div>
+    <div class="page-sub" id="dashboard-date">Loading…</div>
+
+    <!-- Stat cards -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Hot Leads</div>
+        <div class="stat-value hot" id="stat-hot">–</div>
+        <div class="stat-delta" id="stat-new-today">– new today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Warm Leads</div>
+        <div class="stat-value warm" id="stat-warm">–</div>
+        <div class="stat-delta" id="stat-total-leads">– total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Listings</div>
+        <div class="stat-value green" id="stat-active">–</div>
+        <div class="stat-delta" id="stat-total-props">– properties</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Top Deal Score</div>
+        <div class="stat-value" id="stat-top-score">–</div>
+        <div class="stat-delta">out of 1.0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Price Drops 24h</div>
+        <div class="stat-value warm" id="stat-drops">–</div>
+        <div class="stat-delta">recent reductions</div>
+      </div>
+    </div>
+
+    <!-- Content grid -->
+    <div class="content-grid">
+
+      <!-- Left column -->
+      <div class="col-left">
+
+        <!-- Call queue -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-title-dot" style="background:var(--hot)"></div>
+              Who to Call First
+            </div>
+            <a class="panel-action" href="/leads">View all leads →</a>
+          </div>
+          <div id="call-queue-list"><div class="loading">Loading call queue</div></div>
+        </div>
+
+        <!-- Top deals -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-title-dot" style="background:var(--green)"></div>
+              Top Deals Today
+            </div>
+            <a class="panel-action" href="/deals">View all →</a>
+          </div>
+          <div id="deals-table-wrap"><div class="loading">Loading deals</div></div>
+        </div>
+
+      </div>
+
+      <!-- Right column -->
+      <div class="col-right">
+
+        <!-- Signal feed -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-title-dot"></div>
+              Signal Feed
+            </div>
+            <span class="panel-action" onclick="refreshData()">Refresh</span>
+          </div>
+          <div id="signal-feed"><div class="loading">Loading signals</div></div>
+        </div>
+
+        <!-- Worker health -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-title-dot" style="background:var(--cold)"></div>
+              Pipeline Health
+            </div>
+          </div>
+          <div id="worker-list"><div class="loading">Loading</div></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const API = '';
+
+function fmt(n) {
+  if (!n && n !== 0) return '–';
+  return n.toLocaleString();
+}
+
+function fmtPrice(n) {
+  if (!n) return '–';
+  if (n >= 1000000) return '$' + (n / 1000000).toFixed(2) + 'M';
+  if (n >= 1000) return '$' + Math.round(n / 1000) + 'K';
+  return '$' + n.toLocaleString();
+}
+
+function fmtScore(s) {
+  if (!s && s !== 0) return '–';
+  return (s * 100).toFixed(0);
+}
+
+function timeAgo(ts) {
+  if (!ts) return '';
+  const d = new Date(ts + 'Z');
+  const diff = (Date.now() - d) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  return Math.floor(diff / 86400) + 'd ago';
+}
+
+function signalIcon(type) {
+  const map = {
+    price_drop_recent: { icon: '↓', cls: 'drop' },
+    price_drop_large: { icon: '↓↓', cls: 'drop' },
+    new_listing: { icon: '✦', cls: 'new' },
+    price_per_sqft_below_area_avg: { icon: '◆', cls: 'below' },
+    under_market_estimate: { icon: '◆', cls: 'below' },
+    days_on_market_high: { icon: '◷', cls: 'stale' },
+    investor_candidate: { icon: '★', cls: 'stale' },
+    family_home_candidate: { icon: '⌂', cls: 'new' },
+  };
+  return map[type] || { icon: '●', cls: 'stale' };
+}
+
+function signalLabel(sig) {
+  const meta = sig.signal_meta || {};
+  const labels = {
+    price_drop_recent: () => `Price dropped ${meta.drop_pct?.toFixed(1)}% — ${meta.days_since_drop}d ago`,
+    price_drop_large: () => `Large reduction: -$${fmt(meta.drop_amount)} (${meta.drop_pct?.toFixed(1)}%)`,
+    new_listing: () => `New — ${meta.days_on_market}d on market`,
+    price_per_sqft_below_area_avg: () => `$${meta.listing_ppsqft}/sqft vs $${meta.area_avg_ppsqft} avg (${meta.discount_pct?.toFixed(1)}% below)`,
+    under_market_estimate: () => `Est. market value $${fmt(meta.estimated_market_value)} — listed at $${fmt(meta.list_price)}`,
+    days_on_market_high: () => `${meta.days_on_market} days on market`,
+    investor_candidate: `Strong investor signal`,
+    family_home_candidate: () => `${meta.beds} bed / ${meta.baths} bath family home`,
+    luxury_candidate: `Luxury segment`,
+    fixer_candidate: () => `Built ${meta.year_built} — fixer opportunity`,
+  };
+  const fn = labels[sig.signal_type];
+  if (!fn) return sig.signal_type.replaceAll('_', ' ');
+  return typeof fn === 'function' ? fn() : fn;
+}
+
+function getSignalTags(listing) {
+  const exp = listing.deal_explanation?.components || {};
+  const tags = [];
+  if (listing.deal_explanation?.components?.price_drop?.score > 0.1) {
+    tags.push('<span class="stag price-drop">Price Drop</span>');
+  }
+  if (exp.under_market?.description?.includes('below')) {
+    tags.push('<span class="stag below-market">Below Market</span>');
+  }
+  if (listing.date_listed) {
+    const dom = Math.floor((Date.now() - new Date(listing.date_listed + 'Z')) / 86400000);
+    if (dom <= 3) tags.push('<span class="stag new">New</span>');
+    else if (dom > 60) tags.push('<span class="stag stale">Stale</span>');
+  }
+  return tags.join('');
+}
+
+async function loadDashboard() {
+  try {
+    const r = await fetch(API + '/api/dashboard/summary');
+    const d = await r.json();
+
+    // Stats
+    const lc = d.lead_counts || {};
+    const li = d.listing_counts || {};
+    document.getElementById('stat-hot').textContent = fmt(lc.hot);
+    document.getElementById('stat-warm').textContent = fmt(lc.warm);
+    document.getElementById('stat-new-today').textContent = `${fmt(lc.new_today)} new today`;
+    document.getElementById('stat-total-leads').textContent = `${fmt(lc.total)} total`;
+    document.getElementById('stat-active').textContent = fmt(li.active_listings);
+    document.getElementById('stat-total-props').textContent = `${fmt(li.total_properties)} properties`;
+    document.getElementById('sb-hot-count').textContent = lc.hot || 0;
+    document.getElementById('sb-deal-count').textContent = li.active_listings || 0;
+
+    // Top deal score
+    const deals = d.top_deals || [];
+    if (deals.length > 0) {
+      document.getElementById('stat-top-score').textContent = (deals[0].deal_score * 100).toFixed(0) + '%';
+    }
+
+    // Price drops
+    const drops = d.recent_price_drops || [];
+    document.getElementById('stat-drops').textContent = drops.length;
+    document.getElementById('sb-drop-count').textContent = drops.length;
+
+    // Date
+    document.getElementById('dashboard-date').textContent =
+      new Date().toLocaleDateString('en-CA', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+
+    // Call queue
+    renderCallQueue(d.call_queue || []);
+
+    // Deals table
+    renderDealsTable(deals);
+
+    // Signal feed
+    renderSignalFeed([...(d.recent_price_drops || []), ...(d.recent_signals || [])].slice(0, 12));
+
+    // Workers
+    renderWorkers(d.worker_status || []);
+
+  } catch(e) {
+    console.error('Dashboard load error:', e);
+    document.getElementById('call-queue-list').innerHTML =
+      '<div class="empty">No data — start the API server and ingest some listings.</div>';
+    document.getElementById('deals-table-wrap').innerHTML =
+      '<div class="empty">No listings yet. POST to /api/ingest to add data.</div>';
+    document.getElementById('signal-feed').innerHTML =
+      '<div class="empty">No signals yet.</div>';
+    document.getElementById('worker-list').innerHTML =
+      '<div class="empty">No worker runs recorded.</div>';
+  }
+}
+
+function renderCallQueue(queue) {
+  const el = document.getElementById('call-queue-list');
+  if (!queue.length) {
+    el.innerHTML = '<div class="empty">No active leads in queue. 🎉</div>';
+    return;
+  }
+  const seen = new Set();
+  const unique = queue.filter(l => {
+    if (seen.has(l.lead_id)) return false;
+    seen.add(l.lead_id);
+    return true;
+  });
+
+  el.innerHTML = unique.slice(0, 8).map((l, i) => `
+    <div class="call-queue-item">
+      <span class="cq-rank">#${i + 1}</span>
+      <div class="cq-score-ring ${l.score}">${l.score.slice(0,1).toUpperCase()}</div>
+      <div class="cq-info">
+        <div class="cq-name">${l.name}</div>
+        <div class="cq-detail">${l.phone || l.email || 'No contact'} · ${l.task_notes || l.timeline || 'Follow up'}</div>
+      </div>
+      <button class="cq-action" onclick="window.open('/leads', '_self')">Call</button>
+    </div>
+  `).join('');
+}
+
+function renderDealsTable(deals) {
+  const el = document.getElementById('deals-table-wrap');
+  if (!deals.length) {
+    el.innerHTML = '<div class="empty">No deals scored yet. Run score recompute.</div>';
+    return;
+  }
+  el.innerHTML = `
+    <table class="deals-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Price</th>
+          <th>Bed/Bath</th>
+          <th>Deal Score</th>
+          <th>Signals</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${deals.slice(0, 8).map(d => `
+          <tr onclick="window.open('/listing/${d.listing_id}', '_self')">
+            <td>
+              <div class="deal-address">${d.address}</div>
+              <div class="deal-city">${d.city}, ${d.province || 'BC'}</div>
+            </td>
+            <td><div class="deal-price">${fmtPrice(d.list_price)}</div></td>
+            <td style="font-family:var(--mono);font-size:12px;color:var(--text2)">${d.beds || '?'}bd ${d.baths || '?'}ba</td>
+            <td>
+              <div class="score-bar-wrap">
+                <div class="score-bar">
+                  <div class="score-bar-fill" style="width:${(d.deal_score || 0) * 100}%"></div>
+                </div>
+                <span class="score-text">${fmtScore(d.deal_score)}%</span>
+              </div>
+            </td>
+            <td><div class="signal-tags">${getSignalTags(d)}</div></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderSignalFeed(signals) {
+  const el = document.getElementById('signal-feed');
+  if (!signals.length) {
+    el.innerHTML = '<div class="empty">No recent signals.</div>';
+    return;
+  }
+  el.innerHTML = signals.map(sig => {
+    const {icon, cls} = signalIcon(sig.signal_type);
+    return `
+      <div class="signal-feed-item">
+        <div class="sig-icon ${cls}">${icon}</div>
+        <div class="sig-body">
+          <div class="sig-address">${sig.address || '–'}, ${sig.city || ''}</div>
+          <div class="sig-desc">${signalLabel(sig)}</div>
+          <div class="sig-time">${timeAgo(sig.created_at)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderWorkers(runs) {
+  const el = document.getElementById('worker-list');
+  if (!runs.length) {
+    el.innerHTML = '<div class="empty">No worker runs yet.</div>';
+    return;
+  }
+  el.innerHTML = runs.map(r => `
+    <div class="worker-item">
+      <div class="worker-dot ${r.status}"></div>
+      <div class="worker-name">${r.worker_name}</div>
+      <div class="worker-stats">${r.items_processed} items · ${r.status}</div>
+    </div>
+  `).join('');
+}
+
+async function triggerRecompute() {
+  const btn = document.getElementById('sb-recompute');
+  btn.style.opacity = '0.5';
+  try {
+    await fetch(API + '/api/admin/recompute-scores', { method: 'POST' });
+    await loadDashboard();
+  } finally {
+    btn.style.opacity = '1';
+  }
+}
+
+function refreshData() { loadDashboard(); }
+
+// Clock
+function updateClock() {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('en-CA', {hour12: false});
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// Auto-refresh every 60s
+loadDashboard();
+setInterval(loadDashboard, 60000);
+</script>
+</body>
+</html>

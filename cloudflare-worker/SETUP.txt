@@ -1,0 +1,26 @@
+Cloudflare Worker + GitHub API setup
+====================================
+
+1) Install Wrangler and authenticate:
+   npm install -g wrangler
+   wrangler login
+
+2) In this folder, copy config:
+   cp wrangler.toml.example wrangler.toml
+   Edit GITHUB_OWNER / GITHUB_REPO / ALLOWED_ORIGIN
+
+3) Add GitHub token as a Worker secret:
+   wrangler secret put GITHUB_TOKEN
+   Use a token with repo scope (issues write access).
+
+4) Deploy Worker:
+   wrangler deploy
+
+5) Wire website to backend:
+   In index.html set:
+   RICKY.backendEndpoint = "https://YOUR_WORKER_SUBDOMAIN.workers.dev"
+
+6) Test from browser:
+   Submit website form and verify new GitHub issue is created under labels:
+   - lead
+   - website

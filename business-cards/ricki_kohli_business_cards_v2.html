@@ -1,0 +1,305 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap');
+  .cards-wrap { padding: 1.5rem 0; display: flex; flex-direction: column; gap: 2.5rem; }
+  .card-label { font-family:'Montserrat',sans-serif; font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--color-text-secondary); margin-bottom:.65rem; }
+  .card-pair { display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .side-label { font-family:'Montserrat',sans-serif; font-size:10px; color:var(--color-text-secondary); margin-bottom:5px; letter-spacing:.06em; }
+  .bc { width:320px; height:180px; border-radius:10px; overflow:hidden; position:relative; flex-shrink:0; }
+
+  /* FRONT shared */
+  .bc-dark { background:#0A0A0A; box-shadow:0 8px 32px rgba(0,0,0,.35); }
+  .bc-dark::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:linear-gradient(90deg,#C9A84C,#F0D080,#C9A84C); z-index:2; }
+
+  /* VERSION A — with headshot */
+  .bc-a-front .accent-line { position:absolute; right:108px; top:0; bottom:0; width:1px; background:rgba(201,168,76,.2); }
+  .bc-a-front .hs-col { position:absolute; right:0;top:0;bottom:0;width:102px; background:#141414; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; }
+  .hs-circle { width:56px; height:56px; border-radius:50%; border:1.5px solid #C9A84C; display:flex; align-items:center; justify-content:center; color:#C9A84C; font-size:22px; }
+  .hs-note { font-family:'Montserrat',sans-serif; font-size:7.5px; color:rgba(201,168,76,.55); text-align:center; letter-spacing:.04em; line-height:1.4; }
+  .bc-a-front .main { position:absolute; left:20px;top:20px;bottom:16px;right:114px; display:flex; flex-direction:column; justify-content:space-between; }
+
+  /* VERSION A — no headshot */
+  .bc-b-front .main { position:absolute; left:22px;top:20px;bottom:18px;right:22px; display:flex; flex-direction:column; justify-content:space-between; }
+
+  /* shared text */
+  .bc-name { font-family:'Cormorant Garamond',serif; font-size:21px; font-weight:500; color:#F5F0E8; letter-spacing:.03em; line-height:1.1; }
+  .bc-title { font-family:'Montserrat',sans-serif; font-size:7.5px; font-weight:500; color:#C9A84C; letter-spacing:.14em; text-transform:uppercase; margin-top:4px; }
+  .bc-tagline { font-family:'Cormorant Garamond',serif; font-size:10px; font-style:italic; color:rgba(245,240,232,.42); margin-top:3px; }
+  .bc-contact { font-family:'Montserrat',sans-serif; font-size:8px; color:rgba(245,240,232,.68); letter-spacing:.03em; line-height:1.9; }
+  .bc-brokerage { font-family:'Cormorant Garamond',serif; font-size:12px; font-weight:300; color:#C9A84C; letter-spacing:.09em; margin-top:5px; }
+  .gold-rule { width:36px; height:1px; background:#C9A84C; opacity:.55; margin:10px 0; }
+
+  /* BACK shared */
+  .bc-back { background:#F8F6F0; box-shadow:0 8px 32px rgba(0,0,0,.18); display:flex; flex-direction:column; justify-content:space-between; padding:18px 22px 16px; }
+  .bc-back::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:linear-gradient(90deg,#C9A84C,#F0D080,#C9A84C); z-index:2; }
+  .back-top { display:flex; justify-content:space-between; align-items:flex-start; padding-left:58px; }
+  .exp-logo { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; color:#0A0A0A; letter-spacing:.09em; }
+  .exp-logo span { color:#C9A84C; }
+  /* QR in chip position — upper-left like a debit card chip */
+  .qr-chip {
+    position:absolute;
+    top:22px; left:20px;
+    width:40px; height:40px;
+    border:1.5px solid #B8922D;
+    border-radius:7px;
+    background:linear-gradient(180deg,#fff,#f7f3e9);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+  }
+  .qr-chip svg { width:31px; height:31px; }
+  .back-tagline { font-family:'Cormorant Garamond',serif; font-size:11px; font-style:italic; color:#555; line-height:1.5; }
+  .back-sub { font-family:'Montserrat',sans-serif; font-size:7.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#999; }
+  .back-contact { font-family:'Montserrat',sans-serif; font-size:7.5px; color:#777; letter-spacing:.03em; line-height:1.8; }
+  .back-bottom { padding-left:0; }
+</style>
+
+<div class="cards-wrap">
+
+  <!-- VERSION A: WITH HEADSHOT -->
+  <div>
+    <div class="card-label">Version A — With headshot placeholder</div>
+    <div class="card-pair">
+      <div>
+        <div class="side-label">FRONT</div>
+        <div class="bc bc-dark bc-a-front">
+          <div class="accent-line"></div>
+          <div class="hs-col">
+            <div class="hs-circle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div class="hs-note">Your<br>Photo</div>
+          </div>
+          <div class="main">
+            <div>
+              <div class="bc-name">Ricki Kohli</div>
+              <div class="bc-title">REALTOR® &nbsp;·&nbsp; Trading Services Rep.</div>
+              <div class="bc-tagline">Buying · Selling · Investing</div>
+            </div>
+            <div>
+              <div class="bc-contact">236-869-9570<br>rkohli09@outlook.com</div>
+              <div class="bc-brokerage">eXp Realty · Victoria, BC</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="side-label">BACK</div>
+        <div class="bc bc-back">
+          <div class="back-top">
+            <div>
+              <div class="exp-logo">e<span>X</span>p Realty</div>
+              <div class="back-tagline" style="margin-top:6px;">Real Estate Made Simple.<br>Victoria &amp; Vancouver Island.</div>
+            </div>
+          </div>
+          <!-- QR code in chip position (upper-left) -->
+          <div class="qr-chip" title="QR Code placeholder — add your website or contact card URL">
+            <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg">
+              <rect width="29" height="29" fill="white"/>
+              <!-- top-left finder -->
+              <rect x="1" y="1" width="7" height="7" fill="black" rx="1"/>
+              <rect x="2" y="2" width="5" height="5" fill="white"/>
+              <rect x="3" y="3" width="3" height="3" fill="black"/>
+              <!-- top-right finder -->
+              <rect x="21" y="1" width="7" height="7" fill="black" rx="1"/>
+              <rect x="22" y="2" width="5" height="5" fill="white"/>
+              <rect x="23" y="3" width="3" height="3" fill="black"/>
+              <!-- bottom-left finder -->
+              <rect x="1" y="21" width="7" height="7" fill="black" rx="1"/>
+              <rect x="2" y="22" width="5" height="5" fill="white"/>
+              <rect x="3" y="23" width="3" height="3" fill="black"/>
+              <!-- data dots -->
+              <rect x="9" y="1" width="1" height="1" fill="black"/>
+              <rect x="11" y="1" width="1" height="1" fill="black"/>
+              <rect x="13" y="1" width="1" height="1" fill="black"/>
+              <rect x="9" y="3" width="2" height="1" fill="black"/>
+              <rect x="13" y="3" width="1" height="2" fill="black"/>
+              <rect x="9" y="5" width="1" height="1" fill="black"/>
+              <rect x="11" y="5" width="2" height="1" fill="black"/>
+              <rect x="9" y="7" width="3" height="1" fill="black"/>
+              <rect x="13" y="7" width="1" height="1" fill="black"/>
+              <rect x="1" y="9" width="2" height="1" fill="black"/>
+              <rect x="5" y="9" width="3" height="1" fill="black"/>
+              <rect x="9" y="9" width="1" height="2" fill="black"/>
+              <rect x="11" y="9" width="3" height="1" fill="black"/>
+              <rect x="15" y="9" width="2" height="1" fill="black"/>
+              <rect x="19" y="9" width="2" height="2" fill="black"/>
+              <rect x="23" y="9" width="1" height="1" fill="black"/>
+              <rect x="25" y="9" width="3" height="1" fill="black"/>
+              <rect x="1" y="11" width="1" height="2" fill="black"/>
+              <rect x="3" y="11" width="3" height="1" fill="black"/>
+              <rect x="13" y="11" width="2" height="1" fill="black"/>
+              <rect x="17" y="11" width="1" height="2" fill="black"/>
+              <rect x="21" y="11" width="3" height="1" fill="black"/>
+              <rect x="27" y="11" width="1" height="1" fill="black"/>
+              <rect x="1" y="13" width="3" height="1" fill="black"/>
+              <rect x="7" y="13" width="1" height="1" fill="black"/>
+              <rect x="11" y="13" width="1" height="2" fill="black"/>
+              <rect x="15" y="13" width="3" height="1" fill="black"/>
+              <rect x="21" y="13" width="1" height="1" fill="black"/>
+              <rect x="25" y="13" width="3" height="1" fill="black"/>
+              <rect x="3" y="15" width="2" height="1" fill="black"/>
+              <rect x="7" y="15" width="3" height="1" fill="black"/>
+              <rect x="13" y="15" width="2" height="2" fill="black"/>
+              <rect x="19" y="15" width="2" height="1" fill="black"/>
+              <rect x="23" y="15" width="1" height="2" fill="black"/>
+              <rect x="27" y="15" width="1" height="1" fill="black"/>
+              <rect x="1" y="17" width="5" height="1" fill="black"/>
+              <rect x="9" y="17" width="1" height="1" fill="black"/>
+              <rect x="17" y="17" width="2" height="1" fill="black"/>
+              <rect x="21" y="17" width="1" height="1" fill="black"/>
+              <rect x="25" y="17" width="2" height="1" fill="black"/>
+              <rect x="1" y="19" width="1" height="2" fill="black"/>
+              <rect x="5" y="19" width="3" height="1" fill="black"/>
+              <rect x="11" y="19" width="2" height="1" fill="black"/>
+              <rect x="15" y="19" width="1" height="2" fill="black"/>
+              <rect x="19" y="19" width="3" height="1" fill="black"/>
+              <rect x="25" y="19" width="3" height="1" fill="black"/>
+              <rect x="9" y="21" width="1" height="2" fill="black"/>
+              <rect x="13" y="21" width="1" height="1" fill="black"/>
+              <rect x="17" y="21" width="3" height="1" fill="black"/>
+              <rect x="23" y="21" width="1" height="2" fill="black"/>
+              <rect x="27" y="21" width="1" height="1" fill="black"/>
+              <rect x="11" y="23" width="3" height="1" fill="black"/>
+              <rect x="17" y="23" width="1" height="1" fill="black"/>
+              <rect x="21" y="23" width="1" height="1" fill="black"/>
+              <rect x="25" y="23" width="2" height="1" fill="black"/>
+              <rect x="9" y="25" width="2" height="1" fill="black"/>
+              <rect x="13" y="25" width="3" height="1" fill="black"/>
+              <rect x="19" y="25" width="1" height="1" fill="black"/>
+              <rect x="23" y="25" width="3" height="1" fill="black"/>
+              <rect x="27" y="25" width="1" height="1" fill="black"/>
+              <rect x="9" y="27" width="1" height="1" fill="black"/>
+              <rect x="13" y="27" width="1" height="2" fill="black"/>
+              <rect x="17" y="27" width="3" height="1" fill="black"/>
+              <rect x="23" y="27" width="1" height="1" fill="black"/>
+            </svg>
+          </div>
+          <div class="back-bottom">
+            <div class="back-contact">rkohli09@outlook.com · 236-869-9570 · yourwebsite.ca</div>
+            <div class="back-sub" style="margin-top:4px;">Honest Advice · Local Knowledge</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSION B: NO HEADSHOT -->
+  <div>
+    <div class="card-label">Version B — No headshot</div>
+    <div class="card-pair">
+      <div>
+        <div class="side-label">FRONT</div>
+        <div class="bc bc-dark bc-b-front">
+          <div class="main">
+            <div>
+              <div class="bc-name">Ricki Kohli</div>
+              <div class="bc-title">REALTOR® &nbsp;·&nbsp; Trading Services Representative</div>
+              <div class="bc-tagline">Buying · Selling · Investing</div>
+            </div>
+            <div class="gold-rule"></div>
+            <div>
+              <div class="bc-contact">236-869-9570 &nbsp;·&nbsp; rkohli09@outlook.com</div>
+              <div class="bc-brokerage">eXp Realty &nbsp;·&nbsp; Victoria, BC</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="side-label">BACK</div>
+        <div class="bc bc-back">
+          <div class="back-top">
+            <div>
+              <div class="exp-logo">e<span>X</span>p Realty</div>
+              <div class="back-tagline" style="margin-top:6px;">Real Estate Made Simple.<br>Victoria &amp; Vancouver Island.</div>
+            </div>
+          </div>
+          <!-- QR in chip position -->
+          <div class="qr-chip" title="QR Code placeholder">
+            <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg">
+              <rect width="29" height="29" fill="white"/>
+              <rect x="1" y="1" width="7" height="7" fill="black" rx="1"/>
+              <rect x="2" y="2" width="5" height="5" fill="white"/>
+              <rect x="3" y="3" width="3" height="3" fill="black"/>
+              <rect x="21" y="1" width="7" height="7" fill="black" rx="1"/>
+              <rect x="22" y="2" width="5" height="5" fill="white"/>
+              <rect x="23" y="3" width="3" height="3" fill="black"/>
+              <rect x="1" y="21" width="7" height="7" fill="black" rx="1"/>
+              <rect x="2" y="22" width="5" height="5" fill="white"/>
+              <rect x="3" y="23" width="3" height="3" fill="black"/>
+              <rect x="9" y="1" width="1" height="1" fill="black"/>
+              <rect x="11" y="1" width="1" height="1" fill="black"/>
+              <rect x="13" y="1" width="1" height="1" fill="black"/>
+              <rect x="9" y="3" width="2" height="1" fill="black"/>
+              <rect x="13" y="3" width="1" height="2" fill="black"/>
+              <rect x="9" y="5" width="1" height="1" fill="black"/>
+              <rect x="11" y="5" width="2" height="1" fill="black"/>
+              <rect x="9" y="7" width="3" height="1" fill="black"/>
+              <rect x="13" y="7" width="1" height="1" fill="black"/>
+              <rect x="1" y="9" width="2" height="1" fill="black"/>
+              <rect x="5" y="9" width="3" height="1" fill="black"/>
+              <rect x="9" y="9" width="1" height="2" fill="black"/>
+              <rect x="11" y="9" width="3" height="1" fill="black"/>
+              <rect x="15" y="9" width="2" height="1" fill="black"/>
+              <rect x="19" y="9" width="2" height="2" fill="black"/>
+              <rect x="23" y="9" width="1" height="1" fill="black"/>
+              <rect x="25" y="9" width="3" height="1" fill="black"/>
+              <rect x="1" y="11" width="1" height="2" fill="black"/>
+              <rect x="3" y="11" width="3" height="1" fill="black"/>
+              <rect x="13" y="11" width="2" height="1" fill="black"/>
+              <rect x="17" y="11" width="1" height="2" fill="black"/>
+              <rect x="21" y="11" width="3" height="1" fill="black"/>
+              <rect x="27" y="11" width="1" height="1" fill="black"/>
+              <rect x="1" y="13" width="3" height="1" fill="black"/>
+              <rect x="7" y="13" width="1" height="1" fill="black"/>
+              <rect x="11" y="13" width="1" height="2" fill="black"/>
+              <rect x="15" y="13" width="3" height="1" fill="black"/>
+              <rect x="21" y="13" width="1" height="1" fill="black"/>
+              <rect x="25" y="13" width="3" height="1" fill="black"/>
+              <rect x="3" y="15" width="2" height="1" fill="black"/>
+              <rect x="7" y="15" width="3" height="1" fill="black"/>
+              <rect x="13" y="15" width="2" height="2" fill="black"/>
+              <rect x="19" y="15" width="2" height="1" fill="black"/>
+              <rect x="23" y="15" width="1" height="2" fill="black"/>
+              <rect x="27" y="15" width="1" height="1" fill="black"/>
+              <rect x="1" y="17" width="5" height="1" fill="black"/>
+              <rect x="9" y="17" width="1" height="1" fill="black"/>
+              <rect x="17" y="17" width="2" height="1" fill="black"/>
+              <rect x="21" y="17" width="1" height="1" fill="black"/>
+              <rect x="25" y="17" width="2" height="1" fill="black"/>
+              <rect x="1" y="19" width="1" height="2" fill="black"/>
+              <rect x="5" y="19" width="3" height="1" fill="black"/>
+              <rect x="11" y="19" width="2" height="1" fill="black"/>
+              <rect x="15" y="19" width="1" height="2" fill="black"/>
+              <rect x="19" y="19" width="3" height="1" fill="black"/>
+              <rect x="25" y="19" width="3" height="1" fill="black"/>
+              <rect x="9" y="21" width="1" height="2" fill="black"/>
+              <rect x="13" y="21" width="1" height="1" fill="black"/>
+              <rect x="17" y="21" width="3" height="1" fill="black"/>
+              <rect x="23" y="21" width="1" height="2" fill="black"/>
+              <rect x="27" y="21" width="1" height="1" fill="black"/>
+              <rect x="11" y="23" width="3" height="1" fill="black"/>
+              <rect x="17" y="23" width="1" height="1" fill="black"/>
+              <rect x="21" y="23" width="1" height="1" fill="black"/>
+              <rect x="25" y="23" width="2" height="1" fill="black"/>
+              <rect x="9" y="25" width="2" height="1" fill="black"/>
+              <rect x="13" y="25" width="3" height="1" fill="black"/>
+              <rect x="19" y="25" width="1" height="1" fill="black"/>
+              <rect x="23" y="25" width="3" height="1" fill="black"/>
+              <rect x="27" y="25" width="1" height="1" fill="black"/>
+              <rect x="9" y="27" width="1" height="1" fill="black"/>
+              <rect x="13" y="27" width="1" height="2" fill="black"/>
+              <rect x="17" y="27" width="3" height="1" fill="black"/>
+              <rect x="23" y="27" width="1" height="1" fill="black"/>
+            </svg>
+          </div>
+          <div class="back-bottom">
+            <div class="back-contact">rkohli09@outlook.com · 236-869-9570 · yourwebsite.ca</div>
+            <div class="back-sub" style="margin-top:4px;">Honest Advice · Local Knowledge</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

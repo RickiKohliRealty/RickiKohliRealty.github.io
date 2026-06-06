@@ -1,4 +1,4 @@
-# RRG-ARC — Ricky's Realty Group Intelligence Platform
+# RKR-ARC — RKR Ricki Kohli Realty Intelligence Platform
 
 Built on ARC's signal/store/engine/api architecture. Extended into a property intelligence and lead-ops command center.
 
@@ -21,7 +21,7 @@ Then open:
 
 | URL | Surface |
 |-----|---------|
-| `http://localhost:8000` | **RRG Command Center** (internal) |
+| `http://localhost:8000` | **RKR Command Center** (internal) |
 | `http://localhost:8000/deals` | **Public Property Search** |
 | `http://localhost:8000/leads` | **Lead Management** |
 | `http://localhost:8000/docs` | **API Docs** (auto-generated) |
@@ -54,7 +54,7 @@ ui/
 data/
   seed_listings.json      — Sample Williams Lake listings
   seed_price_drops.py     — Inject price history for signal testing
-  rrg.db                  — SQLite database (created on first run)
+  rkr.db                  — SQLite database (created on first run)
 ```
 
 ---
@@ -95,7 +95,7 @@ Required fields: `address`, `city`
 | `property_signals` | Generated signals (price_drop, below_market, etc.) |
 | `leads` | Captured buyers/sellers with score |
 | `saved_searches` | Stored search queries with alert flag |
-| `tasks` | Internal action queue for Ricky |
+| `tasks` | Internal action queue for RKR Ricki Kohli Realty |
 | `worker_runs` | Job execution log |
 
 ---
@@ -155,7 +155,7 @@ GET  /api/deals                 — Top deals (min_deal_score filter)
 GET  /api/signals               — Recent signals (filter by type)
 POST /api/leads                 — Submit a lead
 GET  /api/leads                 — List all leads (filter by score/status)
-GET  /api/call-queue            — Ricky's prioritized call list
+GET  /api/call-queue            — RKR prioritized call list
 POST /api/searches              — Save a search
 GET  /api/dashboard/summary     — All dashboard data in one call
 POST /api/ingest                — Push listing batch

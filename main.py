@@ -1,6 +1,6 @@
 """
 arc/api/main.py
-RRG-ARC FastAPI application.
+RKR-ARC FastAPI application.
 All endpoints are boring and correct.
 """
 
@@ -25,7 +25,7 @@ from arc.realty.lead_store import (
 from arc.realty.deal_engine import get_area_stats, recompute_all_scores
 from arc.workers.worker_engine import get_worker_history, job_recompute_scores, job_daily_digest
 
-app = FastAPI(title="RRG-ARC Intelligence API", version="1.0.0")
+app = FastAPI(title="RKR-ARC Intelligence API", version="1.0.0")
 
 # Init DB on startup
 init_db()
@@ -145,7 +145,7 @@ def api_submit_lead(lead: LeadSubmit):
     return {
         "lead_id": lead_id,
         "score": lead_record["score"],
-        "message": "Thank you — Ricky will be in touch shortly.",
+        "message": "Thank you — Ricki will be in touch shortly.",
     }
 
 

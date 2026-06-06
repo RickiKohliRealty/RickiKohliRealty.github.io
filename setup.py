@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-setup.py — One-command RRG-ARC setup.
+setup.py — One-command RKR-ARC setup.
 Run this once to initialize the database and load sample data.
 
 Usage:
@@ -13,15 +13,15 @@ import os
 sys.path.insert(0, os.path.dirname(__file__))
 
 print("=" * 60)
-print("  RRG-ARC Setup")
-print("  Ricky's Realty Group Intelligence Platform")
+print("  RKR-ARC Setup")
+print("  RKR Ricki Kohli Realty Intelligence Platform")
 print("=" * 60)
 
 # 1. Init DB
 print("\n[1/4] Initializing database…")
 from arc.db import init_db
 init_db()
-print("      ✓ Database ready at data/rrg.db")
+print("      ✓ Database ready at data/rkr.db")
 
 # 2. Ingest seed listings
 print("\n[2/4] Ingesting sample listings…")

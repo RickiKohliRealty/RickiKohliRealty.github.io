@@ -1,5 +1,5 @@
 """
-RRG-ARC Database Layer
+RKR-ARC Database Layer
 Initializes SQLite schema. Swap connection string for Postgres in production.
 """
 
@@ -9,7 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-DB_PATH = os.environ.get("RRG_DB_PATH", "data/rrg.db")
+DB_PATH = os.environ.get("RKR_DB_PATH", "data/rkr.db")
 
 
 def get_conn():

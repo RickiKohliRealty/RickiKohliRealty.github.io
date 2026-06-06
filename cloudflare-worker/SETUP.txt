@@ -7,7 +7,12 @@ Cloudflare Worker + GitHub API setup
 
 2) In this folder, copy config:
    cp wrangler.toml.example wrangler.toml
-   Edit GITHUB_OWNER / GITHUB_REPO / ALLOWED_ORIGIN
+   Edit:
+   - GITHUB_OWNER
+   - GITHUB_REPO
+   - ALLOWED_ORIGIN
+   - GOOGLE_CLIENT_ID
+   - MANAGER_EMAILS (comma-separated)
 
 3) Add GitHub token as a Worker secret:
    wrangler secret put GITHUB_TOKEN
@@ -15,12 +20,26 @@ Cloudflare Worker + GitHub API setup
 
 4) Deploy Worker:
    wrangler deploy
+5) Create Google OAuth Web Client ID:
+   - In Google Cloud Console, configure OAuth consent screen
+   - Create an OAuth Client ID of type "Web application"
+   - Add your deployed site origin under Authorized JavaScript origins
+   - Copy the client id into:
+     - wrangler.toml -> GOOGLE_CLIENT_ID
+     - index.html -> RICKY.googleClientId
 
-5) Wire website to backend:
+6) Wire website to backend + inquiry manager:
    In index.html set:
    RICKY.backendEndpoint = "https://YOUR_WORKER_SUBDOMAIN.workers.dev"
+   RICKY.inquiryReadEndpoint = "https://YOUR_WORKER_SUBDOMAIN.workers.dev/inquiries"
+   RICKY.googleClientId = "YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com"
+   RICKY.managerEmails = ["you@example.com"]
 
-6) Test from browser:
-   Submit website form and verify new GitHub issue is created under labels:
+7) Test from browser:
+   a) Open website in an incognito window.
+      - Guest overlay should appear immediately when not logged in.
+   b) Submit overlay form and verify a new GitHub issue is created under labels:
    - lead
    - website
+   c) Sign in with Google and open Inquiries section.
+      - Linked inquiries should load from Worker /inquiries endpoint.

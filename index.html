@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RKR Ricki Kohli Realty | Investor-Focused Real Estate in Victoria, BC</title>
-  <meta name="description" content="RKR Ricki Kohli Realty in Victoria, BC. Investor-friendly acquisition support for rentals, value-add opportunities, and serious buyer/seller representation. Book a free strategy call." />
+  <title>RKR | Ricki Kohli Realty — Investor-Focused Real Estate in Victoria, BC</title>
+  <meta name="description" content="RKR | Ricki Kohli Realty in Victoria, BC. Investor-focused real estate guidance for buyers, sellers, and investors. Book a strategy call or view business cards." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="RKR Ricki Kohli Realty | Victoria, BC" />
+  <meta property="og:title" content="RKR | Ricki Kohli Realty — Victoria, BC" />
   <meta property="og:description" content="Investor-focused real estate support for acquisitions, rentals, value-add opportunities, and motivated buyers/sellers in Victoria, BC." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="ChatGPT Image Mar 10, 2026, 06_17_10 PM.png" />
@@ -174,13 +174,45 @@
       border: 1px solid rgba(255,255,255,.10);
     }
 
-    /* Photo used properly: centered on you, safe crop */
+    /* Professional hero visual */
     .photo{
       height: 260px;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.62)),
-        url("ChatGPT Image Mar 10, 2026, 06_17_10 PM.png") 50% 45% / cover no-repeat;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(120% 120% at 0% 0%, rgba(212,179,91,.30) 0%, rgba(212,179,91,.02) 52%, transparent 60%),
+        linear-gradient(135deg, #0f141d 0%, #090d14 45%, #05070b 100%);
       border-bottom:1px solid var(--line);
+      position:relative;
+      overflow:hidden;
+    }
+    .photo:after{
+      content:"RKR | Ricki Kohli Realty";
+      color:rgba(245,240,232,.92);
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:.02em;
+      text-align:center;
+      text-shadow:0 10px 26px rgba(0,0,0,.4);
+      padding:0 20px;
+    }
+    .cardsActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .cardsPreview{
+      margin-top:14px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(255,255,255,.02);
+    }
+    .cardsPreview iframe{
+      width:100%;
+      height:430px;
+      border:0;
+      display:block;
     }
 
     .name{ margin:0; font-size:18px; font-weight:950; letter-spacing:-.2px; }
@@ -331,8 +363,8 @@
       <div class="brand" aria-label="Brand">
         <div class="mark" aria-hidden="true"></div>
         <div>
-          <h1>RKR Ricki Kohli Realty</h1>
-          <p>Investor-Focused • Victoria, BC</p>
+          <h1>RKR | Ricki Kohli Realty</h1>
+          <p>Investor-Focused Real Estate · Victoria, BC</p>
         </div>
       </div>
 
@@ -342,12 +374,14 @@
         <a href="#credibility">Credibility</a>
         <a href="#victoria">Victoria Focus</a>
         <a href="#process">Process</a>
+        <a href="#cards">Cards</a>
         <a href="#testimonials">Testimonials</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
       </nav>
 
       <div class="ctaRow">
+        <a class="btn btnGhost" href="#cards">View Cards</a>
         <a class="btn btnGhost" id="callTop" href="tel:2368699570">Call</a>
         <a class="btn btnPrimary" data-booking-link href="#contact">Book a Strategy Call</a>
       </div>
@@ -357,10 +391,10 @@
       <section class="hero">
         <div class="card">
           <div class="cardInner">
-            <div class="badge">RKR Ricki Kohli Realty • Investor Acquisition • Rentals • Value‑Add</div>
+            <div class="badge">RKR | Ricki Kohli Realty · Investor Acquisition · Rentals · Value‑Add</div>
             <h2 class="hTitle">Serious real estate strategy for Victoria buyers, sellers, and investors.</h2>
             <p class="hSub">
-              I’m <b>Ricki Kohli</b> with <b>RKR Ricki Kohli Realty</b>, serving <b>Victoria, BC</b>. I help investors and motivated buyers/sellers
+              I’m <b>Ricki Kohli</b>, founder of <b>RKR | Ricki Kohli Realty</b>, serving <b>Victoria, BC</b>. I help investors and motivated buyers/sellers
               move with clear market context, strong negotiation, and a calm, professional process from first call to closing.
             </p>
 
@@ -389,15 +423,15 @@
               </div>
             </div>
 
-            <p class="hint">Launch-ready base is complete. Add your final scheduling link, license details, and policy pages to go live.</p>
+            <p class="hint">Professional guidance, direct communication, and clear deal strategy from first call to close.</p>
           </div>
         </div>
 
         <aside class="card sideCard" aria-label="Profile and quick facts">
           <div class="photo" title="Your hero photo"></div>
           <div class="cardInner">
-            <p class="name">RKR Ricki Kohli Realty</p>
-            <p class="role">Founded by Ricki Kohli • Victoria, BC<br/>Investor-focused acquisitions, advisory, and client representation</p>
+            <p class="name">RKR | Ricki Kohli Realty</p>
+            <p class="role">Founded by Ricki Kohli · Victoria, BC<br/>Investor-focused acquisitions, advisory, and client representation</p>
 
             <div class="mini" aria-label="Quick info">
               <div class="miniRow"><span>Response time</span><b>Same day</b></div>
@@ -465,19 +499,18 @@
               <div class="media"><img src="ChatGPT Image Mar 10, 2026, 06_17_10 PM.png" alt="Ricki Kohli profile image" /></div>
               <div class="caption">
                 Professional positioning with investor-focused communication and clean execution.
-                <br><span style="color:rgba(159,176,208,.75)">Swap this for your final approved brand/headshot assets before launch.</span>
+                <br><span style="color:rgba(159,176,208,.75)">Brand-driven communication with disciplined execution for every transaction.</span>
               </div>
             </div>
 
             <div class="shot">
               <div class="media"><img src="ChatGPT Image Mar 10, 2026, 06_17_10 PM.png" alt="Ricki Kohli alternate profile image" /></div>
               <div class="caption">
-                Use this slot for a second approved image, team photo, or branded listing visual.
+                Local market focus with clean process management and investor-first responsiveness.
               </div>
             </div>
           </div>
-
-          <p class="hint">As you close real estate deals, replace/add photos here with sold listings, client testimonials, and permitted marketing materials.</p>
+          <p class="hint">This section can feature sold listings, testimonials, and approved campaign visuals as your portfolio grows.</p>
         </div>
       </section>
 
@@ -528,6 +561,21 @@
           </div>
 
           <p class="hint">Upgrade path: add an investor intake form + automated email + scheduling link.</p>
+        </div>
+      </section>
+      <section id="cards" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Business cards</h3>
+          <p class="hSub" style="margin-top:8px;">
+            Both card versions are published and ready for review. Open the live card file directly or preview it below.
+          </p>
+          <div class="cardsActions">
+            <a class="btn btnPrimary" href="business-cards/ricki_kohli_business_cards_v2.html" target="_blank" rel="noopener">Open Card File</a>
+            <a class="btn" href="business-cards/ricki_kohli_business_cards_v2.html" target="_blank" rel="noopener">Open in New Tab</a>
+          </div>
+          <div class="cardsPreview">
+            <iframe src="business-cards/ricki_kohli_business_cards_v2.html" title="RKR business card preview" loading="lazy"></iframe>
+          </div>
         </div>
       </section>
 
@@ -620,9 +668,9 @@
 
       <footer class="footer" aria-label="Footer">
         <div>
-          © <span id="yr"></span> RKR Ricki Kohli Realty • Victoria, BC
+          © <span id="yr"></span> RKR | Ricki Kohli Realty · Victoria, BC
           <br/>
-          Brokerage: <b>RKR Ricki Kohli Realty</b> • License #: <b>[LICENSE #]</b>
+          Brokerage: <b>RKR | Ricki Kohli Realty</b> · License #: <b>[LICENSE #]</b>
         </div>
         <div>
           <span style="opacity:.85;">Privacy:</span> No spam. Your info stays private.
@@ -638,13 +686,14 @@
   <script>
     // ========= CONFIG (EDIT THESE) =========
     const RICKY = {
-      name: "RKR Ricki Kohli Realty",
+      name: "Ricki Kohli",
+      brand: "RKR | Ricki Kohli Realty",
       city: "Victoria, BC",
       region: "BC",
       country: "CA",
       phone: "236-869-9570",
       email: "rkohli09@outlook.com",
-      brokerage: "RKR Ricki Kohli Realty",
+      brokerage: "RKR | Ricki Kohli Realty",
       license: "[LICENSE #]",         // <-- replace
       bookingUrl: "https://calendly.com/your-link",
       backendEndpoint: "",            // <-- set to Cloudflare Worker URL when ready
@@ -665,7 +714,7 @@
     const schema = {
       "@context": "https://schema.org",
       "@type": "RealEstateAgent",
-      "name": RICKY.name,
+      "name": RICKY.brand,
       "areaServed": {
         "@type": "City",
         "name": "Victoria",

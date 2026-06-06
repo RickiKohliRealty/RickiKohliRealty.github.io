@@ -1,4 +1,4 @@
-# RKR-ARC — RKR Ricki Kohli Realty Intelligence Platform
+# RKR-ARC — RKR | Ricki Kohli Realty Intelligence Platform
 
 Built on ARC's signal/store/engine/api architecture. Extended into a property intelligence and lead-ops command center.
 
@@ -95,7 +95,7 @@ Required fields: `address`, `city`
 | `property_signals` | Generated signals (price_drop, below_market, etc.) |
 | `leads` | Captured buyers/sellers with score |
 | `saved_searches` | Stored search queries with alert flag |
-| `tasks` | Internal action queue for RKR Ricki Kohli Realty |
+| `tasks` | Internal action queue for RKR / Ricki Kohli Realty |
 | `worker_runs` | Job execution log |
 
 ---

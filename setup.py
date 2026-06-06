@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 print("=" * 60)
 print("  RKR-ARC Setup")
-print("  RKR Ricki Kohli Realty Intelligence Platform")
+print("  RKR | Ricki Kohli Realty Intelligence Platform")
 print("=" * 60)
 
 # 1. Init DB

@@ -127,6 +127,12 @@
       gap:22px;
       align-items:start;
     }
+    .heroMainCol{
+      display:grid;
+      gap:14px;
+      align-content:start;
+      min-width:0;
+    }
     @media (max-width: 1280px){
       .hero{
         grid-template-columns: minmax(0, 1fr) minmax(242px, 288px);
@@ -291,6 +297,31 @@
     .kpiCard .t{color:var(--muted2); font-size:12px;}
     .kpiCard .v{font-weight:950; font-size:16px; margin-top:4px;}
     .kpiCard .d{color:var(--muted); font-size:12.5px; margin-top:6px; line-height:1.45;}
+    .aboutRickiCard{
+      border-color: rgba(212,168,67,.22);
+      background:
+        radial-gradient(120% 90% at 100% 0%, rgba(212,168,67,.10), rgba(212,168,67,0) 60%),
+        linear-gradient(180deg, rgba(14,18,26,.96), rgba(9,12,18,.95));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 18px 44px rgba(0,0,0,.38);
+    }
+    .aboutRickiTitle{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.3px;
+      color:#f2f7ff;
+    }
+    .aboutRickiText{
+      margin:12px 0 0;
+      color:#b9c8e3;
+      font-size:15px;
+      line-height:1.72;
+      max-width: 78ch;
+    }
+    .aboutRickiText + .aboutRickiText{
+      margin-top:10px;
+    }
 
     .gallery{
       display:grid;
@@ -755,42 +786,59 @@
 
     <main>
       <section class="hero">
-        <div class="card">
-          <div class="cardInner">
-            <div class="badge">Victoria, BC Homes for Sale · Buyers · Sellers · Investors</div>
-            <h1 class="hTitle">Find the right home in Victoria, BC with fast local guidance.</h1>
-            <p class="hSub">
-              I’m <b>Ricki Kohli</b>, founder of <b>RKR | Ricki Kohli Realty</b>. If you’re searching for houses, condos, or investment properties in
-              <b>Victoria, BC</b>, I help you move quickly with clear pricing context, strong negotiation, and practical next steps.
-            </p>
+        <div class="heroMainCol">
+          <div class="card">
+            <div class="cardInner">
+              <div class="badge">Victoria, BC Homes for Sale · Buyers · Sellers · Investors</div>
+              <h1 class="hTitle">Find the right home in Victoria, BC with fast local guidance.</h1>
+              <p class="hSub">
+                I’m <b>Ricki Kohli</b>, founder of <b>RKR | Ricki Kohli Realty</b>. If you’re searching for houses, condos, or investment properties in
+                <b>Victoria, BC</b>, I help you move quickly with clear pricing context, strong negotiation, and practical next steps.
+              </p>
 
-            <div class="heroPoints" role="list" aria-label="Key points">
-              <div class="pill" role="listitem">✔ Victoria homes for sale guidance</div>
-              <div class="pill" role="listitem">✔ Buyer shortlist matching</div>
-              <div class="pill" role="listitem">✔ Offer strategy + negotiation</div>
-              <div class="pill" role="listitem">✔ Fast local response</div>
-            </div>
-
-            <div class="grid2">
-              <a class="btn btnPrimary" data-booking-link href="#contact">Get Matched Homes</a>
-              <button class="btn" id="copyBtn" type="button">Copy Contact Info</button>
-            </div>
-
-            <div class="kpi" aria-label="Buyer outcomes">
-              <div class="kpiCard">
-                <div class="t">Goal</div>
-                <div class="v">Better entry points</div>
-                <div class="d">Filter noise and focus only on opportunities aligned with your buy box.</div>
+              <div class="heroPoints" role="list" aria-label="Key points">
+                <div class="pill" role="listitem">✔ Victoria homes for sale guidance</div>
+                <div class="pill" role="listitem">✔ Buyer shortlist matching</div>
+                <div class="pill" role="listitem">✔ Offer strategy + negotiation</div>
+                <div class="pill" role="listitem">✔ Fast local response</div>
               </div>
-              <div class="kpiCard">
-                <div class="t">Edge</div>
-                <div class="v">Clean execution</div>
-                <div class="d">When a deal appears, speed + certainty matters. We move efficiently.</div>
-              </div>
-            </div>
 
-            <p class="hint">Professional guidance, direct communication, and clear deal strategy from first call to close.</p>
+              <div class="grid2">
+                <a class="btn btnPrimary" data-booking-link href="#contact">Get Matched Homes</a>
+                <button class="btn" id="copyBtn" type="button">Copy Contact Info</button>
+              </div>
+
+              <div class="kpi" aria-label="Buyer outcomes">
+                <div class="kpiCard">
+                  <div class="t">Goal</div>
+                  <div class="v">Better entry points</div>
+                  <div class="d">Filter noise and focus only on opportunities aligned with your buy box.</div>
+                </div>
+                <div class="kpiCard">
+                  <div class="t">Edge</div>
+                  <div class="v">Clean execution</div>
+                  <div class="d">When a deal appears, speed + certainty matters. We move efficiently.</div>
+                </div>
+              </div>
+
+              <p class="hint">Professional guidance, direct communication, and clear deal strategy from first call to close.</p>
+            </div>
           </div>
+
+          <section class="card aboutRickiCard" id="about-ricki" aria-label="About Ricki">
+            <div class="cardInner">
+              <h2 class="aboutRickiTitle">About Ricki</h2>
+              <p class="aboutRickiText">
+                Born and raised in the Greater Victoria area, I've always enjoyed building relationships and helping people. Before becoming a REALTOR® with eXp Realty, I worked in both sales and social services—experiences that taught me the value of honesty, communication, and putting people first.
+              </p>
+              <p class="aboutRickiText">
+                Today, I bring those same values to real estate. Whether you're buying your first home, selling, or investing, my goal is to make the process straightforward, stress-free, and one you feel confident in from start to finish.
+              </p>
+              <p class="aboutRickiText">
+                When I'm not working with clients, you'll usually find me staying active at the gym, exploring Vancouver Island, or continuing to learn everything I can about the local real estate market. I'm passionate about helping people find not just a house, but a place they'll be proud to call home.
+              </p>
+            </div>
+          </section>
         </div>
 
         <aside class="card sideCard" aria-label="Profile and quick facts">

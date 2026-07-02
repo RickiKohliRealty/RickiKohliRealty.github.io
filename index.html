@@ -1473,7 +1473,9 @@
       if (!ok && (managerToken() || managerEmail())) clearManagerSession();
       return ok;
     };
-    const shouldShowGuestOverlay = ()=> !hasValidManagerSession();
+    const OVERLAY_SEEN_KEY = "rkr_guest_overlay_seen_session_v1";
+    const markOverlaySeen = ()=> sessionStorage.setItem(OVERLAY_SEEN_KEY, "1");
+    const shouldShowGuestOverlay = ()=> sessionStorage.getItem(OVERLAY_SEEN_KEY) !== "1";
     const writeFirstTouch = (value)=>{
       localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(value));
     };
@@ -1513,6 +1515,7 @@
       gate.classList.toggle("open", open);
       gate.setAttribute("aria-hidden", open ? "false" : "true");
       document.body.style.overflow = open ? "hidden" : "";
+      if (!open) markOverlaySeen();
     };
     const normalizeEmail = (email)=> String(email || "").trim().toLowerCase();
     const managerAllowed = (email)=>{

@@ -439,6 +439,74 @@
       cursor:pointer;
     }
     .overlayClose:hover{ background: rgba(255,255,255,.08); }
+    .listingBrowserBar{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap:12px;
+      margin-top:14px;
+      align-items:center;
+    }
+    @media (max-width: 760px){
+      .listingBrowserBar{grid-template-columns:1fr;}
+    }
+    .listingBrowserGrid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media (max-width: 1040px){
+      .listingBrowserGrid{grid-template-columns:1fr;}
+    }
+    .listingBrowserCard{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      border-radius:16px;
+      padding:14px;
+      display:grid;
+      gap:8px;
+      min-height:170px;
+    }
+    .listingBrowserCard h4{
+      margin:0;
+      font-size:17px;
+      letter-spacing:-.2px;
+      color:var(--text);
+    }
+    .listingBrowserMeta{
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.4;
+    }
+    .listingBrowserPrice{
+      font-weight:900;
+      font-size:18px;
+      letter-spacing:-.3px;
+      color: rgba(255,236,182,.97);
+    }
+    .listingBrowserControls{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .listingBrowserPager{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .listingBrowserEmpty{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      background: rgba(255,255,255,.02);
+      color:var(--muted);
+      padding:16px;
+      text-align:center;
+      grid-column:1 / -1;
+    }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script type="application/ld+json" id="schemaAgent">{}</script>
@@ -835,6 +903,29 @@
           <p class="hint">This site is now focused on listings, strategy calls, and qualified lead capture.</p>
         </div>
       </section>
+      <section id="frontpage-listings-browser" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Browse listings index (3 at a time)</h3>
+          <p class="hSub" style="margin-top:8px;">
+            When the page loads, the browser pulls Victoria-area listings from the configured index source, catalogs them locally, and lets visitors browse in sets of up to 3.
+          </p>
+          <div class="listingBrowserBar">
+            <input id="frontListingsSearch" type="search" placeholder="Search listings index (e.g. Langford, condo, detached)" aria-label="Search listings index" />
+            <div class="ctaRow" style="justify-content:flex-end;">
+              <a class="btn" href="deals.html">Open full deals feed</a>
+            </div>
+          </div>
+          <div class="listingBrowserControls">
+            <p class="hint" id="frontListingsCount" style="margin:0;">Loading listings index…</p>
+            <div class="listingBrowserPager">
+              <button class="btn btnGhost" id="frontListingsPrev" type="button">Previous 3</button>
+              <span class="kbd" id="frontListingsPage">1 / 1</span>
+              <button class="btn btnGhost" id="frontListingsNext" type="button">Next 3</button>
+            </div>
+          </div>
+          <div class="listingBrowserGrid" id="frontListingsGrid"></div>
+        </div>
+      </section>
 
       <section id="testimonials" class="card" style="margin-top:14px;">
         <div class="cardInner">
@@ -1001,6 +1092,9 @@
       bookingUrl: "https://calendly.com/your-link",
       backendEndpoint: "https://ricky-website-leads.ricky-website-leads.workers.dev",
       inquiryReadEndpoint: "https://ricky-website-leads.ricky-website-leads.workers.dev/inquiries",
+      listingsIndexEndpoint: "",       // optional: public listings API endpoint, e.g. https://example.com/api/listings
+      listingsCity: "Victoria",        // default city query at page access
+      listingsCatalogLimit: 50000,     // cap for front-page indexing
       googleClientId: "",             // <-- set to Google OAuth web client id
       managerEmails: ["rkohli09@outlook.com"],
       serviceAreas: ["Victoria", "Saanich", "Langford", "Colwood", "Oak Bay", "Esquimalt"],
@@ -1424,6 +1518,389 @@ Referrer: ${alert.referrer || "(direct)"}`;
       }
       writeAlertSubQueue(unsent);
     };
+    const LISTINGS_BROWSER_PAGE_SIZE = 3;
+    const LISTINGS_BROWSER_MAX_CAP = 50000;
+    const LISTINGS_BROWSER_FETCH_TIMEOUT_MS = 4200;
+    const LISTINGS_BROWSER_INDEX_YIELD_EVERY = 1200;
+    const LISTINGS_BROWSER_SEARCH_DEBOUNCE_MS = 80;
+    const LISTINGS_BROWSER_FALLBACK = [
+      { title: "Langford Detached Opportunity", address: "Langford, BC", city: "Langford", propertyType: "Detached", beds: 4, baths: 3, list_price: 899000, href: "homes-for-sale-langford-bc.html" },
+      { title: "Saanich Family Home", address: "Saanich, BC", city: "Saanich", propertyType: "Detached", beds: 5, baths: 3, list_price: 1125000, href: "homes-for-sale-saanich-bc.html" },
+      { title: "Oak Bay Character Listing", address: "Oak Bay, BC", city: "Oak Bay", propertyType: "Detached", beds: 4, baths: 2, list_price: 1499000, href: "homes-for-sale-oak-bay-bc.html" },
+      { title: "Colwood Townhome", address: "Colwood, BC", city: "Colwood", propertyType: "Townhome", beds: 3, baths: 3, list_price: 729000, href: "homes-for-sale-colwood-bc.html" },
+      { title: "Esquimalt Condo", address: "Esquimalt, BC", city: "Esquimalt", propertyType: "Condo", beds: 2, baths: 2, list_price: 589000, href: "homes-for-sale-esquimalt-bc.html" },
+      { title: "Victoria Core Condo", address: "Downtown Victoria, BC", city: "Victoria", propertyType: "Condo", beds: 1, baths: 1, list_price: 479000, href: "deals.html?q=Victoria" },
+      { title: "Westshore Investment Duplex", address: "Westshore, BC", city: "Langford", propertyType: "Investment", beds: 6, baths: 4, list_price: 1299000, href: "deals.html?q=Langford" },
+      { title: "Saanich East Rancher", address: "Saanich East, BC", city: "Saanich", propertyType: "Detached", beds: 3, baths: 2, list_price: 869000, href: "deals.html?q=Saanich" },
+      { title: "Victoria Townhome", address: "Victoria, BC", city: "Victoria", propertyType: "Townhome", beds: 3, baths: 3, list_price: 799000, href: "deals.html?q=Victoria" }
+    ];
+    let listingsBrowserBuffer = {
+      rows: [],
+      allIndices: [],
+      tokenIndex: new Map(),
+      prefixIndex: new Map(),
+      sourceLabel: "Fallback sample catalog",
+      sourceUrl: "",
+      targetCity: "Victoria",
+      indexedAt: ""
+    };
+    let listingsBrowserFilteredIndices = [];
+    let listingsBrowserPage = 0;
+    let listingsBrowserSearchTimer = null;
+
+    const escapeHtml = (value)=> String(value ?? "").replace(/[&<>"']/g, (char)=>({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;"
+    }[char] || char));
+    const parseListingPrice = (value)=>{
+      const numeric = Number(String(value ?? "").replace(/[^\d.]/g, ""));
+      return Number.isFinite(numeric) && numeric > 0 ? Math.round(numeric) : null;
+    };
+    const formatListingPrice = (value)=> value ? `$${Number(value).toLocaleString()}` : "Price on request";
+    const resolveListingsTargetCity = ()=>{
+      const configured = sanitizeText(RICKY.listingsCity || RICKY.city || "Victoria", 80);
+      if (!configured) return "Victoria";
+      return sanitizeText(configured.split(",")[0], 80) || "Victoria";
+    };
+    const resolveListingsCatalogLimit = ()=>{
+      const configured = Number(RICKY.listingsCatalogLimit);
+      if (!Number.isFinite(configured)) return LISTINGS_BROWSER_MAX_CAP;
+      return Math.min(LISTINGS_BROWSER_MAX_CAP, Math.max(3, Math.round(configured)));
+    };
+    const sanitizeListingHref = (value, fallbackHref)=>{
+      const href = sanitizeText(value, 320);
+      if (!href) return fallbackHref;
+      if (/^https?:\/\//i.test(href)) return href;
+      if (href.startsWith("/") || href.startsWith("./") || href.startsWith("../")) return href;
+      if (/^[a-z0-9][a-z0-9\-_/?.=&%#]*$/i.test(href)) return href;
+      return fallbackHref;
+    };
+    const normalizeListingBrowserRow = (row, defaultCity)=>{
+      if (!row || typeof row !== "object") return null;
+      const listingId = sanitizeText(row.listing_id || row.id || row.mls || row.mls_number || row.mlsNumber, 120);
+      const city = sanitizeText(row.city || row.locality || row.municipality || row.targetArea, 80) || defaultCity;
+      const area = sanitizeText(row.area || row.neighborhood || row.neighbourhood, 80);
+      const address = sanitizeText(row.address || row.street_address || row.location || row.street, 140);
+      const propertyType = sanitizeText(row.property_type || row.propertyType || row.type, 40);
+      const beds = sanitizeText(row.beds ?? row.bedrooms, 10);
+      const baths = sanitizeText(row.baths ?? row.bathrooms, 10);
+      const listPrice = parseListingPrice(row.list_price || row.price || row.asking_price);
+      const title = sanitizeText(row.title || row.headline || row.name, 100) || address || `${city || defaultCity} listing`;
+      const fallbackHref = `deals.html${city ? `?q=${encodeURIComponent(city)}` : ""}`;
+      const hrefCandidate = row.href || row.url || row.link;
+      const href = hrefCandidate
+        ? sanitizeListingHref(hrefCandidate, fallbackHref)
+        : (listingId ? `listing_detail.html?id=${encodeURIComponent(listingId)}` : fallbackHref);
+      return {
+        title,
+        city,
+        area,
+        address,
+        propertyType,
+        beds,
+        baths,
+        listPrice,
+        href,
+        searchText: `${title} ${address} ${city} ${area} ${propertyType} ${listingId}`.toLowerCase()
+      };
+    };
+    const tokenizeListingSearch = (value)=> String(value || "")
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((token)=> token.length >= 2);
+    const intersectSortedIndices = (left, right)=>{
+      let i = 0;
+      let j = 0;
+      const result = [];
+      while (i < left.length && j < right.length) {
+        if (left[i] === right[j]) {
+          result.push(left[i]);
+          i += 1;
+          j += 1;
+          continue;
+        }
+        if (left[i] < right[j]) {
+          i += 1;
+        } else {
+          j += 1;
+        }
+      }
+      return result;
+    };
+    const toAbsoluteUrl = (value)=>{
+      try{
+        return new URL(String(value || ""), window.location.origin).toString();
+      }catch{
+        return "";
+      }
+    };
+    const withListingsParams = (baseUrl, params)=>{
+      try{
+        const url = new URL(baseUrl, window.location.origin);
+        Object.entries(params || {}).forEach(([key, value])=>{
+          if (value === undefined || value === null || value === "") return;
+          url.searchParams.set(key, String(value));
+        });
+        return url.toString();
+      }catch{
+        return "";
+      }
+    };
+    const extractListingsRows = (payload)=>{
+      if (Array.isArray(payload)) return payload;
+      if (!payload || typeof payload !== "object") return [];
+      const direct = [payload.listings, payload.results, payload.data, payload.items, payload.records, payload.catalog];
+      for (const candidate of direct) {
+        if (Array.isArray(candidate)) return candidate;
+      }
+      if (payload.data && typeof payload.data === "object") {
+        const nested = [payload.data.listings, payload.data.results, payload.data.items, payload.data.records, payload.data.catalog];
+        for (const candidate of nested) {
+          if (Array.isArray(candidate)) return candidate;
+        }
+      }
+      return [];
+    };
+    const buildListingsFetchCandidates = (targetCity, limit)=>{
+      const configured = sanitizeText(RICKY.listingsIndexEndpoint, 500);
+      const endpoints = [];
+      if (configured) endpoints.push(configured);
+      const workerListings = buildWorkerEndpoint("/listings");
+      const workerListingsIndex = buildWorkerEndpoint("/listings/index");
+      if (workerListings) endpoints.push(workerListings);
+      if (workerListingsIndex) endpoints.push(workerListingsIndex);
+      endpoints.push("/api/listings");
+      const candidates = new Set();
+      endpoints.forEach((endpoint)=>{
+        const base = toAbsoluteUrl(endpoint);
+        if (!base) return;
+        candidates.add(base);
+        candidates.add(withListingsParams(base, { city: targetCity, limit }));
+        candidates.add(withListingsParams(base, { q: targetCity, limit }));
+        candidates.add(withListingsParams(base, { location: targetCity, limit }));
+        candidates.add(withListingsParams(base, { targetArea: targetCity, limit }));
+      });
+      return Array.from(candidates).filter(Boolean);
+    };
+    const fetchJsonWithTimeout = async (url)=>{
+      const controller = new AbortController();
+      const timeout = setTimeout(()=> controller.abort(), LISTINGS_BROWSER_FETCH_TIMEOUT_MS);
+      try{
+        const response = await fetch(url, {
+          method: "GET",
+          headers: { "Accept": "application/json" },
+          signal: controller.signal
+        });
+        if (!response.ok) return null;
+        return await response.json();
+      }catch{
+        return null;
+      }finally{
+        clearTimeout(timeout);
+      }
+    };
+    const fetchRemoteListingsRows = async (targetCity, limit)=>{
+      const candidates = buildListingsFetchCandidates(targetCity, limit);
+      for (const candidate of candidates) {
+        const payload = await fetchJsonWithTimeout(candidate);
+        const rows = extractListingsRows(payload);
+        if (Array.isArray(rows) && rows.length) {
+          return { rows, sourceUrl: candidate };
+        }
+      }
+      return { rows: [], sourceUrl: "" };
+    };
+    const addPosting = (map, key, index)=>{
+      if (!key) return;
+      const existing = map.get(key);
+      if (existing) {
+        existing.push(index);
+      } else {
+        map.set(key, [index]);
+      }
+    };
+    const yieldToBrowser = ()=> new Promise((resolve)=> setTimeout(resolve, 0));
+    const buildListingsBrowserBuffer = async ({ rows, sourceLabel, sourceUrl, targetCity, limit })=>{
+      const normalizedRows = [];
+      for (let i = 0; i < rows.length && normalizedRows.length < limit; i += 1) {
+        const normalized = normalizeListingBrowserRow(rows[i], targetCity);
+        if (normalized) normalizedRows.push(normalized);
+        if (i > 0 && i % LISTINGS_BROWSER_INDEX_YIELD_EVERY === 0) {
+          await yieldToBrowser();
+        }
+      }
+      const cityNeedle = sanitizeText(targetCity, 80).toLowerCase();
+      const prioritizedRows = cityNeedle
+        ? normalizedRows.filter((item)=> item.searchText.includes(cityNeedle))
+        : [];
+      const selectedRows = (prioritizedRows.length ? prioritizedRows : normalizedRows).slice(0, limit);
+      const tokenIndex = new Map();
+      const prefixIndex = new Map();
+      for (let index = 0; index < selectedRows.length; index += 1) {
+        const uniqueTokens = new Set(tokenizeListingSearch(selectedRows[index].searchText));
+        uniqueTokens.forEach((token)=>{
+          addPosting(tokenIndex, token, index);
+          if (token.length >= 3) addPosting(prefixIndex, token.slice(0, 3), index);
+        });
+        if (index > 0 && index % LISTINGS_BROWSER_INDEX_YIELD_EVERY === 0) {
+          await yieldToBrowser();
+        }
+      }
+      return {
+        rows: selectedRows,
+        allIndices: selectedRows.map((_, index)=> index),
+        tokenIndex,
+        prefixIndex,
+        sourceLabel,
+        sourceUrl,
+        targetCity,
+        indexedAt: new Date().toISOString()
+      };
+    };
+    const setListingsBrowserLoadingState = (message)=>{
+      const grid = $("#frontListingsGrid");
+      const count = $("#frontListingsCount");
+      const page = $("#frontListingsPage");
+      const prev = $("#frontListingsPrev");
+      const next = $("#frontListingsNext");
+      if (grid) grid.innerHTML = `<div class="listingBrowserEmpty">${escapeHtml(message)}</div>`;
+      if (count) count.textContent = message;
+      if (page) page.textContent = "0 / 0";
+      if (prev) prev.disabled = true;
+      if (next) next.disabled = true;
+    };
+    const collectCandidateIndices = (queryTokens, buffer)=>{
+      const postingLists = [];
+      queryTokens.forEach((token)=>{
+        let posting = buffer.tokenIndex.get(token);
+        if (!posting && token.length >= 3) {
+          posting = buffer.prefixIndex.get(token.slice(0, 3));
+        }
+        if (posting && posting.length) postingLists.push(posting);
+      });
+      if (!postingLists.length) return buffer.allIndices;
+      postingLists.sort((left, right)=> left.length - right.length);
+      let intersection = postingLists[0];
+      for (let i = 1; i < postingLists.length; i += 1) {
+        intersection = intersectSortedIndices(intersection, postingLists[i]);
+        if (!intersection.length) break;
+      }
+      return intersection;
+    };
+    const renderListingsBrowser = ()=>{
+      const grid = $("#frontListingsGrid");
+      const count = $("#frontListingsCount");
+      const page = $("#frontListingsPage");
+      const prev = $("#frontListingsPrev");
+      const next = $("#frontListingsNext");
+      if (!grid || !count || !page || !prev || !next) return;
+      const indexedTotal = listingsBrowserBuffer.rows.length;
+      if (!indexedTotal) {
+        grid.innerHTML = `<div class="listingBrowserEmpty">No listings are available right now. Try again shortly.</div>`;
+        count.textContent = `0 indexed • ${listingsBrowserBuffer.sourceLabel}`;
+        page.textContent = "0 / 0";
+        prev.disabled = true;
+        next.disabled = true;
+        return;
+      }
+      if (!listingsBrowserFilteredIndices.length) {
+        grid.innerHTML = `<div class="listingBrowserEmpty">No listings matched your search. Try a different area or property type.</div>`;
+        count.textContent = `0 matched of ${indexedTotal} indexed • ${listingsBrowserBuffer.sourceLabel}`;
+        page.textContent = "0 / 0";
+        prev.disabled = true;
+        next.disabled = true;
+        return;
+      }
+      const totalPages = Math.max(1, Math.ceil(listingsBrowserFilteredIndices.length / LISTINGS_BROWSER_PAGE_SIZE));
+      listingsBrowserPage = Math.min(listingsBrowserPage, totalPages - 1);
+      listingsBrowserPage = Math.max(listingsBrowserPage, 0);
+      const start = listingsBrowserPage * LISTINGS_BROWSER_PAGE_SIZE;
+      const pageRows = listingsBrowserFilteredIndices
+        .slice(start, start + LISTINGS_BROWSER_PAGE_SIZE)
+        .map((index)=> listingsBrowserBuffer.rows[index])
+        .filter(Boolean);
+      grid.innerHTML = pageRows.map((item)=> {
+        const locationLine = [item.address, item.area, item.city].filter(Boolean).join(" · ") || "Victoria, BC";
+        const details = [
+          item.propertyType || "Property",
+          item.beds ? `${item.beds} bed` : "",
+          item.baths ? `${item.baths} bath` : ""
+        ].filter(Boolean).join(" · ");
+        return `
+          <article class="listingBrowserCard" aria-label="${escapeHtml(item.title)}">
+            <h4>${escapeHtml(item.title)}</h4>
+            <div class="listingBrowserPrice">${escapeHtml(formatListingPrice(item.listPrice))}</div>
+            <div class="listingBrowserMeta">${escapeHtml(locationLine)}</div>
+            <div class="listingBrowserMeta">${escapeHtml(details || "Details available in full feed")}</div>
+            <a class="btn btnGhost" href="${escapeHtml(item.href)}" style="width:100%; justify-content:center;">View Listing</a>
+          </article>
+        `;
+      }).join("");
+      count.textContent = `${listingsBrowserFilteredIndices.length} matched of ${indexedTotal} indexed • ${listingsBrowserBuffer.targetCity} • ${listingsBrowserBuffer.sourceLabel}`;
+      page.textContent = `${listingsBrowserPage + 1} / ${totalPages}`;
+      prev.disabled = listingsBrowserPage <= 0;
+      next.disabled = listingsBrowserPage >= totalPages - 1;
+    };
+    const applyListingsBrowserFilter = (resetPage = false)=>{
+      const buffer = listingsBrowserBuffer;
+      if (!buffer.rows.length) {
+        listingsBrowserFilteredIndices = [];
+        renderListingsBrowser();
+        return;
+      }
+      const query = sanitizeText($("#frontListingsSearch")?.value, 120).toLowerCase();
+      if (!query) {
+        listingsBrowserFilteredIndices = buffer.allIndices.slice();
+      } else {
+        const queryTokens = Array.from(new Set(tokenizeListingSearch(query)));
+        const candidates = collectCandidateIndices(queryTokens, buffer);
+        listingsBrowserFilteredIndices = candidates.filter((index)=>{
+          const row = buffer.rows[index];
+          if (!row) return false;
+          if (!queryTokens.length) return row.searchText.includes(query);
+          return queryTokens.every((token)=> row.searchText.includes(token));
+        });
+      }
+      if (resetPage) listingsBrowserPage = 0;
+      renderListingsBrowser();
+    };
+    const moveListingsBrowserPage = (delta)=>{
+      if (!listingsBrowserFilteredIndices.length) return;
+      listingsBrowserPage += delta;
+      renderListingsBrowser();
+    };
+    const loadListingsBrowserIndex = async ()=>{
+      const targetCity = resolveListingsTargetCity();
+      const limit = resolveListingsCatalogLimit();
+      setListingsBrowserLoadingState(`Loading ${targetCity} listings index…`);
+      const remoteResult = await fetchRemoteListingsRows(targetCity, limit);
+      const hasRemoteRows = Array.isArray(remoteResult.rows) && remoteResult.rows.length > 0;
+      const sourceRows = hasRemoteRows ? remoteResult.rows : LISTINGS_BROWSER_FALLBACK;
+      const nextBuffer = await buildListingsBrowserBuffer({
+        rows: sourceRows,
+        sourceLabel: hasRemoteRows ? "Live index API" : "Fallback sample catalog",
+        sourceUrl: hasRemoteRows ? remoteResult.sourceUrl : "",
+        targetCity,
+        limit
+      });
+      listingsBrowserBuffer = nextBuffer; // atomic swap: active state changes only after index build completes
+      applyListingsBrowserFilter(true);
+    };
+    const initListingsBrowser = ()=>{
+      if (!$("#frontListingsGrid")) return;
+      $("#frontListingsSearch")?.addEventListener("input", ()=>{
+        clearTimeout(listingsBrowserSearchTimer);
+        listingsBrowserSearchTimer = setTimeout(()=>{
+          applyListingsBrowserFilter(true);
+        }, LISTINGS_BROWSER_SEARCH_DEBOUNCE_MS);
+      });
+      $("#frontListingsPrev")?.addEventListener("click", ()=> moveListingsBrowserPage(-1));
+      $("#frontListingsNext")?.addEventListener("click", ()=> moveListingsBrowserPage(1));
+      loadListingsBrowserIndex();
+    };
 
     // Lead form: uses backend when configured, otherwise queues and falls back to pre-filled email
     $("#leadForm").addEventListener("submit", async (e)=>{
@@ -1726,6 +2203,7 @@ Referrer: ${alert.referrer || "(direct)"}`;
     });
     initializeGoogleAuth();
     refreshAuthUi();
+    initListingsBrowser();
     flushQueuedLeads();
     flushQueuedAlertSubscriptions();
     window.addEventListener("online", ()=>{

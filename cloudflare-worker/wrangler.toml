@@ -1,0 +1,17 @@
+name = "ricky-website-leads"
+main = "src/worker.js"
+compatibility_date = "2026-06-05"
+
+[vars]
+GITHUB_OWNER = "RickiKohliRealty"
+GITHUB_REPO = "RickiKohliRealty.github.io"
+ALLOWED_ORIGINS = "https://rickikohlirealty.github.io"
+GOOGLE_CLIENT_ID = "265571946126-stb48gav8hr4k1qf2n1bd2thdhmt0b3v.apps.googleusercontent.com"
+MANAGER_EMAILS = "rkohli09@outlook.com,kohli.basketball.24@hotmail.com"
+ALERT_FROM_EMAIL = "kohli.basketball.24@hotmail.com"
+LISTING_FEED_URL = ""
+ALERT_AUTOMATION_ENABLED = "true"
+ALERT_MAX_PER_EMAIL = "8"
+
+[triggers]
+crons = ["0 */6 * * *"]

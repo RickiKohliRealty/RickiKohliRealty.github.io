@@ -439,15 +439,66 @@
       cursor:pointer;
     }
     .overlayClose:hover{ background: rgba(255,255,255,.08); }
-    .listingBrowserBar{
+    #frontpage-listings-browser{
+      border-color: rgba(212,168,67,.28);
+      background:
+        radial-gradient(120% 95% at 100% 0%, rgba(232,160,34,.12) 0%, rgba(232,160,34,0) 58%),
+        radial-gradient(130% 120% at 0% 100%, rgba(75,143,204,.14) 0%, rgba(75,143,204,0) 62%),
+        linear-gradient(180deg, rgba(17,20,27,.96), rgba(9,12,17,.96));
+      box-shadow:
+        0 28px 70px rgba(0,0,0,.50),
+        0 0 0 1px rgba(212,168,67,.08) inset;
+    }
+    #frontpage-listings-browser:before{
+      opacity:.85;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.08), transparent 42%, rgba(0,0,0,.16)),
+        linear-gradient(90deg, rgba(212,168,67,.22), rgba(212,168,67,0) 40%);
+      mix-blend-mode: screen;
+    }
+    #frontpage-listings-browser h3{
+      letter-spacing:-.3px;
+      text-shadow: 0 8px 22px rgba(0,0,0,.35);
+    }
+    #frontpage-listings-browser .hSub{
+      color:#bac6e2;
+      max-width: 76ch;
+    }
+    #frontpage-listings-browser input[type="search"]{
+      background: linear-gradient(180deg, rgba(13,17,24,.9), rgba(10,13,18,.92));
+      border-color: rgba(232,160,34,.22);
+      color:#f3f7ff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    #frontpage-listings-browser input[type="search"]:focus{
+      border-color: rgba(232,160,34,.56);
+      box-shadow:
+        0 0 0 2px rgba(232,160,34,.16),
+        0 0 0 6px rgba(232,160,34,.06);
+    }
+    #frontpage-listings-browser input[type="search"]::placeholder{
+      color: rgba(189,201,228,.62);
+    }
+    #frontpage-listings-browser .listingBrowserBar{
       display:grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap:12px;
       margin-top:14px;
       align-items:center;
     }
+    #frontpage-listings-browser .listingBrowserBar .btn{
+      border-color: rgba(212,168,67,.34);
+      background: linear-gradient(135deg, rgba(212,168,67,.22), rgba(212,168,67,.10));
+      color: rgba(255,239,199,.98);
+      box-shadow: 0 14px 28px rgba(0,0,0,.30);
+    }
+    #frontpage-listings-browser .listingBrowserBar .btn:hover{
+      border-color: rgba(232,160,34,.62);
+      background: linear-gradient(135deg, rgba(232,160,34,.34), rgba(232,160,34,.16));
+      color:#fff5db;
+    }
     @media (max-width: 760px){
-      .listingBrowserBar{grid-template-columns:1fr;}
+      #frontpage-listings-browser .listingBrowserBar{grid-template-columns:1fr;}
     }
     .listingBrowserGrid{
       margin-top:14px;
@@ -459,30 +510,63 @@
       .listingBrowserGrid{grid-template-columns:1fr;}
     }
     .listingBrowserCard{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.02);
+      border:1px solid rgba(212,168,67,.22);
+      background: linear-gradient(180deg, rgba(22,26,34,.96), rgba(13,16,22,.97));
       border-radius:16px;
       padding:14px;
       display:grid;
       gap:8px;
       min-height:170px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 16px 36px rgba(0,0,0,.32);
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .listingBrowserCard:before{
+      content:"";
+      position:absolute;
+      left:0; right:0; top:0;
+      height:2px;
+      background: linear-gradient(90deg, rgba(212,168,67,.95), rgba(212,168,67,.24), rgba(75,143,204,.65));
+      opacity:.92;
+    }
+    .listingBrowserCard:after{
+      content:"";
+      position:absolute;
+      inset:-40% auto auto -15%;
+      width:180px;
+      height:180px;
+      background: radial-gradient(circle, rgba(212,168,67,.12), rgba(212,168,67,0) 70%);
+      pointer-events:none;
+    }
+    .listingBrowserCard:hover{
+      transform: translateY(-2px);
+      border-color: rgba(232,160,34,.54);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.06),
+        0 22px 50px rgba(0,0,0,.44),
+        0 0 0 1px rgba(232,160,34,.14);
     }
     .listingBrowserCard h4{
       margin:0;
       font-size:17px;
       letter-spacing:-.2px;
-      color:var(--text);
+      color:#f4f7ff;
+      text-shadow: 0 3px 14px rgba(0,0,0,.30);
     }
     .listingBrowserMeta{
-      color:var(--muted);
+      color:#b9c5e0;
       font-size:12.5px;
       line-height:1.4;
     }
     .listingBrowserPrice{
       font-weight:900;
-      font-size:18px;
-      letter-spacing:-.3px;
-      color: rgba(255,236,182,.97);
+      font-size:20px;
+      letter-spacing:-.35px;
+      color:#f6d58a;
+      text-shadow: 0 0 22px rgba(212,168,67,.18);
     }
     .listingBrowserControls{
       margin-top:12px;
@@ -492,20 +576,47 @@
       gap:10px;
       flex-wrap:wrap;
     }
+    #frontListingsCount{
+      border:1px solid rgba(75,143,204,.30);
+      background: linear-gradient(135deg, rgba(75,143,204,.16), rgba(75,143,204,.04));
+      border-radius: 999px;
+      color:#d4e3ff;
+      padding:8px 12px;
+      font-size:12.5px;
+      letter-spacing:.01em;
+    }
     .listingBrowserPager{
       display:flex;
       align-items:center;
       gap:8px;
       flex-wrap:wrap;
     }
+    .listingBrowserPager .btn{
+      border-color: rgba(212,168,67,.32);
+      background: rgba(255,255,255,.03);
+      color:#fff0cb;
+    }
+    .listingBrowserPager .btn:hover{
+      border-color: rgba(232,160,34,.56);
+      background: rgba(232,160,34,.14);
+    }
+    .listingBrowserPager .btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform:none;
+      background: rgba(255,255,255,.015);
+      border-color: rgba(255,255,255,.10);
+      color: rgba(196,205,224,.58);
+    }
     .listingBrowserEmpty{
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid rgba(212,168,67,.22);
       border-radius:16px;
-      background: rgba(255,255,255,.02);
-      color:var(--muted);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      color:#c7d2ec;
       padding:16px;
       text-align:center;
       grid-column:1 / -1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
     }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>

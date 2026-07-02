@@ -1,9 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Best Deals — RKR | Ricki Kohli Realty</title>
+<title>Victoria, BC Homes for Sale | RKR | Ricki Kohli Realty</title>
+<meta name="description" content="Browse homes for sale in Victoria, BC. Filter by beds, property type, and price to find your next home with Ricki Kohli Realty." />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" id="canonicalDeals" href="https://rickikohlirealty.github.io/deals.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Victoria, BC Homes for Sale | RKR" />
+<meta property="og:description" content="Search current homes for sale in Victoria, BC and request a matched shortlist." />
+<meta property="og:url" content="https://rickikohlirealty.github.io/deals.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json" id="schemaDeals">{}</script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Albert+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -613,7 +622,7 @@ body { background: var(--bg); color: var(--ink); font-family: var(--sans); }
 <header class="header">
   <div class="logo">RKR | Ricki Kohli <span>Realty</span></div>
   <div class="header-cta">
-    <a class="btn-secondary" href="/">Dashboard (Internal)</a>
+    <a class="btn-secondary" href="index.html">Home</a>
     <button class="btn-primary" onclick="openModal()">Book a Call</button>
   </div>
 </header>
@@ -739,6 +748,11 @@ body { background: var(--bg); color: var(--ink); font-family: var(--sans); }
           <label class="form-label">Notes / Questions</label>
           <input class="form-input" id="f-notes" type="text" placeholder="Looking for 3 bed, rural preferred…">
         </div>
+        <input class="form-input" id="f-website" type="text" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true">
+        <label class="form-checkbox">
+          <input type="checkbox" id="f-consent" checked>
+          <span>I consent to being contacted about buying opportunities.</span>
+        </label>
         <button class="submit-btn" onclick="submitLead()">Get In Touch →</button>
       </div>
       <div class="success-msg" id="success-msg">
@@ -752,6 +766,41 @@ body { background: var(--bg); color: var(--ink); font-family: var(--sans); }
 
 <script>
 const API = '';
+const LEAD_ENDPOINT = 'https://ricky-website-leads.ricky-website-leads.workers.dev';
+const CONTACT_EMAIL = 'rkohli09@outlook.com';
+const SITE_URL = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://rickikohlirealty.github.io';
+const canonicalDeals = document.getElementById('canonicalDeals');
+if (canonicalDeals) canonicalDeals.href = `${SITE_URL}/deals.html`;
+const ogDealsUrl = document.querySelector('meta[property="og:url"]');
+if (ogDealsUrl) ogDealsUrl.setAttribute('content', `${SITE_URL}/deals.html`);
+const dealsSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Victoria, BC Homes for Sale',
+  url: `${SITE_URL}/deals.html`,
+  description: 'Search homes for sale in Victoria, BC with filters for budget, beds, and property type.',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'RKR | Ricki Kohli Realty',
+    url: SITE_URL
+  }
+};
+const schemaDealsEl = document.getElementById('schemaDeals');
+if (schemaDealsEl) schemaDealsEl.textContent = JSON.stringify(dealsSchema);
+const emailLooksValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim().toLowerCase());
+const sanitizeText = (value, max = 600) => String(value || '').replace(/\s+/g, ' ').trim().slice(0, max);
+const buildMailtoBody = (lead) =>
+`Name: ${lead.name}
+Email: ${lead.email}
+Phone: ${lead.phone || '(not provided)'}
+Type: ${lead.type}
+Target Area: ${lead.targetArea || '(not provided)'}
+Budget Max: ${lead.budgetMax ? '$' + Number(lead.budgetMax).toLocaleString() : '(not provided)'}
+Timeline: ${lead.timeline || '(not provided)'}
+
+Message:
+${lead.message || '(none)'}
+`;
 let currentSort = 'deal_score';
 let currentSearch = '';
 
@@ -800,7 +849,7 @@ function renderCards(listings) {
   }
 
   grid.innerHTML = listings.map(l => `
-    <div class="card" onclick="window.open('/listing/${l.listing_id}','_self')">
+    <div class="card" onclick="window.open('listing_detail.html?id=${encodeURIComponent(l.listing_id)}','_self')">
       <div class="card-img">
         <div class="card-badges">${getBadges(l)}</div>
         ${l.photos && l.photos.length ? `<img src="${l.photos[0]}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">` : '🏠'}
@@ -873,39 +922,65 @@ function closeModal() {
 }
 
 async function submitLead() {
-  const name = document.getElementById('f-name').value.trim();
+  const name = sanitizeText(document.getElementById('f-name').value, 120);
+  const email = sanitizeText(document.getElementById('f-email').value, 254).toLowerCase();
+  const phone = sanitizeText(document.getElementById('f-phone').value, 40);
+  const consent = document.getElementById('f-consent').checked;
+  const honeypot = sanitizeText(document.getElementById('f-website').value, 120);
   if (!name) { alert('Please enter your name.'); return; }
+  if (!email || !emailLooksValid(email)) { alert('Please enter a valid email.'); return; }
+  if (!consent) { alert('Please confirm consent to be contacted.'); return; }
+  if (honeypot) { alert('Submission blocked.'); return; }
 
-  const area = document.getElementById('f-area').value.trim();
+  const area = sanitizeText(document.getElementById('f-area').value, 140);
   const budget = parseFloat(document.getElementById('f-budget').value) || null;
+  const timeline = document.getElementById('f-timeline').value;
+  const notes = sanitizeText(document.getElementById('f-notes').value, 1200);
+  const preapproved = document.getElementById('f-preapproved').checked;
+  const noteParts = [];
+  if (notes) noteParts.push(notes);
+  noteParts.push(`Mortgage pre-approved: ${preapproved ? 'Yes' : 'No'}`);
 
   const payload = {
     name,
-    phone: document.getElementById('f-phone').value,
-    email: document.getElementById('f-email').value,
-    budget_max: budget,
-    target_areas: area ? [area] : [],
-    timeline: document.getElementById('f-timeline').value,
-    preapproved: document.getElementById('f-preapproved').checked,
-    notes: document.getElementById('f-notes').value,
-    source: 'website',
+    phone,
+    email,
+    type: 'Buyer Inquiry — Deals Page',
+    targetArea: area,
+    budgetMax: budget,
+    timeline,
+    message: noteParts.join('\n'),
+    consentToContact: true,
+    honeypot,
+    source: 'deals-page',
+    landingPage: window.location.href,
+    submittedAt: new Date().toISOString()
   };
 
   try {
-    const r = await fetch(API + '/api/leads', {
+    const r = await fetch(LEAD_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (r.ok) {
-      document.getElementById('lead-form').style.display = 'none';
-      document.getElementById('success-msg').style.display = 'block';
-    }
+    if (!r.ok) throw new Error('lead submission failed');
+    document.getElementById('lead-form').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'block';
   } catch(e) {
-    alert('Submission error — please call us directly.');
+    const mailto = `mailto:${encodeURIComponent(CONTACT_EMAIL)}?subject=${encodeURIComponent('New Lead — Deals Page')}&body=${encodeURIComponent(buildMailtoBody(payload))}`;
+    window.location.href = mailto;
   }
 }
 
+const initialSearch = new URLSearchParams(window.location.search).get('q');
+if (initialSearch) {
+  const q = initialSearch.trim();
+  if (q) {
+    document.getElementById('search-input').value = q;
+    currentSearch = q;
+    document.getElementById('results-title').textContent = `Results for \"${q}\"`;
+  }
+}
 loadListings();
 </script>
 </body>

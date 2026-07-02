@@ -9,11 +9,25 @@ const json = (body, status = 200, origin = "*") =>
     }
   });
 
+const parseAllowedOrigins = (env) =>
+  String(env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+const isOriginAllowed = (request, env) => {
+  const allowedOrigins = parseAllowedOrigins(env);
+  if (!allowedOrigins.length) return true;
+  const requestOrigin = request.headers.get("Origin");
+  if (!requestOrigin) return true;
+  return allowedOrigins.includes(requestOrigin);
+};
+
 const getOrigin = (request, env) => {
-  const configured = (env.ALLOWED_ORIGIN || "").trim();
-  if (!configured) return "*";
+  const allowedOrigins = parseAllowedOrigins(env);
+  if (!allowedOrigins.length) return "*";
   const requestOrigin = request.headers.get("Origin") || "";
-  return requestOrigin === configured ? configured : configured;
+  return allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0];
 };
 
 const parseManagerEmails = (rawValue) =>
@@ -22,13 +36,57 @@ const parseManagerEmails = (rawValue) =>
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);
 
+const normalizeWhitespace = (value) => String(value || "").replace(/\s+/g, " ").trim();
+const clampText = (value, max = 600) => normalizeWhitespace(value).slice(0, max);
+const normalizeEmail = (value) => clampText(value, 254).toLowerCase();
+const normalizePhone = (value) => clampText(value, 40).replace(/[^\d+()\-\s]/g, "");
+const toBoolean = (value) => ["1", "true", "yes", "on"].includes(String(value || "").trim().toLowerCase());
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const sanitizeLead = (lead) => {
+  const budgetValue = Number(lead?.budgetMax);
+  return {
+    name: clampText(lead?.name, 120),
+    email: normalizeEmail(lead?.email),
+    phone: normalizePhone(lead?.phone),
+    type: clampText(lead?.type, 80),
+    message: clampText(lead?.message, 2500),
+    targetArea: clampText(lead?.targetArea, 140),
+    timeline: clampText(lead?.timeline, 80),
+    budgetMax: Number.isFinite(budgetValue) && budgetValue > 0 ? Math.round(budgetValue) : null,
+    consentToContact: toBoolean(lead?.consentToContact),
+    source: clampText(lead?.source || "website", 80),
+    landingPage: clampText(lead?.landingPage, 300),
+    utmSource: clampText(lead?.utmSource, 120),
+    utmMedium: clampText(lead?.utmMedium, 120),
+    utmCampaign: clampText(lead?.utmCampaign, 120),
+    utmTerm: clampText(lead?.utmTerm, 120),
+    utmContent: clampText(lead?.utmContent, 120),
+    referrer: clampText(lead?.referrer, 300),
+    firstTouchAt: clampText(lead?.firstTouchAt, 40),
+    firstTouchPage: clampText(lead?.firstTouchPage, 300),
+    firstUtmSource: clampText(lead?.firstUtmSource, 120),
+    firstUtmMedium: clampText(lead?.firstUtmMedium, 120),
+    firstUtmCampaign: clampText(lead?.firstUtmCampaign, 120),
+    submittedAt: clampText(lead?.submittedAt, 40) || new Date().toISOString(),
+    honeypot: clampText(lead?.honeypot || lead?.website || "", 120)
+  };
+};
+
 const validateLead = (lead) => {
   if (!lead || typeof lead !== "object") return "Missing lead payload.";
-  if (!lead.name || !String(lead.name).trim()) return "Name is required.";
-  if (!lead.email || !String(lead.email).trim()) return "Email is required.";
-  if (!lead.type || !String(lead.type).trim()) return "Lead type is required.";
-  return null;
+  if (lead.honeypot) return "Submission rejected.";
+  if (!lead.name || lead.name.length < 2) return "Name is required.";
+  if (!lead.email || !EMAIL_REGEX.test(lead.email)) return "A valid email is required.";
+  if (!lead.type || lead.type.length < 2) return "Lead type is required.";
+  if (lead.phone && lead.phone.replace(/\D/g, "").length < 7) return "Phone number appears invalid.";
+  if (!lead.consentToContact) return "Contact consent is required.";
+  return "";
 };
+
+const formatBudget = (budgetMax) => (budgetMax ? `$${Number(budgetMax).toLocaleString()}` : "(not provided)");
+const createLeadFingerprint = (lead) =>
+  [lead.email, lead.phone || "no-phone", lead.type, lead.source].join("|").toLowerCase();
 
 const createIssueBody = (lead) => {
   const lines = [
@@ -38,12 +96,29 @@ const createIssueBody = (lead) => {
     `- **Email:** ${lead.email}`,
     `- **Phone:** ${lead.phone || "(not provided)"}`,
     `- **Type:** ${lead.type}`,
+    `- **Target area:** ${lead.targetArea || "(not provided)"}`,
+    `- **Budget max:** ${formatBudget(lead.budgetMax)}`,
+    `- **Timeline:** ${lead.timeline || "(not provided)"}`,
+    `- **Consent to contact:** ${lead.consentToContact ? "Yes" : "No"}`,
     `- **Submitted at:** ${lead.submittedAt || new Date().toISOString()}`,
+    `- **Landing page:** ${lead.landingPage || "(not provided)"}`,
+    `- **UTM source:** ${lead.utmSource || "(none)"}`,
+    `- **UTM medium:** ${lead.utmMedium || "(none)"}`,
+    `- **UTM campaign:** ${lead.utmCampaign || "(none)"}`,
+    `- **UTM term:** ${lead.utmTerm || "(none)"}`,
+    `- **UTM content:** ${lead.utmContent || "(none)"}`,
+    `- **Referrer:** ${lead.referrer || "(direct)"}`,
+    `- **First touch at:** ${lead.firstTouchAt || "(not provided)"}`,
+    `- **First touch page:** ${lead.firstTouchPage || "(not provided)"}`,
+    `- **First UTM source:** ${lead.firstUtmSource || "(none)"}`,
+    `- **First UTM medium:** ${lead.firstUtmMedium || "(none)"}`,
+    `- **First UTM campaign:** ${lead.firstUtmCampaign || "(none)"}`,
     "",
     "### Message",
     lead.message || "(none)",
     "",
-    `Source: ${lead.source || "website"}`
+    `Source: ${lead.source || "website"}`,
+    `Lead fingerprint: ${createLeadFingerprint(lead)}`
   ];
   return lines.join("\n");
 };
@@ -73,15 +148,31 @@ const parseLeadIssue = (issue) => {
     email: extractLineField(body, "Email"),
     phone: extractLineField(body, "Phone"),
     type: extractLineField(body, "Type"),
+    targetArea: extractLineField(body, "Target area"),
+    budgetMax: extractLineField(body, "Budget max"),
+    timeline: extractLineField(body, "Timeline"),
+    consentToContact: extractLineField(body, "Consent to contact"),
     submittedAt: extractLineField(body, "Submitted at"),
+    landingPage: extractLineField(body, "Landing page"),
+    utmSource: extractLineField(body, "UTM source"),
+    utmMedium: extractLineField(body, "UTM medium"),
+    utmCampaign: extractLineField(body, "UTM campaign"),
+    utmTerm: extractLineField(body, "UTM term"),
+    utmContent: extractLineField(body, "UTM content"),
+    referrer: extractLineField(body, "Referrer"),
+    firstTouchAt: extractLineField(body, "First touch at"),
+    firstTouchPage: extractLineField(body, "First touch page"),
+    firstUtmSource: extractLineField(body, "First UTM source"),
+    firstUtmMedium: extractLineField(body, "First UTM medium"),
+    firstUtmCampaign: extractLineField(body, "First UTM campaign"),
     message: extractMessage(body),
     source: (body.match(/Source:\s*(.*)/) || [])[1] || ""
   };
 };
 
 const githubHeaders = (env) => ({
-  "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
-  "Accept": "application/vnd.github+json",
+  Authorization: `Bearer ${env.GITHUB_TOKEN}`,
+  Accept: "application/vnd.github+json",
   "X-GitHub-Api-Version": "2022-11-28",
   "Content-Type": "application/json",
   "User-Agent": "ricky-website-lead-worker"
@@ -133,12 +224,48 @@ const listLeadIssues = async (env) => {
   return issues.filter((issue) => !issue.pull_request).map(parseLeadIssue);
 };
 
+const findRecentDuplicateLead = async (env, fingerprint) => {
+  const labels = encodeURIComponent("lead,website");
+  const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/issues?state=all&labels=${labels}&per_page=30&sort=created&direction=desc`;
+  const response = await fetch(apiUrl, { headers: githubHeaders(env) });
+  if (!response.ok) return null;
+
+  const issues = await response.json();
+  const cutoff = Date.now() - 12 * 60 * 60 * 1000;
+  const marker = `Lead fingerprint: ${fingerprint}`;
+  return (
+    issues.find((issue) => {
+      if (issue.pull_request) return false;
+      if (!String(issue.body || "").includes(marker)) return false;
+      const createdAtMs = new Date(issue.created_at).getTime();
+      return Number.isFinite(createdAtMs) && createdAtMs >= cutoff;
+    }) || null
+  );
+};
+
+const deriveLeadLabels = (lead) => {
+  const labels = new Set(["lead", "website"]);
+  const lowerType = lead.type.toLowerCase();
+  if (lowerType.includes("investor")) labels.add("investor-lead");
+  if (lowerType.includes("buyer")) labels.add("buyer-lead");
+  if (lowerType.includes("seller")) labels.add("seller-lead");
+  if (lead.source === "guest-overlay") labels.add("overlay-lead");
+  return [...labels];
+};
+
 export default {
   async fetch(request, env) {
     const origin = getOrigin(request, env);
 
     if (request.method === "OPTIONS") {
+      if (!isOriginAllowed(request, env)) {
+        return json({ ok: false, error: "Origin not allowed." }, 403, origin);
+      }
       return json({ ok: true }, 200, origin);
+    }
+
+    if (!isOriginAllowed(request, env)) {
+      return json({ ok: false, error: "Origin not allowed." }, 403, origin);
     }
 
     const configError = ensureWorkerConfig(env);
@@ -176,13 +303,33 @@ export default {
       return json({ ok: false, error: "Invalid JSON payload." }, 400, origin);
     }
 
-    const validationError = validateLead(payload);
+    const lead = sanitizeLead(payload);
+    const validationError = validateLead(lead);
     if (validationError) {
       return json({ ok: false, error: validationError }, 400, origin);
     }
 
-    const issueTitle = `Lead: ${payload.type} — ${payload.name}`;
-    const issueBody = createIssueBody(payload);
+    const leadFingerprint = createLeadFingerprint(lead);
+    try {
+      const duplicate = await findRecentDuplicateLead(env, leadFingerprint);
+      if (duplicate) {
+        return json(
+          {
+            ok: true,
+            duplicate: true,
+            issueUrl: duplicate.html_url,
+            issueNumber: duplicate.number
+          },
+          200,
+          origin
+        );
+      }
+    } catch {
+      // Ignore duplicate-check failures to avoid blocking lead capture.
+    }
+
+    const issueTitle = `Lead: ${lead.type} — ${lead.name}`;
+    const issueBody = createIssueBody(lead);
     const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/issues`;
 
     const ghResponse = await fetch(apiUrl, {
@@ -191,7 +338,7 @@ export default {
       body: JSON.stringify({
         title: issueTitle,
         body: issueBody,
-        labels: ["lead", "website"]
+        labels: deriveLeadLabels(lead)
       })
     });
 

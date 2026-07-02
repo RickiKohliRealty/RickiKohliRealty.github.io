@@ -1,9 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Property Details — RKR</title>
+<title>Property Details | Victoria, BC Homes for Sale | RKR</title>
+<meta name="description" content="View property details, pricing history, and request showing information for homes in Victoria, BC." />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" id="canonicalListing" href="https://rickikohlirealty.github.io/listing_detail.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Property Details | Victoria, BC Homes for Sale" />
+<meta property="og:description" content="See full property details and connect with Ricki Kohli Realty for a showing." />
+<meta property="og:url" content="https://rickikohlirealty.github.io/listing_detail.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json" id="schemaListing">{}</script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Albert+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -169,7 +178,7 @@ body { background: var(--bg); color: var(--ink); font-family: var(--sans); }
 <header class="header">
   <div class="logo">RKR | Ricki Kohli <span>Realty</span></div>
   <div style="display:flex;gap:12px;align-items:center">
-    <a class="back-btn" href="/deals">← All Listings</a>
+    <a class="back-btn" href="deals.html">← All Listings</a>
     <button class="cta-btn" onclick="scrollToForm()">Request Info</button>
   </div>
 </header>
@@ -180,10 +189,93 @@ body { background: var(--bg); color: var(--ink); font-family: var(--sans); }
 
 <script>
 const API = '';
+const LEAD_ENDPOINT = 'https://ricky-website-leads.ricky-website-leads.workers.dev';
+const CONTACT_EMAIL = 'rkohli09@outlook.com';
+const SITE_URL = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://rickikohlirealty.github.io';
+const canonicalListingEl = document.getElementById('canonicalListing');
+const ogListingUrlEl = document.querySelector('meta[property="og:url"]');
+const ogListingTitleEl = document.querySelector('meta[property="og:title"]');
+const ogListingDescriptionEl = document.querySelector('meta[property="og:description"]');
+const metaDescriptionEl = document.querySelector('meta[name="description"]');
+const schemaListingEl = document.getElementById('schemaListing');
+const emailLooksValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim().toLowerCase());
+const sanitizeText = (value, max = 600) => String(value || '').replace(/\s+/g, ' ').trim().slice(0, max);
+const buildMailtoBody = (lead) =>
+`Name: ${lead.name}
+Email: ${lead.email}
+Phone: ${lead.phone || '(not provided)'}
+Type: ${lead.type}
+
+Message:
+${lead.message || '(none)'}
+`;
 
 function getListingId() {
-  const parts = window.location.pathname.split('/');
-  return parts[parts.length - 1];
+  const queryId = new URLSearchParams(window.location.search).get('id');
+  if (queryId) return queryId;
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  return parts[parts.length - 1] || '';
+}
+
+function setListingSeo(listing, listingId) {
+  const resolvedId = listingId || getListingId() || '';
+  const canonicalUrl = resolvedId
+    ? `${SITE_URL}/listing_detail.html?id=${encodeURIComponent(resolvedId)}`
+    : `${SITE_URL}/listing_detail.html`;
+  if (canonicalListingEl) canonicalListingEl.href = canonicalUrl;
+  if (ogListingUrlEl) ogListingUrlEl.setAttribute('content', canonicalUrl);
+  if (!listing) {
+    if (schemaListingEl) {
+      schemaListingEl.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: 'Property Details',
+        url: canonicalUrl
+      });
+    }
+    return;
+  }
+
+  const city = listing.city || 'Victoria';
+  const address = listing.address || 'Property';
+  const priceText = listing.list_price ? `$${Number(listing.list_price).toLocaleString()}` : 'Price on request';
+  const description = `${address}, ${city} BC home for sale. ${priceText}. Request showing details with Ricki Kohli Realty.`;
+  document.title = `${address} | Home for Sale in ${city}, BC | RKR`;
+  if (metaDescriptionEl) metaDescriptionEl.setAttribute('content', description);
+  if (ogListingTitleEl) ogListingTitleEl.setAttribute('content', `${address} | Home for Sale in ${city}, BC`);
+  if (ogListingDescriptionEl) ogListingDescriptionEl.setAttribute('content', description);
+
+  if (schemaListingEl) {
+    const listingSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Residence',
+      name: address,
+      url: canonicalUrl,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: listing.address || '',
+        addressLocality: listing.city || '',
+        addressRegion: listing.province || 'BC',
+        postalCode: listing.postal_code || '',
+        addressCountry: 'CA'
+      },
+      numberOfRooms: listing.beds || undefined,
+      numberOfBathroomsTotal: listing.baths || undefined,
+      floorSize: listing.sqft ? {
+        '@type': 'QuantitativeValue',
+        value: listing.sqft,
+        unitCode: 'FTK'
+      } : undefined,
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'CAD',
+        price: listing.list_price || undefined,
+        availability: 'https://schema.org/InStock',
+        url: canonicalUrl
+      }
+    };
+    schemaListingEl.textContent = JSON.stringify(listingSchema);
+  }
 }
 
 function fmtPrice(n) {
@@ -294,8 +386,7 @@ function renderPriceHistory(history) {
 function render(listing) {
   const dom = getDom(listing.date_listed);
   const exp = listing.deal_explanation || {};
-
-  document.title = `${listing.address} — RKR`;
+  setListingSeo(listing, getListingId());
 
   document.getElementById('content-area').innerHTML = `
     <div class="photo-area">
@@ -355,6 +446,11 @@ function render(listing) {
                 <label class="form-label">Message</label>
                 <input class="form-input" id="f-notes" type="text" placeholder="I'd like to book a showing…">
               </div>
+              <input class="form-input" id="f-website" type="text" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true">
+              <label style="display:flex; align-items:flex-start; gap:10px; margin-bottom:14px; font-size:12.5px; color:var(--ink2); line-height:1.45;">
+                <input type="checkbox" id="f-consent" checked style="width:auto; margin-top:2px;">
+                I consent to being contacted about this property.
+              </label>
               <button class="submit-btn" onclick="submitLead()">Request Info →</button>
             </div>
             <div class="success-msg" id="success-msg">
@@ -375,30 +471,42 @@ function render(listing) {
 }
 
 async function submitLead() {
-  const name = document.getElementById('f-name').value.trim();
+  const name = sanitizeText(document.getElementById('f-name').value, 120);
+  const email = sanitizeText(document.getElementById('f-email').value, 254).toLowerCase();
+  const phone = sanitizeText(document.getElementById('f-phone').value, 40);
+  const honeypot = sanitizeText(document.getElementById('f-website').value, 120);
+  const consent = document.getElementById('f-consent').checked;
   if (!name) { alert('Please enter your name.'); return; }
+  if (!email || !emailLooksValid(email)) { alert('Please enter a valid email.'); return; }
+  if (!consent) { alert('Please confirm consent to be contacted.'); return; }
+  if (honeypot) { alert('Submission blocked.'); return; }
 
   const listingId = getListingId();
+  const notes = sanitizeText(document.getElementById('f-notes').value, 1200);
   const payload = {
     name,
-    phone: document.getElementById('f-phone').value,
-    email: document.getElementById('f-email').value,
-    notes: `Inquiry on listing ${listingId}: ${document.getElementById('f-notes').value}`,
+    phone,
+    email,
+    type: `Property Inquiry — Listing ${listingId || 'Unknown'}`,
+    message: `Inquiry on listing ${listingId || 'Unknown'}: ${notes || '(no message)'}`,
+    consentToContact: true,
+    honeypot,
     source: 'listing-detail',
-    intent: 'buying',
+    landingPage: window.location.href,
+    submittedAt: new Date().toISOString()
   };
 
   try {
-    const r = await fetch(API + '/api/leads', {
+    const r = await fetch(LEAD_ENDPOINT, {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(payload),
     });
-    if (r.ok) {
-      document.getElementById('contact-form').style.display = 'none';
-      document.getElementById('success-msg').style.display = 'block';
-    }
+    if (!r.ok) throw new Error('lead submission failed');
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'block';
   } catch(e) {
-    alert('Submission error — please call us directly.');
+    const mailto = `mailto:${encodeURIComponent(CONTACT_EMAIL)}?subject=${encodeURIComponent('Property Inquiry')}&body=${encodeURIComponent(buildMailtoBody(payload))}`;
+    window.location.href = mailto;
   }
 }
 
@@ -419,6 +527,7 @@ async function load() {
       '<div class="loading">Listing not found or API offline.</div>';
   }
 }
+setListingSeo(null, getListingId());
 
 load();
 </script>

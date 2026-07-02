@@ -10,7 +10,7 @@ Cloudflare Worker + GitHub API setup
    Edit:
    - GITHUB_OWNER
    - GITHUB_REPO
-   - ALLOWED_ORIGIN
+   - ALLOWED_ORIGINS (comma-separated allowed browser origins)
    - GOOGLE_CLIENT_ID
    - MANAGER_EMAILS (comma-separated)
 
@@ -34,6 +34,7 @@ Cloudflare Worker + GitHub API setup
    RICKY.inquiryReadEndpoint = "https://YOUR_WORKER_SUBDOMAIN.workers.dev/inquiries"
    RICKY.googleClientId = "YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com"
    RICKY.managerEmails = ["you@example.com"]
+   Note: For local file testing only, include "null" in ALLOWED_ORIGINS; remove it for stricter production CORS.
 
 7) Test from browser:
    a) Open website in an incognito window.
@@ -41,5 +42,6 @@ Cloudflare Worker + GitHub API setup
    b) Submit overlay form and verify a new GitHub issue is created under labels:
    - lead
    - website
+   - investor-lead / buyer-lead / seller-lead (as applicable)
    c) Sign in with Google and open Inquiries section.
       - Linked inquiries should load from Worker /inquiries endpoint.

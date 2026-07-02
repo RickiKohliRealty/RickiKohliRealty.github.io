@@ -109,6 +109,16 @@
     flex-direction: column;
     justify-content: space-between;
   }
+  .bc-front-hs .main-col::before {
+    content: '';
+    width: 150px;
+    height: 44px;
+    margin: 0 auto 4px;
+    background: url('ricki_brand_emblem.svg') center / contain no-repeat;
+    opacity: 0.97;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+    display: block;
+  }
   .bc-top {}
   .bc-name {
     font-family: 'Cormorant Garamond', serif;
@@ -174,6 +184,35 @@
   .divider-gold { width: 40px; height: 1px; background: #C9A84C; margin: 12px 0; opacity: 0.6; }
   .bc-front-nhs .bc-contact { font-family: 'Montserrat', sans-serif; font-size: 8.5px; color: rgba(245,240,232,0.7); letter-spacing: 0.04em; line-height: 1.9; }
   .bc-front-nhs .bc-brokerage { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; color: #C9A84C; letter-spacing: 0.1em; margin-top: 4px; }
+  .bc-front-nhs > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding-right: 72px;
+    box-sizing: border-box;
+  }
+  .bc-front-nhs > div:first-of-type::before {
+    content: '';
+    width: 220px;
+    height: 52px;
+    margin: 0 auto 6px;
+    background: url('ricki_brand_emblem.svg') center / contain no-repeat;
+    opacity: 0.97;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+    display: block;
+  }
+  .bc-front-nhs .bc-name,
+  .bc-front-nhs .bc-title,
+  .bc-front-nhs .bc-tagline {
+    text-align: center;
+    width: 100%;
+  }
+  .bc-front-nhs .divider-gold {
+    margin-left: auto;
+    margin-right: auto;
+  }
 
   /* BACK */
   .bc-back {

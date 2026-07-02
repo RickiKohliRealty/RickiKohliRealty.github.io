@@ -3,18 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RKR | Ricki Kohli Realty — Investor-Focused Real Estate in Victoria, BC</title>
-  <meta name="description" content="RKR | Ricki Kohli Realty in Victoria, BC. Investor-focused real estate guidance for buyers, sellers, and investors. Book a strategy call or view business cards." />
+  <title>Homes for Sale in Victoria, BC | Ricki Kohli Realty</title>
+  <meta name="description" content="Search homes for sale in Victoria, BC with Ricki Kohli Realty. Get matched listings, fast local guidance, and same-day follow-up for buyers, sellers, and investors." />
+  <meta name="keywords" content="homes for sale Victoria BC, Victoria real estate agent, houses for sale Victoria, buy a house in Victoria BC, Victoria BC realtor" />
+  <meta name="author" content="RKR | Ricki Kohli Realty" />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" id="canonicalUrl" href="https://rickikohlirealty.github.io/" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="RKR | Ricki Kohli Realty — Victoria, BC" />
-  <meta property="og:description" content="Investor-focused real estate support for acquisitions, rentals, value-add opportunities, and motivated buyers/sellers in Victoria, BC." />
+  <meta property="og:title" content="Homes for Sale in Victoria, BC | Ricki Kohli Realty" />
+  <meta property="og:description" content="Find homes for sale in Victoria, BC and connect with a local real estate advisor for matched listings and fast support." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rickikohlirealty.github.io/" />
+  <meta property="og:site_name" content="RKR | Ricki Kohli Realty" />
+  <meta property="og:locale" content="en_CA" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Homes for Sale in Victoria, BC | Ricki Kohli Realty" />
+  <meta name="twitter:description" content="Search Victoria homes for sale and get fast local support from Ricki Kohli Realty." />
 
   <!--
     IMPORTANT (Compliance):
@@ -36,14 +44,14 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    html{scroll-behavior:smooth}
+    html{
+      scroll-behavior:smooth;
+      background-color:#070a0f;
+    }
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:
-        radial-gradient(1200px 800px at 10% 0%, rgba(212,179,91,.14), transparent 55%),
-        radial-gradient(1200px 800px at 90% 20%, rgba(130,170,255,.12), transparent 60%),
-        linear-gradient(180deg, #05070b, var(--bg) 45%, #05070b);
+      background:#070a0f;
       color:var(--text);
       overflow-x:hidden;
     }
@@ -73,7 +81,7 @@
       background: linear-gradient(135deg, rgba(255,255,255,.22), transparent);
       transform: rotate(25deg);
     }
-    .brand h1{ margin:0; font-size:14px; font-weight:900; }
+    .brand .brandTitle{ margin:0; font-size:14px; font-weight:900; }
     .brand p{ margin:0; font-size:12px; color:var(--muted); }
 
     .nav{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
@@ -194,28 +202,6 @@
       text-shadow:0 10px 26px rgba(0,0,0,.4);
       padding:0 20px;
     }
-    .cardsActions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-    .cardsPreview{
-      margin-top:14px;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:18px;
-      overflow:hidden;
-      background:#fff;
-    }
-    .cardsPreview iframe{
-      width:100%;
-      height:980px;
-      border:0;
-      display:block;
-      background:#fff;
-    }
-    @media (max-width: 960px){ .cardsPreview iframe{height:760px;} }
-    @media (max-width: 540px){ .cardsPreview iframe{height:620px;} }
 
     .name{ margin:0; font-size:18px; font-weight:950; letter-spacing:-.2px; }
     .role{ margin:4px 0 0; color: var(--muted); font-size:13px; line-height:1.4; }
@@ -354,8 +340,71 @@
       color: rgba(234,240,255,.92);
       font-size:12px;
     }
+    .overlayGate{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background: rgba(5,8,12,.78);
+      backdrop-filter: blur(5px);
+      z-index:8000;
+    }
+    .overlayGate.open{ display:flex; }
+    .overlayCard{
+      width:min(560px, 100%);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(12,17,24,.96), rgba(7,10,15,.96));
+      box-shadow: 0 28px 70px rgba(0,0,0,.55);
+      overflow:hidden;
+      position:relative;
+    }
+    .overlayCard:before{
+      content:"";
+      position:absolute;
+      top:0; left:0; right:0;
+      height:3px;
+      background: linear-gradient(90deg, #C9A84C, #F0D080, #C9A84C);
+    }
+    .overlayInner{ padding:22px; position:relative; }
+    .overlayTitle{
+      margin:0;
+      font-size:24px;
+      line-height:1.15;
+      letter-spacing:-.02em;
+    }
+    .overlaySub{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+    .overlayForm{ display:grid; gap:10px; margin-top:14px; }
+    .overlayActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+    .overlayClose{
+      position:absolute;
+      top:10px;
+      right:10px;
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      font-size:19px;
+      line-height:1;
+      cursor:pointer;
+    }
+    .overlayClose:hover{ background: rgba(255,255,255,.08); }
   </style>
-
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script type="application/ld+json" id="schemaAgent">{}</script>
 </head>
 
@@ -365,7 +414,7 @@
       <div class="brand" aria-label="Brand">
         <div class="mark" aria-hidden="true"></div>
         <div>
-          <h1>RKR | Ricki Kohli Realty</h1>
+          <p class="brandTitle">RKR | Ricki Kohli Realty</p>
           <p>Investor-Focused Real Estate · Victoria, BC</p>
         </div>
       </div>
@@ -374,16 +423,20 @@
         <a href="#investors">Investors</a>
         <a href="#services">Services</a>
         <a href="#credibility">Credibility</a>
+        <a href="#home-search">Home Search</a>
+        <a href="#areas">Areas</a>
         <a href="#victoria">Victoria Focus</a>
         <a href="#process">Process</a>
-        <a href="#cards">Cards</a>
+        <a href="#listings">Listings</a>
         <a href="#testimonials">Testimonials</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
       </nav>
 
       <div class="ctaRow">
-        <a class="btn btnGhost" href="#cards">View Cards</a>
+        <div id="headerGoogleSignIn"></div>
+        <button class="btn btnGhost" id="googleLogoutBtn" type="button" style="display:none;">Google Logout</button>
+        <a class="btn btnGhost" href="deals.html">Browse Deals</a>
         <a class="btn btnGhost" id="callTop" href="tel:2368699570">Call</a>
         <a class="btn btnPrimary" data-booking-link href="#contact">Book a Strategy Call</a>
       </div>
@@ -393,26 +446,26 @@
       <section class="hero">
         <div class="card">
           <div class="cardInner">
-            <div class="badge">RKR | Ricki Kohli Realty · Investor Acquisition · Rentals · Value‑Add</div>
-            <h2 class="hTitle">Serious real estate strategy for Victoria buyers, sellers, and investors.</h2>
+            <div class="badge">Victoria, BC Homes for Sale · Buyers · Sellers · Investors</div>
+            <h1 class="hTitle">Find the right home in Victoria, BC with fast local guidance.</h1>
             <p class="hSub">
-              I’m <b>Ricki Kohli</b>, founder of <b>RKR | Ricki Kohli Realty</b>, serving <b>Victoria, BC</b>. I help investors and motivated buyers/sellers
-              move with clear market context, strong negotiation, and a calm, professional process from first call to closing.
+              I’m <b>Ricki Kohli</b>, founder of <b>RKR | Ricki Kohli Realty</b>. If you’re searching for houses, condos, or investment properties in
+              <b>Victoria, BC</b>, I help you move quickly with clear pricing context, strong negotiation, and practical next steps.
             </p>
 
             <div class="heroPoints" role="list" aria-label="Key points">
-              <div class="pill" role="listitem">✔ Investor-first communication</div>
-              <div class="pill" role="listitem">✔ Deal screening & comp clarity</div>
-              <div class="pill" role="listitem">✔ Offer strategy + fast execution</div>
-              <div class="pill" role="listitem">✔ Reliable closing coordination</div>
+              <div class="pill" role="listitem">✔ Victoria homes for sale guidance</div>
+              <div class="pill" role="listitem">✔ Buyer shortlist matching</div>
+              <div class="pill" role="listitem">✔ Offer strategy + negotiation</div>
+              <div class="pill" role="listitem">✔ Fast local response</div>
             </div>
 
             <div class="grid2">
-              <a class="btn btnPrimary" data-booking-link href="#contact">Book a Free 15‑Min Call</a>
+              <a class="btn btnPrimary" data-booking-link href="#contact">Get Matched Homes</a>
               <button class="btn" id="copyBtn" type="button">Copy Contact Info</button>
             </div>
 
-            <div class="kpi" aria-label="Investor outcomes">
+            <div class="kpi" aria-label="Buyer outcomes">
               <div class="kpiCard">
                 <div class="t">Goal</div>
                 <div class="v">Better entry points</div>
@@ -448,6 +501,94 @@
             <p class="hint">Get opportunities matched to your buy box and goals. No spam.</p>
           </div>
         </aside>
+      </section>
+
+      <section id="home-search" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h2 style="margin:0; font-size:22px; letter-spacing:-.3px;">Searching homes for sale in Victoria, BC?</h2>
+          <p class="hSub" style="margin-top:8px;">
+            Tell me what you want and I’ll send a focused shortlist of listings that match your area, budget, and timeline.
+          </p>
+          <div class="section" style="margin-top:14px;">
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Buyer-first shortlists</h3>
+              <p>Get homes that match your exact criteria instead of generic listing blasts.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Fast showing coordination</h3>
+              <p>Move quickly when the right property appears, with same-day follow-up whenever possible.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Offer readiness support</h3>
+              <p>From strategy to terms, get practical guidance before you submit.</p>
+            </div></div>
+          </div>
+          <form class="form" id="quickMatchForm">
+            <input type="hidden" name="type" value="Buyer — Home Search Match" />
+            <div class="grid2" style="margin-top:14px;">
+              <input name="name" placeholder="Your name" required />
+              <input name="email" placeholder="Email" type="email" required />
+            </div>
+            <div class="grid2" style="margin-top:0;">
+              <input name="targetArea" placeholder="Target area (e.g. Langford, Saanich)" />
+              <input name="budgetMax" type="number" min="0" step="5000" placeholder="Max budget (CAD)" />
+            </div>
+            <div class="grid2" style="margin-top:0;">
+              <select name="timeline">
+                <option value="" disabled selected>Timeline</option>
+                <option value="asap">ASAP / 30 days</option>
+                <option value="1-3 months">1-3 months</option>
+                <option value="3-6 months">3-6 months</option>
+                <option value="6+ months">6+ months</option>
+                <option value="just-researching">Just researching</option>
+              </select>
+              <input name="phone" placeholder="Phone (optional)" />
+            </div>
+            <textarea name="message" placeholder="What kind of home are you searching for?"></textarea>
+            <input name="website" type="text" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true" />
+            <label style="display:flex; align-items:flex-start; gap:10px; font-size:12.5px; color:var(--muted); line-height:1.45;">
+              <input type="checkbox" name="consent" required style="width:auto; margin-top:2px;" />
+              I consent to being contacted by phone/email about matching homes and real estate services.
+            </label>
+            <button class="btn btnPrimary" type="submit" style="justify-content:center; width:100%;">Send Me Matching Homes</button>
+          </form>
+          <p class="hint">Prefer to browse first? <a href="deals.html" style="text-decoration:underline;">See current homes for sale</a>.</p>
+        </div>
+      </section>
+
+      <section id="areas" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h2 style="margin:0; font-size:22px; letter-spacing:-.3px;">Popular Victoria-area home search pages</h2>
+          <p class="hSub" style="margin-top:8px;">Choose your target area to see local guidance and request matched listings.</p>
+          <div class="section" style="margin-top:14px;">
+            <a class="card feature" href="homes-for-sale-langford-bc.html" style="background:rgba(255,255,255,.02); box-shadow:none; display:block;"><div class="cardInner">
+              <h3>Langford homes for sale</h3>
+              <p>Search Langford neighborhoods, compare options, and request a tailored shortlist.</p>
+            </div></a>
+            <a class="card feature" href="homes-for-sale-saanich-bc.html" style="background:rgba(255,255,255,.02); box-shadow:none; display:block;"><div class="cardInner">
+              <h3>Saanich homes for sale</h3>
+              <p>Explore detached, townhome, and condo opportunities across key Saanich pockets.</p>
+            </div></a>
+            <a class="card feature" href="homes-for-sale-oak-bay-bc.html" style="background:rgba(255,255,255,.02); box-shadow:none; display:block;"><div class="cardInner">
+              <h3>Oak Bay homes for sale</h3>
+              <p>Find Oak Bay listings with support on pricing, terms, and buyer readiness.</p>
+            </div></a>
+          </div>
+          <div class="section" style="margin-top:12px;">
+            <a class="card feature" href="homes-for-sale-colwood-bc.html" style="background:rgba(255,255,255,.02); box-shadow:none; display:block;"><div class="cardInner">
+              <h3>Colwood homes for sale</h3>
+              <p>Browse Colwood inventory with local context on value and family-friendly areas.</p>
+            </div></a>
+            <a class="card feature" href="homes-for-sale-esquimalt-bc.html" style="background:rgba(255,255,255,.02); box-shadow:none; display:block;"><div class="cardInner">
+              <h3>Esquimalt homes for sale</h3>
+              <p>Find Esquimalt listings with fast support for showings and next-step offers.</p>
+            </div></a>
+            <a class="card feature" href="deals.html" style="background:rgba(255,255,255,.02); box-shadow:none; display:block;"><div class="cardInner">
+              <h3>All active deals</h3>
+              <p>Open the full property feed and filter by area, price, and home type.</p>
+            </div></a>
+          </div>
+        </div>
       </section>
 
       <section id="investors" class="section" aria-label="Investor value props">
@@ -562,20 +703,31 @@
           <p class="hint">Simple structure, clear communication, and efficient follow-through from first call to closing.</p>
         </div>
       </section>
-      <section id="cards" class="card" style="margin-top:14px;">
+      <section id="listings" class="card" style="margin-top:14px;">
         <div class="cardInner">
-          <h3 style="margin:0; font-size:18px;">Business cards</h3>
+          <h3 style="margin:0; font-size:18px;">Live listings + deal alerts</h3>
           <p class="hSub" style="margin-top:8px;">
-            These are the exact cards from your provided source file.
+            Browse active opportunities and request curated listings matched to your budget, target area, and timeline.
           </p>
-          <div class="cardsActions">
-            <a class="btn btnPrimary" href="business-cards/ricki_kohli_business_cards.html" target="_blank" rel="noopener">Open Card File</a>
-            <a class="btn" href="business-cards/ricki_kohli_business_cards.html" target="_blank" rel="noopener">Open in New Tab</a>
+          <div class="section" style="margin-top:14px;">
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Deal-first property search</h3>
+              <p>Jump into the active deals feed and sort by score, price, and listing freshness.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Criteria-based matching</h3>
+              <p>Tell us your buy box once and get relevant opportunities instead of random listing spam.</p>
+            </div></div>
+            <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;"><div class="cardInner">
+              <h3>Fast human follow-up</h3>
+              <p>Serious inquiries get same-day response and practical next-step guidance.</p>
+            </div></div>
           </div>
-          <div class="cardsPreview">
-            <iframe src="business-cards/ricki_kohli_business_cards.html" title="RKR business card preview" loading="lazy"></iframe>
+          <div class="ctaRow" style="margin-top:14px;">
+            <a class="btn btnPrimary" href="deals.html">Browse Active Deals</a>
+            <a class="btn" href="#contact">Get Matched Listings</a>
           </div>
-          <p class="hint">Source path: <span class="kbd">business-cards/ricki_kohli_business_cards.html</span></p>
+          <p class="hint">This site is now focused on listings, strategy calls, and qualified lead capture.</p>
         </div>
       </section>
 
@@ -633,7 +785,24 @@
               <option>Seller</option>
               <option>Other</option>
             </select>
+            <input name="targetArea" placeholder="Target area / neighborhood" />
+            <div class="grid2" style="margin-top:0;">
+              <input name="budgetMax" type="number" min="0" step="5000" placeholder="Max budget (CAD)" />
+              <select name="timeline">
+                <option value="" disabled selected>Timeline</option>
+                <option value="asap">ASAP / 30 days</option>
+                <option value="1-3 months">1-3 months</option>
+                <option value="3-6 months">3-6 months</option>
+                <option value="6+ months">6+ months</option>
+                <option value="just-researching">Just researching</option>
+              </select>
+            </div>
             <textarea name="message" placeholder="Message (buy box / budget / areas / timelines)"></textarea>
+            <input name="website" type="text" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true" />
+            <label style="display:flex; align-items:flex-start; gap:10px; font-size:12.5px; color:var(--muted); line-height:1.45;">
+              <input type="checkbox" name="consent" required style="width:auto; margin-top:2px;" />
+              I consent to being contacted by phone/email about real estate opportunities and services.
+            </label>
 
             <button class="btn btnPrimary" type="submit" style="justify-content:center; width:100%;">Send</button>
             <p class="hint">
@@ -651,7 +820,7 @@
           <div class="list">
             <div class="li"><div class="dot"></div><div><b>Phone:</b> <span id="phoneShow">236-869-9570</span></div></div>
             <div class="li"><div class="dot"></div><div><b>Email:</b> <span id="emailShow">rkohli09@outlook.com</span></div></div>
-            <div class="li"><div class="dot"></div><div><b>Website:</b> <span id="websiteShow">https://your-domain.com</span></div></div>
+            <div class="li"><div class="dot"></div><div><b>Website:</b> <span id="websiteShow">https://rickikohlirealty.github.io</span></div></div>
             <div class="li"><div class="dot"></div><div><b>Service Area:</b> Victoria, BC + nearby</div></div>
             <div class="li"><div class="dot"></div><div><b>Focus:</b> Investor acquisitions, rentals, value‑add, and serious buyers/sellers</div></div>
           </div>
@@ -681,6 +850,35 @@
     </main>
   </div>
 
+  <div class="overlayGate" id="guestOverlay" aria-hidden="true">
+    <div class="overlayCard" role="dialog" aria-modal="true" aria-labelledby="guestOverlayTitle">
+      <div class="overlayInner">
+        <button class="overlayClose" id="overlayCloseBtn" type="button" aria-label="Close">×</button>
+        <h2 class="overlayTitle" id="guestOverlayTitle">Before you go, leave your details.</h2>
+        <p class="overlaySub">
+          If you’re not logged in, share your email/phone and an optional note so Ricki can reach out directly.
+        </p>
+        <div id="overlayGoogleSignIn" style="margin-top:14px;"></div>
+        <p class="hint" id="googleLoginFallback"></p>
+        <div class="softSep" style="margin-top:12px;"></div>
+        <form class="overlayForm" id="overlayLeadForm">
+          <input name="name" type="text" placeholder="Your name" />
+          <input name="email" type="email" placeholder="Email" required />
+          <input name="phone" type="tel" placeholder="Phone (optional)" />
+          <textarea name="note" placeholder="Optional note"></textarea>
+          <input name="website" type="text" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true" />
+          <label style="display:flex; align-items:flex-start; gap:10px; font-size:12.5px; color:var(--muted); line-height:1.45;">
+            <input type="checkbox" name="consent" required style="width:auto; margin-top:2px;" />
+            I consent to contact regarding real estate opportunities and next steps.
+          </label>
+          <div class="overlayActions">
+            <button class="btn btnPrimary" type="submit">Send</button>
+            <button class="btn" type="button" id="overlayContinueBtn">Continue to Site</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
@@ -696,8 +894,12 @@
       brokerage: "RKR | Ricki Kohli Realty",
       license: "[LICENSE #]",         // <-- replace
       bookingUrl: "https://calendly.com/your-link",
-      backendEndpoint: "",            // <-- set to Cloudflare Worker URL when ready
-      website: (window.location.origin && window.location.origin !== "null") ? window.location.origin : "https://your-domain.com"
+      backendEndpoint: "https://ricky-website-leads.ricky-website-leads.workers.dev",
+      inquiryReadEndpoint: "https://ricky-website-leads.ricky-website-leads.workers.dev/inquiries",
+      googleClientId: "",             // <-- set to Google OAuth web client id
+      managerEmails: ["rkohli09@outlook.com"],
+      serviceAreas: ["Victoria", "Saanich", "Langford", "Colwood", "Oak Bay", "Esquimalt"],
+      website: (window.location.origin && window.location.origin !== "null") ? window.location.origin : "https://rickikohlirealty.github.io"
     };
 
     // ========= HELPERS =========
@@ -709,22 +911,254 @@
       clearTimeout(window.__t);
       window.__t = setTimeout(()=> t.style.display="none", 2600);
     };
+    const ATTRIBUTION_KEY = "rkr_first_touch_v1";
+    const getQueryParams = ()=> new URLSearchParams(window.location.search || "");
+    const setCanonicalAndOgUrl = ()=>{
+      const fallback = "https://rickikohlirealty.github.io/";
+      const href = (window.location.origin && window.location.origin !== "null")
+        ? window.location.href.split("#")[0]
+        : fallback;
+      const canonical = $("#canonicalUrl");
+      if (canonical) canonical.href = href;
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute("content", href);
+    };
+    const readFirstTouch = ()=>{
+      try{
+        return JSON.parse(localStorage.getItem(ATTRIBUTION_KEY) || "null");
+      }catch{
+        return null;
+      }
+    };
+    const writeFirstTouch = (value)=>{
+      localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(value));
+    };
+    const buildAttribution = ()=>{
+      const params = getQueryParams();
+      const current = {
+        utmSource: String(params.get("utm_source") || "").trim(),
+        utmMedium: String(params.get("utm_medium") || "").trim(),
+        utmCampaign: String(params.get("utm_campaign") || "").trim(),
+        utmTerm: String(params.get("utm_term") || "").trim(),
+        utmContent: String(params.get("utm_content") || "").trim()
+      };
+      let firstTouch = readFirstTouch();
+      if (!firstTouch) {
+        firstTouch = {
+          firstTouchAt: new Date().toISOString(),
+          firstTouchPage: window.location.href,
+          ...current
+        };
+        writeFirstTouch(firstTouch);
+      }
+      return {
+        ...current,
+        referrer: document.referrer || "",
+        firstTouchAt: firstTouch.firstTouchAt || "",
+        firstTouchPage: firstTouch.firstTouchPage || "",
+        firstUtmSource: firstTouch.utmSource || "",
+        firstUtmMedium: firstTouch.utmMedium || "",
+        firstUtmCampaign: firstTouch.utmCampaign || ""
+      };
+    };
+    const managerToken = ()=> sessionStorage.getItem("rkr_google_id_token") || localStorage.getItem("rkr_google_id_token") || "";
+    const managerEmail = ()=> sessionStorage.getItem("rkr_manager_email") || localStorage.getItem("rkr_manager_email") || "";
+    const shouldShowGuestOverlay = ()=> !(managerToken() && managerEmail());
+    const setOverlayState = (open)=>{
+      const gate = $("#guestOverlay");
+      if (!gate) return;
+      gate.classList.toggle("open", open);
+      gate.setAttribute("aria-hidden", open ? "false" : "true");
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+    const normalizeEmail = (email)=> String(email || "").trim().toLowerCase();
+    const managerAllowed = (email)=>{
+      const allowed = (RICKY.managerEmails || []).map(normalizeEmail).filter(Boolean);
+      if (!allowed.length) return true;
+      return allowed.includes(normalizeEmail(email));
+    };
+    const decodeJwt = (token)=>{
+      try{
+        const payload = token.split(".")[1];
+        if (!payload) return null;
+        const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+        const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+        return JSON.parse(atob(padded));
+      }catch{
+        return null;
+      }
+    };
+    const clearManagerSession = ()=>{
+      sessionStorage.removeItem("rkr_google_id_token");
+      localStorage.removeItem("rkr_google_id_token");
+      sessionStorage.removeItem("rkr_manager_email");
+      localStorage.removeItem("rkr_manager_email");
+    };
+    const setManagerSession = (token, email)=>{
+      const normalized = normalizeEmail(email);
+      sessionStorage.setItem("rkr_google_id_token", token);
+      sessionStorage.setItem("rkr_manager_email", normalized);
+      localStorage.setItem("rkr_google_id_token", token);
+      localStorage.setItem("rkr_manager_email", normalized);
+    };
+    const refreshAuthUi = ()=>{
+      const logoutBtn = $("#googleLogoutBtn");
+      const signInWrap = $("#headerGoogleSignIn");
+      if (!logoutBtn || !signInWrap) return;
+      const loggedIn = !!(managerToken() && managerEmail());
+      logoutBtn.style.display = loggedIn ? "inline-flex" : "none";
+      signInWrap.style.display = loggedIn ? "none" : "block";
+    };
+    const handleGoogleCredential = (response)=>{
+      const token = response?.credential || "";
+      const profile = decodeJwt(token);
+      const email = normalizeEmail(profile?.email || "");
+      if (!token || !email) {
+        toast("Google sign-in failed. Please try again.");
+        return;
+      }
+      const now = Math.floor(Date.now() / 1000);
+      if (profile?.exp && Number(profile.exp) <= now) {
+        toast("Google sign-in token expired. Try again.");
+        return;
+      }
+      if (!managerAllowed(email)) {
+        clearManagerSession();
+        refreshAuthUi();
+        toast("This Google account is not authorized.");
+        return;
+      }
+      setManagerSession(token, email);
+      refreshAuthUi();
+      setOverlayState(false);
+      toast(`Signed in as ${email}`);
+    };
+    const initializeGoogleAuth = ()=>{
+      const fallback = $("#googleLoginFallback");
+      const headerTarget = $("#headerGoogleSignIn");
+      const overlayTarget = $("#overlayGoogleSignIn");
+      if (!fallback || !headerTarget || !overlayTarget) return;
+      headerTarget.innerHTML = "";
+      overlayTarget.innerHTML = "";
+      fallback.textContent = "";
+
+      if (!RICKY.googleClientId || !RICKY.googleClientId.includes(".apps.googleusercontent.com")) {
+        fallback.textContent = "Google sign-in is not configured yet.";
+        refreshAuthUi();
+        return;
+      }
+      const render = ()=>{
+        if (!window.google?.accounts?.id) return false;
+        window.google.accounts.id.initialize({
+          client_id: RICKY.googleClientId,
+          callback: handleGoogleCredential,
+          auto_select: false,
+          cancel_on_tap_outside: false
+        });
+        window.google.accounts.id.renderButton(headerTarget, {
+          theme: "outline",
+          size: "medium",
+          text: "signin_with",
+          shape: "pill"
+        });
+        window.google.accounts.id.renderButton(overlayTarget, {
+          theme: "filled_black",
+          size: "large",
+          text: "signin_with",
+          width: 280,
+          shape: "pill"
+        });
+        refreshAuthUi();
+        return true;
+      };
+      if (render()) return;
+      let tries = 0;
+      const timer = setInterval(()=>{
+        tries += 1;
+        if (render()) {
+          clearInterval(timer);
+          return;
+        }
+        if (tries >= 30) {
+          clearInterval(timer);
+          fallback.textContent = "Google sign-in script did not load. Refresh and try again.";
+        }
+      }, 200);
+    };
 
     // ========= STRUCTURED DATA =========
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "RealEstateAgent",
-      "name": RICKY.brand,
-      "areaServed": {
-        "@type": "City",
-        "name": "Victoria",
-        "address": { "@type": "PostalAddress", "addressRegion": RICKY.region, "addressCountry": RICKY.country }
+    const schema = [
+      {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "@id": `${RICKY.website}/#agent`,
+        "name": RICKY.brand,
+        "url": RICKY.website,
+        "telephone": RICKY.phone,
+        "email": RICKY.email,
+        "areaServed": (RICKY.serviceAreas || []).map((name)=>({
+          "@type": "City",
+          "name": name,
+          "address": {
+            "@type": "PostalAddress",
+            "addressRegion": RICKY.region,
+            "addressCountry": RICKY.country
+          }
+        })),
+        "worksFor": { "@type": "Organization", "name": RICKY.brokerage }
       },
-      "telephone": RICKY.phone,
-      "email": RICKY.email,
-      "url": RICKY.website,
-      "worksFor": { "@type": "Organization", "name": RICKY.brokerage }
-    };
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": `${RICKY.website}/#website`,
+        "name": RICKY.brand,
+        "url": RICKY.website,
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": `${RICKY.website}/deals.html?q={search_term_string}`,
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": `${RICKY.website}/#faq`,
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Do you work with first-time buyers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes — buyer clients get search strategy, showing guidance, and negotiation support through closing."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you help investors?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes — investor clients get buy-box alignment, deal screening context, and execution support."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What areas do you cover?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Victoria and nearby Vancouver Island markets. Exact coverage can be narrowed in your first call."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How quickly do you respond?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Usually same day. Urgent opportunities should be sent by text for fastest response."
+            }
+          }
+        ]
+      }
+    ];
     document.getElementById("schemaAgent").textContent = JSON.stringify(schema);
 
     // ========= INIT =========
@@ -733,6 +1167,8 @@
     $("#phoneText").textContent = RICKY.phone;
     $("#emailShow").textContent = RICKY.email;
     $("#websiteShow").textContent = RICKY.website;
+    setCanonicalAndOgUrl();
+    buildAttribution();
 
     const smsHref = `sms:${RICKY.phone.replace(/[^+0-9]/g,"")}`;
     const mailHref = `mailto:${encodeURIComponent(RICKY.email)}?subject=${encodeURIComponent("Real Estate Inquiry")}`;
@@ -758,6 +1194,38 @@
       }
     });
 
+    const emailLooksValid = (email)=> /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeEmail(email));
+    const sanitizeText = (value, max = 600)=> String(value || "").replace(/\s+/g, " ").trim().slice(0, max);
+    const LEAD_QUEUE_KEY = "rkr_pending_leads_v1";
+    const readLeadQueue = ()=>{
+      try{
+        const parsed = JSON.parse(localStorage.getItem(LEAD_QUEUE_KEY) || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      }catch{
+        return [];
+      }
+    };
+    const writeLeadQueue = (items)=>{
+      localStorage.setItem(LEAD_QUEUE_KEY, JSON.stringify(items.slice(-50)));
+    };
+    const queueLead = (payload)=>{
+      const queue = readLeadQueue();
+      queue.push(payload);
+      writeLeadQueue(queue);
+    };
+    const buildLeadMailtoBody = (lead)=> {
+      const budgetLine = lead.budgetMax ? `\nBudget Max: $${Number(lead.budgetMax).toLocaleString()}` : "";
+      const timelineLine = lead.timeline ? `\nTimeline: ${lead.timeline}` : "";
+      const areaLine = lead.targetArea ? `\nTarget Area: ${lead.targetArea}` : "";
+      const consentLine = `\nConsent To Contact: ${lead.consentToContact ? "Yes" : "No"}`;
+      const attributionLine =
+`\nUTM Source: ${lead.utmSource || "(none)"}
+UTM Medium: ${lead.utmMedium || "(none)"}
+UTM Campaign: ${lead.utmCampaign || "(none)"}
+Referrer: ${lead.referrer || "(direct)"}`;
+      return `Name: ${lead.name}\nEmail: ${lead.email}\nPhone: ${lead.phone || "(not provided)"}\nType: ${lead.type}${areaLine}${budgetLine}${timelineLine}${consentLine}${attributionLine}\n\nMessage:\n${lead.message || "(none)"}\n`;
+    };
+
     const submitLeadViaBackend = async (leadPayload)=>{
       if (!RICKY.backendEndpoint || !/^https?:\/\//.test(RICKY.backendEndpoint)) return false;
       const response = await fetch(RICKY.backendEndpoint, {
@@ -771,24 +1239,62 @@
       }
       return true;
     };
+    const flushQueuedLeads = async ()=>{
+      const queue = readLeadQueue();
+      if (!queue.length) return;
+      const unsent = [];
+      for (const lead of queue) {
+        try{
+          const sent = await submitLeadViaBackend(lead);
+          if (!sent) unsent.push(lead);
+        }catch{
+          unsent.push(lead);
+        }
+      }
+      writeLeadQueue(unsent);
+    };
 
-    // Lead form: uses backend when configured, otherwise falls back to pre-filled email
+    // Lead form: uses backend when configured, otherwise queues and falls back to pre-filled email
     $("#leadForm").addEventListener("submit", async (e)=>{
       e.preventDefault();
       const form = e.currentTarget;
       const data = Object.fromEntries(new FormData(form).entries());
-      if(!data.name || !data.email || !data.type){
+
+      if (String(data.website || "").trim()) {
+        toast("Submission blocked.");
+        return;
+      }
+      const email = normalizeEmail(data.email);
+      if(!data.name || !email || !data.type){
         toast("Please fill name, email, and inquiry type.");
         return;
       }
+      if (!emailLooksValid(email)) {
+        toast("Please enter a valid email.");
+        return;
+      }
+      if (!data.consent) {
+        toast("Please confirm consent to be contacted.");
+        return;
+      }
+      const attribution = buildAttribution();
+      const parsedBudget = Number(data.budgetMax);
+      const budgetMax = Number.isFinite(parsedBudget) && parsedBudget > 0 ? Math.round(parsedBudget) : null;
       const payload = {
-        name: data.name,
-        email: data.email,
-        phone: data.phone || "",
+        name: sanitizeText(data.name, 120),
+        email,
+        phone: sanitizeText(data.phone, 40),
         type: data.type,
-        message: data.message || "",
+        message: String(data.message || "").trim(),
+        targetArea: sanitizeText(data.targetArea, 120),
+        budgetMax,
+        timeline: data.timeline || "",
+        consentToContact: true,
+        honeypot: String(data.website || "").trim(),
+        landingPage: window.location.href,
         source: "website",
-        submittedAt: new Date().toISOString()
+        submittedAt: new Date().toISOString(),
+        ...attribution
       };
       try {
         const sent = await submitLeadViaBackend(payload);
@@ -799,21 +1305,141 @@
         }
       } catch (err) {
         console.error(err);
-        toast("Live form is unavailable. Falling back to email.");
+        queueLead(payload);
+        toast("Live form is unavailable. Opening email fallback.");
       }
-      const body =
-`Name: ${data.name}
-Email: ${data.email}
-Phone: ${data.phone || "(not provided)"}
-Type: ${data.type}
-
-Message:
-${data.message || "(none)"}
-`;
+      const body = buildLeadMailtoBody(payload);
       const href = `mailto:${encodeURIComponent(RICKY.email)}?subject=${encodeURIComponent("New Lead — " + data.type)}&body=${encodeURIComponent(body)}`;
       window.location.href = href;
       toast("Opening your email app…");
       form.reset();
+    });
+
+    $("#quickMatchForm")?.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const form = e.currentTarget;
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      if (String(data.website || "").trim()) {
+        toast("Submission blocked.");
+        return;
+      }
+      const email = normalizeEmail(data.email);
+      if(!data.name || !email || !data.type){
+        toast("Please fill name and email.");
+        return;
+      }
+      if (!emailLooksValid(email)) {
+        toast("Please enter a valid email.");
+        return;
+      }
+      if (!data.consent) {
+        toast("Please confirm consent to be contacted.");
+        return;
+      }
+      const attribution = buildAttribution();
+      const parsedBudget = Number(data.budgetMax);
+      const budgetMax = Number.isFinite(parsedBudget) && parsedBudget > 0 ? Math.round(parsedBudget) : null;
+      const payload = {
+        name: sanitizeText(data.name, 120),
+        email,
+        phone: sanitizeText(data.phone, 40),
+        type: data.type,
+        message: String(data.message || "").trim(),
+        targetArea: sanitizeText(data.targetArea, 120),
+        budgetMax,
+        timeline: data.timeline || "",
+        consentToContact: true,
+        honeypot: String(data.website || "").trim(),
+        landingPage: window.location.href,
+        source: "quick-home-search",
+        submittedAt: new Date().toISOString(),
+        ...attribution
+      };
+      try {
+        const sent = await submitLeadViaBackend(payload);
+        if (sent) {
+          toast("Thanks — matching homes request sent.");
+          form.reset();
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+        queueLead(payload);
+        toast("Live form is unavailable. Opening email fallback.");
+      }
+      const body = buildLeadMailtoBody(payload);
+      window.location.href = `mailto:${encodeURIComponent(RICKY.email)}?subject=${encodeURIComponent("New Lead — Home Search Match")}&body=${encodeURIComponent(body)}`;
+      form.reset();
+    });
+
+    $("#overlayCloseBtn")?.addEventListener("click", ()=> setOverlayState(false));
+    $("#overlayContinueBtn")?.addEventListener("click", ()=> setOverlayState(false));
+    $("#guestOverlay")?.addEventListener("click", (e)=>{
+      if (e.target === $("#guestOverlay")) setOverlayState(false);
+    });
+
+    $("#overlayLeadForm")?.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const form = e.currentTarget;
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      if (String(data.website || "").trim()) {
+        toast("Submission blocked.");
+        return;
+      }
+      const email = normalizeEmail(data.email);
+      if(!email){
+        toast("Please enter your email.");
+        return;
+      }
+      if (!emailLooksValid(email)) {
+        toast("Please enter a valid email.");
+        return;
+      }
+      if (!data.consent) {
+        toast("Please confirm consent to be contacted.");
+        return;
+      }
+      const attribution = buildAttribution();
+      const payload = {
+        name: sanitizeText(data.name || "Website Guest", 120),
+        email,
+        phone: sanitizeText(data.phone, 40),
+        type: "Website Overlay Inquiry",
+        message: String(data.note || "").trim(),
+        consentToContact: true,
+        honeypot: String(data.website || "").trim(),
+        landingPage: window.location.href,
+        source: "guest-overlay",
+        submittedAt: new Date().toISOString(),
+        ...attribution
+      };
+      try {
+        const sent = await submitLeadViaBackend(payload);
+        if (sent) {
+          toast("Thanks — your details were sent.");
+          form.reset();
+          setOverlayState(false);
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+        queueLead(payload);
+        toast("Live overlay form is unavailable. Opening email fallback.");
+      }
+      const body = buildLeadMailtoBody(payload);
+      window.location.href = `mailto:${encodeURIComponent(RICKY.email)}?subject=${encodeURIComponent("Website Overlay Inquiry")}&body=${encodeURIComponent(body)}`;
+      form.reset();
+      setOverlayState(false);
+    });
+
+    $("#googleLogoutBtn")?.addEventListener("click", ()=>{
+      clearManagerSession();
+      refreshAuthUi();
+      if (window.google?.accounts?.id) window.google.accounts.id.disableAutoSelect();
+      setOverlayState(true);
+      toast("Logged out.");
     });
 
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
@@ -825,6 +1451,12 @@ ${data.message || "(none)"}
         el.scrollIntoView({behavior:"smooth", block:"start"});
       });
     });
+    initializeGoogleAuth();
+    refreshAuthUi();
+    flushQueuedLeads();
+    window.addEventListener("online", ()=>{ flushQueuedLeads(); });
+
+    if (shouldShowGuestOverlay()) setOverlayState(true);
   </script>
 </body>
 </html>

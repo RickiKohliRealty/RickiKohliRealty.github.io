@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 180" role="img" aria-labelledby="title desc">
+  <title id="title">Ricky's Realty Group emblem</title>
+  <desc id="desc">Gold roofline mark with company name for use on dark business card backgrounds.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C9A84C"/>
+      <stop offset="50%" stop-color="#F0D080"/>
+      <stop offset="100%" stop-color="#C9A84C"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M102 80 L190 22 L278 80"/>
+    <path d="M238 80 L340 8 L442 80"/>
+    <path d="M402 80 L490 22 L578 80"/>
+    <path d="M120 80 H560"/>
+  </g>
+  <g fill="url(#gold)">
+    <rect x="170" y="46" width="24" height="24" rx="2"/>
+    <rect x="326" y="34" width="28" height="28" rx="2"/>
+    <rect x="486" y="46" width="24" height="24" rx="2"/>
+    <line x1="182" y1="46" x2="182" y2="70" stroke="#0A0A0A" stroke-width="3"/>
+    <line x1="170" y1="58" x2="194" y2="58" stroke="#0A0A0A" stroke-width="3"/>
+    <line x1="340" y1="34" x2="340" y2="62" stroke="#0A0A0A" stroke-width="3"/>
+    <line x1="326" y1="48" x2="354" y2="48" stroke="#0A0A0A" stroke-width="3"/>
+    <line x1="498" y1="46" x2="498" y2="70" stroke="#0A0A0A" stroke-width="3"/>
+    <line x1="486" y1="58" x2="510" y2="58" stroke="#0A0A0A" stroke-width="3"/>
+  </g>
+  <text x="340" y="138" text-anchor="middle" fill="url(#gold)" font-family="Cormorant Garamond, Georgia, serif" font-size="56" font-weight="500" letter-spacing="1.1">
+    Ricky's Realty Group Ltd.
+  </text>
+  <line x1="72" y1="152" x2="608" y2="152" stroke="url(#gold)" stroke-width="3" opacity="0.78"/>
+</svg>

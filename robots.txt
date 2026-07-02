@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /cloudflare-worker/
+Disallow: /business-cards/
+
+Sitemap: https://rickikohlirealty.github.io/sitemap.xml

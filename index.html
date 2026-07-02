@@ -123,7 +123,7 @@
     .hero{
       margin-top:14px;
       display:grid;
-      grid-template-columns: 1.2fr .8fr;
+      grid-template-columns: minmax(0, 1.05fr) minmax(420px, .95fr);
       gap:22px;
       align-items:stretch;
     }
@@ -183,7 +183,9 @@
 
     /* Professional hero visual */
     .photo{
-      height: 260px;
+      height:auto;
+      aspect-ratio:16 / 9;
+      min-height:250px;
       border-bottom:1px solid var(--line);
       position:relative;
       overflow:hidden;

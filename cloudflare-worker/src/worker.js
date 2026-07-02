@@ -700,32 +700,101 @@ const buildParticipantEmailList = (inquiries = []) => {
     });
 };
 
-const buildParticipantEmailCsv = (participants = []) => {
+const buildParticipantInquiryRows = (inquiries = []) =>
+  (inquiries || [])
+    .map((entry) => {
+      const email = normalizeEmail(entry?.email);
+      if (!email) return null;
+      const numericBudget = Number(entry?.budgetMax);
+      const budgetMax =
+        Number.isFinite(numericBudget) && numericBudget > 0 ? Math.round(numericBudget) : parseBudgetNumber(entry?.budgetMax);
+      const consent = toBoolean(entry?.consentToContact);
+      return {
+        email,
+        name: clampText(entry?.name, 120) || "(not provided)",
+        inquiryKind: clampText(entry?.kind, 40) || "lead",
+        inquiryTypeLabel: clampText(entry?.inquiryTypeLabel, 160) || getInquiryTypeLabel(entry?.kind === "alert" ? "alert" : "lead"),
+        statusTag:
+          clampText(entry?.statusTag, 80) ||
+          getInquiryStatusTag(entry?.kind === "alert" ? "alert" : "lead", { ...entry, email }),
+        sourceChannel: clampText(entry?.channel, 120) || "(not provided)",
+        leadOrAlertType: clampText(entry?.type, 120) || "(not provided)",
+        targetArea: clampText(entry?.targetArea, 120) || "(not provided)",
+        propertyType: clampText(entry?.propertyType, 80) || "(not provided)",
+        budgetMaxCad: budgetMax || "",
+        timeline: clampText(entry?.timeline, 80) || "(not provided)",
+        alertFrequency: clampText(entry?.alertFrequency, 40) || "(not provided)",
+        consentToContact: consent ? "Yes" : "No",
+        receivedAt: clampText(entry?.receivedAt, 60),
+        issueNumber: entry?.issueNumber ?? "",
+        issueUrl: clampText(entry?.issueUrl, 500) || "",
+        notes: clampText(entry?.message, 800) || ""
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      const at = new Date(a.receivedAt).getTime() || 0;
+      const bt = new Date(b.receivedAt).getTime() || 0;
+      return bt - at;
+    });
+
+const buildParticipantEmailCsv = (participantRows = []) => {
   const headers = [
     "email",
     "name",
-    "total_inquiries",
-    "inquiry_types",
-    "status_tags",
-    "target_areas",
-    "channels",
-    "last_received_at",
-    "issue_numbers",
-    "last_issue_url"
+    "inquiry_kind",
+    "inquiry_type_label",
+    "status_tag",
+    "source_channel",
+    "lead_or_alert_type",
+    "target_area",
+    "property_type",
+    "budget_max_cad",
+    "timeline",
+    "alert_frequency",
+    "consent_to_contact",
+    "received_at",
+    "issue_number",
+    "issue_url",
+    "notes"
   ];
-  const rows = participants.map((participant) => [
-    participant.email,
-    participant.name,
-    participant.totalInquiries,
-    (participant.inquiryTypes || []).join(" | "),
-    (participant.statusTags || []).join(" | "),
-    (participant.targetAreas || []).join(" | "),
-    (participant.channels || []).join(" | "),
-    participant.lastReceivedAt || "",
-    (participant.issueNumbers || []).join(" | "),
-    participant.lastIssueUrl || ""
+  const rows = participantRows.map((row) => [
+    row.email,
+    row.name,
+    row.inquiryKind,
+    row.inquiryTypeLabel,
+    row.statusTag,
+    row.sourceChannel,
+    row.leadOrAlertType,
+    row.targetArea,
+    row.propertyType,
+    row.budgetMaxCad,
+    row.timeline,
+    row.alertFrequency,
+    row.consentToContact,
+    row.receivedAt || "",
+    row.issueNumber,
+    row.issueUrl || "",
+    row.notes || ""
   ]);
   return [headers, ...rows].map((row) => row.map(escapeCsvValue).join(",")).join("\n");
+};
+
+const buildUniversalParticipantsCsvSection = (participantRows = [], maxRows = 180) => {
+  const limitedRows = participantRows.slice(0, maxRows);
+  const totalRows = participantRows.length;
+  const truncationLine =
+    totalRows > maxRows
+      ? `Showing ${maxRows} of ${totalRows} inquiry rows in this email table.`
+      : `Rows included: ${totalRows}.`;
+  return [
+    "",
+    "Universal Participants CSV Table (Excel style, multiple entries per user supported)",
+    "--------------------------------------------------------------------------",
+    truncationLine,
+    "",
+    buildParticipantEmailCsv(limitedRows)
+  ].join("\n");
 };
 
 const findRecentDuplicateLead = async (env, fingerprint) => {
@@ -1084,7 +1153,25 @@ const notifyManagersForInquiry = async (env, kind, payload, meta = {}) => {
   if (!hasGmailConfig(env)) return { ok: false, skipped: true, reason: "Gmail configuration incomplete." };
 
   const subject = buildManagerInquirySubject(kind, payload);
-  const body = kind === "alert" ? buildManagerAlertDigestBody(payload, meta) : buildManagerLeadDigestBody(payload, meta);
+  const baseBody = kind === "alert" ? buildManagerAlertDigestBody(payload, meta) : buildManagerLeadDigestBody(payload, meta);
+  let universalCsvSection = "";
+  try {
+    const inquiries = await listLeadIssues(env);
+    const alertInquiries = await listAlertSubscriptions(env);
+    const allInquiries = buildUnifiedInquiryFeed(inquiries, alertInquiries);
+    const participantRows = buildParticipantInquiryRows(allInquiries);
+    universalCsvSection = buildUniversalParticipantsCsvSection(participantRows);
+  } catch (error) {
+    universalCsvSection = [
+      "",
+      "Universal Participants CSV Table (Excel style, multiple entries per user supported)",
+      "--------------------------------------------------------------------------",
+      "(unavailable for this send)",
+      "",
+      `Reason: ${error?.message || "Unknown build error."}`
+    ].join("\n");
+  }
+  const body = `${baseBody}${universalCsvSection}`;
   const errors = [];
 
   for (const recipient of recipients) {
@@ -1285,6 +1372,7 @@ export default {
         const alertInquiries = await listAlertSubscriptions(env);
         const allInquiries = buildUnifiedInquiryFeed(inquiries, alertInquiries);
         const participants = buildParticipantEmailList(allInquiries);
+        const participantRows = buildParticipantInquiryRows(allInquiries);
         return json(
           {
             ok: true,
@@ -1292,7 +1380,10 @@ export default {
             inquiries,
             alertInquiries,
             allInquiries,
-            participants
+            participants,
+            participantRows,
+            participantRowCount: participantRows.length,
+            uniqueParticipantCount: participants.length
           },
           200,
           origin
@@ -1315,18 +1406,30 @@ export default {
         const alertInquiries = await listAlertSubscriptions(env);
         const allInquiries = buildUnifiedInquiryFeed(inquiries, alertInquiries);
         const participants = buildParticipantEmailList(allInquiries);
+        const participantRows = buildParticipantInquiryRows(allInquiries);
         if (isInquiryParticipantsCsvRoute) {
           const fileDate = new Date().toISOString().slice(0, 10);
-          const filename = `rkr-participant-email-list-${fileDate}.csv`;
+          const filename = `rkr-participant-inquiry-table-${fileDate}.csv`;
           return textResponse(
-            buildParticipantEmailCsv(participants),
+            buildParticipantEmailCsv(participantRows),
             200,
             origin,
             "text/csv; charset=utf-8",
             `attachment; filename="${filename}"`
           );
         }
-        return json({ ok: true, authenticatedEmail: authResult.email, count: participants.length, participants }, 200, origin);
+        return json(
+          {
+            ok: true,
+            authenticatedEmail: authResult.email,
+            count: participantRows.length,
+            uniqueParticipantCount: participants.length,
+            participants,
+            participantRows
+          },
+          200,
+          origin
+        );
       } catch (error) {
         return json({ ok: false, error: error.message || "Failed to build participant email list." }, 502, origin);
       }

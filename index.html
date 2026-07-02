@@ -1086,12 +1086,16 @@
         <div class="cardInner">
           <h3 style="margin:0; font-size:18px;">Manager inquiry view</h3>
           <p class="hSub" style="margin-top:8px;">
-            Signed-in managers can review every inquiry type, see explicit status tags, and export a participant email list file.
+            Signed-in managers can review every inquiry type, see explicit status tags, and export an Excel-style inquiry table CSV with multiple rows per user.
           </p>
           <div class="ctaRow" style="margin-top:12px;">
             <button class="btn btnPrimary" type="button" id="managerRefreshBtn">Refresh Inquiry Feed</button>
-            <button class="btn" type="button" id="managerExportCsvBtn">Download Participant Email List (CSV)</button>
+            <button class="btn" type="button" id="managerExportCsvBtn">Download Participant Inquiry Table (CSV)</button>
           </div>
+          <label style="display:flex; align-items:flex-start; gap:10px; font-size:12.5px; color:var(--muted); line-height:1.45; margin-top:10px;">
+            <input type="checkbox" id="managerFollowUpOnlyToggle" style="width:auto; margin-top:2px;" />
+            Show only <b style="color:#ffdfe1;">INVALID / NEEDS FOLLOW-UP</b> inquiries
+          </label>
           <p class="hint" id="managerFeedMeta" style="margin-top:10px;">Sign in with an authorized Google account to load manager inquiries.</p>
           <div class="list" id="managerInquiriesList" style="margin-top:10px;"></div>
         </div>
@@ -1794,6 +1798,13 @@ Referrer: ${alert.referrer || "(direct)"}`;
       return buildWorkerEndpoint("/inquiries");
     };
     const managerParticipantsCsvEndpoint = ()=> buildWorkerEndpoint("/inquiries/participants.csv");
+    let managerInquiryCache = [];
+    const managerFeedSnapshot = {
+      totalEntries: 0,
+      uniqueParticipants: 0,
+      csvRows: 0,
+      lastUpdatedLabel: ""
+    };
     const escapeManagerHtml = (value)=> String(value ?? "").replace(/[&<>"']/g, (char)=>({
       "&": "&amp;",
       "<": "&lt;",
@@ -1823,6 +1834,11 @@ Referrer: ${alert.referrer || "(direct)"}`;
       }
       return "VALID + READY NOW";
     };
+    const managerFollowUpOnlyEnabled = ()=> Boolean($("#managerFollowUpOnlyToggle")?.checked);
+    const filterManagerEntries = (entries = [])=>
+      managerFollowUpOnlyEnabled()
+        ? entries.filter((entry)=> getStatusTagForView(entry) === "INVALID / NEEDS FOLLOW-UP")
+        : entries;
     const getStatusTagStyle = (statusTag)=>{
       if (statusTag === "VALID + READY NOW") {
         return "display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;border:1px solid rgba(100,224,140,.55);background:rgba(100,224,140,.18);color:#dfffe9;font-size:11.5px;font-weight:700;letter-spacing:.01em;";
@@ -1844,11 +1860,12 @@ Referrer: ${alert.referrer || "(direct)"}`;
       if (!meta) return;
       meta.textContent = message;
     };
-    const renderManagerInquiries = (entries = [])=>{
+    const renderManagerInquiries = (entries = [], totalCount = entries.length)=>{
       const list = $("#managerInquiriesList");
       if (!list) return;
       if (!entries.length) {
-        list.innerHTML = `<p class="hint" style="margin:0;">No inquiries found yet.</p>`;
+        const emptyMessage = totalCount > 0 ? "No inquiries match the selected filter." : "No inquiries found yet.";
+        list.innerHTML = `<p class="hint" style="margin:0;">${emptyMessage}</p>`;
         return;
       }
       list.innerHTML = entries.slice(0, 120).map((entry)=>{
@@ -1878,18 +1895,37 @@ Referrer: ${alert.referrer || "(direct)"}`;
         `;
       }).join("");
     };
+    const refreshManagerViewFromCache = ()=>{
+      const filteredEntries = filterManagerEntries(managerInquiryCache);
+      renderManagerInquiries(filteredEntries, managerInquiryCache.length);
+      if (!managerFeedSnapshot.lastUpdatedLabel) return;
+      const filterMode = managerFollowUpOnlyEnabled() ? "follow-up only" : "all statuses";
+      setManagerFeedMeta(
+        `${filteredEntries.length}/${managerFeedSnapshot.totalEntries} inquiries shown (${filterMode}) · ${managerFeedSnapshot.uniqueParticipants} unique participants · ${managerFeedSnapshot.csvRows} CSV rows · Updated ${managerFeedSnapshot.lastUpdatedLabel}`
+      );
+    };
     const loadManagerInquiries = async ()=>{
       const endpoint = managerInquiryEndpoint();
       if (!endpoint) {
+        managerInquiryCache = [];
+        managerFeedSnapshot.totalEntries = 0;
+        managerFeedSnapshot.uniqueParticipants = 0;
+        managerFeedSnapshot.csvRows = 0;
+        managerFeedSnapshot.lastUpdatedLabel = "";
         setManagerFeedMeta("Inquiry endpoint is not configured.");
-        renderManagerInquiries([]);
+        renderManagerInquiries([], 0);
         return;
       }
       const token = managerToken();
       const email = managerEmail();
       if (!token || !email) {
+        managerInquiryCache = [];
+        managerFeedSnapshot.totalEntries = 0;
+        managerFeedSnapshot.uniqueParticipants = 0;
+        managerFeedSnapshot.csvRows = 0;
+        managerFeedSnapshot.lastUpdatedLabel = "";
         setManagerFeedMeta("Sign in with an authorized Google account to load manager inquiries.");
-        renderManagerInquiries([]);
+        renderManagerInquiries([], 0);
         return;
       }
       try{
@@ -1904,24 +1940,34 @@ Referrer: ${alert.referrer || "(direct)"}`;
         }
         const payload = await response.json();
         const entries = Array.isArray(payload?.allInquiries) ? payload.allInquiries : [];
-        const participantCount = Array.isArray(payload?.participants) ? payload.participants.length : 0;
-        renderManagerInquiries(entries);
-        setManagerFeedMeta(`${entries.length} inquiries loaded · ${participantCount} unique participants · Updated ${new Date().toLocaleTimeString("en-CA", { hour12: false })}`);
+        const participantCount = Number(payload?.uniqueParticipantCount) || (Array.isArray(payload?.participants) ? payload.participants.length : 0);
+        const csvRows = Number(payload?.participantRowCount) || (Array.isArray(payload?.participantRows) ? payload.participantRows.length : entries.length);
+        managerInquiryCache = entries;
+        managerFeedSnapshot.totalEntries = entries.length;
+        managerFeedSnapshot.uniqueParticipants = participantCount;
+        managerFeedSnapshot.csvRows = csvRows;
+        managerFeedSnapshot.lastUpdatedLabel = new Date().toLocaleTimeString("en-CA", { hour12: false });
+        refreshManagerViewFromCache();
       }catch(err){
         console.error(err);
+        managerInquiryCache = [];
+        managerFeedSnapshot.totalEntries = 0;
+        managerFeedSnapshot.uniqueParticipants = 0;
+        managerFeedSnapshot.csvRows = 0;
+        managerFeedSnapshot.lastUpdatedLabel = "";
         setManagerFeedMeta("Failed to load manager inquiries. Check sign-in and worker status.");
-        renderManagerInquiries([]);
+        renderManagerInquiries([], 0);
       }
     };
     const downloadParticipantEmailListCsv = async ()=>{
       const endpoint = managerParticipantsCsvEndpoint();
       if (!endpoint) {
-        toast("Participant email list endpoint is not configured.");
+        toast("Participant inquiry table endpoint is not configured.");
         return;
       }
       const token = managerToken();
       if (!token) {
-        toast("Sign in first to download the participant email list.");
+        toast("Sign in first to download the participant inquiry table.");
         return;
       }
       try{
@@ -1936,7 +1982,7 @@ Referrer: ${alert.referrer || "(direct)"}`;
         const blob = await response.blob();
         const disposition = response.headers.get("content-disposition") || "";
         const matched = disposition.match(/filename=\"?([^"]+)\"?/i);
-        const fallbackName = `rkr-participant-email-list-${new Date().toISOString().slice(0, 10)}.csv`;
+        const fallbackName = `rkr-participant-inquiry-table-${new Date().toISOString().slice(0, 10)}.csv`;
         const filename = sanitizeText(matched?.[1] || fallbackName, 160) || fallbackName;
         const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
@@ -1946,10 +1992,10 @@ Referrer: ${alert.referrer || "(direct)"}`;
         link.click();
         link.remove();
         URL.revokeObjectURL(blobUrl);
-        toast("Participant email list downloaded.");
+        toast("Participant inquiry table downloaded.");
       }catch(err){
         console.error(err);
-        toast("Could not download participant email list.");
+        toast("Could not download participant inquiry table.");
       }
     };
     const LISTINGS_BROWSER_PAGE_SIZE = 3;
@@ -2631,6 +2677,9 @@ Referrer: ${alert.referrer || "(direct)"}`;
     });
     $("#managerExportCsvBtn")?.addEventListener("click", ()=>{
       downloadParticipantEmailListCsv();
+    });
+    $("#managerFollowUpOnlyToggle")?.addEventListener("change", ()=>{
+      refreshManagerViewFromCache();
     });
 
     document.querySelectorAll('a[href^="#"]').forEach(a=>{

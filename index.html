@@ -1455,6 +1455,25 @@
         return null;
       }
     };
+    const hasValidManagerSession = ()=>{
+      const token = managerToken();
+      const email = normalizeEmail(managerEmail());
+      if (!token || !email) return false;
+      if (!managerAllowed(email)) return false;
+      const profile = decodeJwt(token);
+      if (!profile) return false;
+      const now = Math.floor(Date.now() / 1000);
+      if (profile?.exp && Number(profile.exp) <= now) return false;
+      const tokenEmail = normalizeEmail(profile?.email || "");
+      if (tokenEmail && tokenEmail !== email) return false;
+      return true;
+    };
+    const ensureValidManagerSession = ()=>{
+      const ok = hasValidManagerSession();
+      if (!ok && (managerToken() || managerEmail())) clearManagerSession();
+      return ok;
+    };
+    const shouldShowGuestOverlay = ()=> !hasValidManagerSession();
     const writeFirstTouch = (value)=>{
       localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(value));
     };
@@ -1488,7 +1507,6 @@
     };
     const managerToken = ()=> sessionStorage.getItem("rkr_google_id_token") || localStorage.getItem("rkr_google_id_token") || "";
     const managerEmail = ()=> sessionStorage.getItem("rkr_manager_email") || localStorage.getItem("rkr_manager_email") || "";
-    const shouldShowGuestOverlay = ()=> !(managerToken() && managerEmail());
     const setOverlayState = (open)=>{
       const gate = $("#guestOverlay");
       if (!gate) return;
@@ -1530,7 +1548,7 @@
       const logoutBtn = $("#googleLogoutBtn");
       const signInWrap = $("#headerGoogleSignIn");
       if (!logoutBtn || !signInWrap) return;
-      const loggedIn = !!(managerToken() && managerEmail());
+      const loggedIn = ensureValidManagerSession();
       logoutBtn.style.display = loggedIn ? "inline-flex" : "none";
       signInWrap.style.display = loggedIn ? "none" : "block";
     };
@@ -1990,6 +2008,17 @@ Referrer: ${alert.referrer || "(direct)"}`;
         managerFeedSnapshot.lastUpdatedLabel = "";
         setManagerFeedMeta("Inquiry endpoint is not configured.");
         renderManagerInquiries([], 0);
+        return;
+      }
+      if (!ensureValidManagerSession()) {
+        managerInquiryCache = [];
+        managerFeedSnapshot.totalEntries = 0;
+        managerFeedSnapshot.uniqueParticipants = 0;
+        managerFeedSnapshot.csvRows = 0;
+        managerFeedSnapshot.lastUpdatedLabel = "";
+        setManagerFeedMeta("Sign in with an authorized Google account to load manager inquiries.");
+        renderManagerInquiries([], 0);
+        refreshAuthUi();
         return;
       }
       const token = managerToken();

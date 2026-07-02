@@ -123,16 +123,16 @@
     .hero{
       margin-top:14px;
       display:grid;
-      grid-template-columns: minmax(0, 1fr) minmax(115px, 140px);
+      grid-template-columns: minmax(0, 1fr) minmax(230px, 280px);
       gap:22px;
       align-items:start;
     }
     @media (max-width: 1280px){
       .hero{
-        grid-template-columns: minmax(0, 1fr) minmax(105px, 125px);
+        grid-template-columns: minmax(0, 1fr) minmax(210px, 250px);
       }
       .sideCard{
-        max-width:125px;
+        max-width:250px;
       }
     }
     @media (max-width: 960px){
@@ -140,7 +140,7 @@
       .nav{display:none;}
       .sideCard{
         justify-self:center;
-        max-width:150px;
+        max-width:300px;
       }
     }
     .card{
@@ -192,7 +192,7 @@
       background: linear-gradient(180deg, rgba(11,15,20,.85), rgba(11,15,20,.60));
       border: 1px solid rgba(255,255,255,.10);
       width:100%;
-      max-width:140px;
+      max-width:280px;
       justify-self:end;
     }
 
@@ -200,7 +200,7 @@
     .photo{
       height:auto;
       aspect-ratio:720 / 1252;
-      min-height:155px;
+      min-height:310px;
       border-bottom:1px solid var(--line);
       position:relative;
       overflow:hidden;

@@ -846,7 +846,7 @@
 
         <aside class="card sideCard" aria-label="Profile and quick facts">
           <div class="photo" id="heroVideoToggle" role="button" tabindex="0" aria-pressed="false" aria-label="Hero video muted. Click to unmute.">
-            <video id="heroProfileVideo" class="photoVideo" autoplay muted loop playsinline preload="metadata">
+            <video id="heroProfileVideo" class="photoVideo" autoplay muted loop playsinline preload="metadata" poster="business-cards/ricki-card-headshot-cropped.png" data-fallback-src="/media/rkr-hero.mp4">
               <source src="media/rkr-hero.mp4" type="video/mp4" />
             </video>
             <span class="photoAudioHint" id="heroVideoAudioHint">Click to unmute</span>
@@ -1956,6 +1956,30 @@ Referrer: ${alert.referrer || "(direct)"}`;
         `${filteredEntries.length}/${managerFeedSnapshot.totalEntries} inquiries shown (${filterMode}) · ${managerFeedSnapshot.uniqueParticipants} unique participants · ${managerFeedSnapshot.csvRows} CSV rows · Updated ${managerFeedSnapshot.lastUpdatedLabel}`
       );
     };
+    const tryPlayHeroVideo = async (preferMuted = true)=>{
+      if (!heroVideo) return false;
+      if (preferMuted) heroVideo.muted = true;
+      try{
+        const playPromise = heroVideo.play();
+        if (playPromise && typeof playPromise.then === "function") await playPromise;
+        return true;
+      }catch{
+        return false;
+      }
+    };
+    const applyHeroVideoFallbackSource = ()=>{
+      if (!heroVideo || heroVideoFallbackApplied) return false;
+      const fallbackSrc = String(heroVideo.dataset.fallbackSrc || "").trim();
+      if (!fallbackSrc) return false;
+      const sourceEl = heroVideo.querySelector("source");
+      const currentSourceValue = sourceEl?.getAttribute("src") || heroVideo.getAttribute("src") || "";
+      if (currentSourceValue === fallbackSrc) return false;
+      if (sourceEl) sourceEl.setAttribute("src", fallbackSrc);
+      else heroVideo.setAttribute("src", fallbackSrc);
+      heroVideoFallbackApplied = true;
+      heroVideo.load();
+      return true;
+    };
     const loadManagerInquiries = async ()=>{
       const endpoint = managerInquiryEndpoint();
       if (!endpoint) {
@@ -2623,23 +2647,28 @@ Referrer: ${alert.referrer || "(direct)"}`;
     const heroVideo = $("#heroProfileVideo");
     const heroVideoToggle = $("#heroVideoToggle");
     const heroVideoAudioHint = $("#heroVideoAudioHint");
+    let heroVideoFallbackApplied = false;
     const syncHeroVideoAudioUi = ()=>{
       if (!heroVideo || !heroVideoToggle || !heroVideoAudioHint) return;
       const muted = heroVideo.muted;
-      heroVideoAudioHint.textContent = muted ? "Click to unmute" : "Click to mute";
+      const paused = heroVideo.paused;
+      heroVideoAudioHint.textContent = paused ? "Tap to play" : (muted ? "Click to unmute" : "Click to mute");
       heroVideoToggle.setAttribute("aria-pressed", String(!muted));
       heroVideoToggle.setAttribute(
         "aria-label",
-        muted ? "Hero video muted. Click to unmute." : "Hero video playing with sound. Click to mute."
+        paused
+          ? "Hero video paused. Click to play."
+          : (muted ? "Hero video muted. Click to unmute." : "Hero video playing with sound. Click to mute.")
       );
     };
     const toggleHeroVideoMute = async ()=>{
       if (!heroVideo) return;
-      heroVideo.muted = !heroVideo.muted;
       if (heroVideo.paused) {
-        try{
-          await heroVideo.play();
-        }catch{}
+        heroVideo.muted = false;
+        const playedWithSound = await tryPlayHeroVideo(false);
+        if (!playedWithSound) await tryPlayHeroVideo(true);
+      } else {
+        heroVideo.muted = !heroVideo.muted;
       }
       syncHeroVideoAudioUi();
     };
@@ -2652,7 +2681,26 @@ Referrer: ${alert.referrer || "(direct)"}`;
       e.preventDefault();
       toggleHeroVideoMute();
     });
+    heroVideo?.addEventListener("error", async ()=>{
+      const fallbackApplied = applyHeroVideoFallbackSource();
+      if (fallbackApplied) await tryPlayHeroVideo(true);
+      syncHeroVideoAudioUi();
+    });
+    heroVideo?.addEventListener("loadeddata", ()=>{
+      syncHeroVideoAudioUi();
+    });
+    heroVideo?.addEventListener("play", syncHeroVideoAudioUi);
+    heroVideo?.addEventListener("pause", syncHeroVideoAudioUi);
     heroVideo?.addEventListener("volumechange", syncHeroVideoAudioUi);
+    window.addEventListener("pointerdown", ()=>{
+      if (!heroVideo || !heroVideo.paused) return;
+      void tryPlayHeroVideo(true);
+    }, { once: true });
+    setTimeout(()=>{
+      if (!heroVideo || !heroVideo.paused) return;
+      void tryPlayHeroVideo(true);
+    }, 150);
+    void tryPlayHeroVideo(true);
     syncHeroVideoAudioUi();
 
     $("#overlayCloseBtn")?.addEventListener("click", ()=> setOverlayState(false));

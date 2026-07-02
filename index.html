@@ -123,13 +123,17 @@
     .hero{
       margin-top:14px;
       display:grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(420px, .95fr);
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
       gap:22px;
-      align-items:stretch;
+      align-items:start;
     }
     @media (max-width: 960px){
       .hero{grid-template-columns:1fr;}
       .nav{display:none;}
+      .sideCard{
+        justify-self:center;
+        max-width:460px;
+      }
     }
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
@@ -179,13 +183,15 @@
     .sideCard{
       background: linear-gradient(180deg, rgba(11,15,20,.85), rgba(11,15,20,.60));
       border: 1px solid rgba(255,255,255,.10);
+      width:100%;
+      max-width:420px;
+      justify-self:end;
     }
 
     /* Professional hero visual */
     .photo{
       height:auto;
-      aspect-ratio:16 / 9;
-      min-height:250px;
+      aspect-ratio:720 / 1252;
       border-bottom:1px solid var(--line);
       position:relative;
       overflow:hidden;
@@ -210,7 +216,7 @@
     .photoAudioHint{
       position:absolute;
       right:10px;
-      bottom:10px;
+      top:10px;
       z-index:2;
       pointer-events:none;
       border:1px solid rgba(255,255,255,.18);

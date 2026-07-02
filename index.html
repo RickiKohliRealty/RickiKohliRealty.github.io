@@ -188,6 +188,7 @@
       position:relative;
       overflow:hidden;
       background: linear-gradient(135deg, #0f141d 0%, #090d14 45%, #05070b 100%);
+      cursor:pointer;
     }
     .photo:after{
       content:"";
@@ -200,8 +201,25 @@
       width:100%;
       height:100%;
       display:block;
-      object-fit:cover;
-      object-position:center;
+      object-fit:contain;
+      object-position:center center;
+      background:#000;
+    }
+    .photoAudioHint{
+      position:absolute;
+      right:10px;
+      bottom:10px;
+      z-index:2;
+      pointer-events:none;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(7,10,15,.62);
+      color:rgba(235,241,255,.95);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:11px;
+      font-weight:750;
+      letter-spacing:.01em;
+      backdrop-filter: blur(2px);
     }
 
     .name{ margin:0; font-size:18px; font-weight:950; letter-spacing:-.2px; }
@@ -484,10 +502,11 @@
         </div>
 
         <aside class="card sideCard" aria-label="Profile and quick facts">
-          <div class="photo" aria-label="Ricki Kohli hero video">
-            <video class="photoVideo" autoplay muted loop playsinline preload="metadata">
+          <div class="photo" id="heroVideoToggle" role="button" tabindex="0" aria-pressed="false" aria-label="Hero video muted. Click to unmute.">
+            <video id="heroProfileVideo" class="photoVideo" autoplay muted loop playsinline preload="metadata">
               <source src="media/rkr-hero.mp4" type="video/mp4" />
             </video>
+            <span class="photoAudioHint" id="heroVideoAudioHint">Click to unmute</span>
           </div>
           <div class="cardInner">
             <p class="name">RKR | Ricki Kohli Realty</p>
@@ -1575,6 +1594,40 @@ Referrer: ${alert.referrer || "(direct)"}`;
       window.location.href = `mailto:${encodeURIComponent(RICKY.email)}?subject=${encodeURIComponent("Listing Alert Subscription")}&body=${encodeURIComponent(body)}`;
       form.reset();
     });
+    const heroVideo = $("#heroProfileVideo");
+    const heroVideoToggle = $("#heroVideoToggle");
+    const heroVideoAudioHint = $("#heroVideoAudioHint");
+    const syncHeroVideoAudioUi = ()=>{
+      if (!heroVideo || !heroVideoToggle || !heroVideoAudioHint) return;
+      const muted = heroVideo.muted;
+      heroVideoAudioHint.textContent = muted ? "Click to unmute" : "Click to mute";
+      heroVideoToggle.setAttribute("aria-pressed", String(!muted));
+      heroVideoToggle.setAttribute(
+        "aria-label",
+        muted ? "Hero video muted. Click to unmute." : "Hero video playing with sound. Click to mute."
+      );
+    };
+    const toggleHeroVideoMute = async ()=>{
+      if (!heroVideo) return;
+      heroVideo.muted = !heroVideo.muted;
+      if (heroVideo.paused) {
+        try{
+          await heroVideo.play();
+        }catch{}
+      }
+      syncHeroVideoAudioUi();
+    };
+    heroVideoToggle?.addEventListener("click", (e)=>{
+      e.preventDefault();
+      toggleHeroVideoMute();
+    });
+    heroVideoToggle?.addEventListener("keydown", (e)=>{
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      toggleHeroVideoMute();
+    });
+    heroVideo?.addEventListener("volumechange", syncHeroVideoAudioUi);
+    syncHeroVideoAudioUi();
 
     $("#overlayCloseBtn")?.addEventListener("click", ()=> setOverlayState(false));
     $("#overlayContinueBtn")?.addEventListener("click", ()=> setOverlayState(false));

@@ -8,3 +8,10 @@ GITHUB_REPO = "YOUR_REPO_NAME"
 ALLOWED_ORIGINS = "https://YOUR_GITHUB_USERNAME.github.io"
 GOOGLE_CLIENT_ID = "YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com"
 MANAGER_EMAILS = "you@example.com"
+ALERT_FROM_EMAIL = "you@example.com"
+LISTING_FEED_URL = "https://example.com/listings.json"
+ALERT_AUTOMATION_ENABLED = "true"
+ALERT_MAX_PER_EMAIL = "8"
+
+[triggers]
+crons = ["0 */6 * * *"]

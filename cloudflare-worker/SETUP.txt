@@ -1,47 +1,72 @@
-Cloudflare Worker + GitHub API setup
-====================================
+Cloudflare Worker setup (lead capture + listing alert automation)
+=================================================================
 
 1) Install Wrangler and authenticate:
    npm install -g wrangler
    wrangler login
 
-2) In this folder, copy config:
+2) Copy config:
    cp wrangler.toml.example wrangler.toml
-   Edit:
+
+3) Edit wrangler.toml [vars]:
    - GITHUB_OWNER
    - GITHUB_REPO
    - ALLOWED_ORIGINS (comma-separated allowed browser origins)
-   - GOOGLE_CLIENT_ID
-   - MANAGER_EMAILS (comma-separated)
+   - GOOGLE_CLIENT_ID (Google Web Client ID used by website login)
+   - MANAGER_EMAILS (comma-separated manager accounts allowed for /inquiries and /alerts/dispatch)
+   - ALERT_FROM_EMAIL (gmail sender, usually same as manager)
+   - LISTING_FEED_URL (JSON feed URL used for automated ingestion/matching)
+   - ALERT_AUTOMATION_ENABLED ("true" or "false")
+   - ALERT_MAX_PER_EMAIL (max matched listings per outbound alert email)
 
-3) Add GitHub token as a Worker secret:
+4) Add required Worker secrets:
    wrangler secret put GITHUB_TOKEN
-   Use a token with repo scope (issues write access).
+   wrangler secret put GMAIL_CLIENT_ID
+   wrangler secret put GMAIL_CLIENT_SECRET
+   wrangler secret put GMAIL_REFRESH_TOKEN
+   Optional (if listing feed requires auth):
+   wrangler secret put LISTING_FEED_TOKEN
 
-4) Deploy Worker:
+5) GitHub token requirements:
+   - Use a token with repo scope and issue write access on GITHUB_REPO.
+   - Worker stores lead and alert subscriptions as GitHub issues.
+
+6) Google setup:
+   a) Create Google OAuth Web Client ID:
+      - Configure OAuth consent screen in Google Cloud.
+      - Create OAuth Client ID type "Web application".
+      - Add your deployed website origin under Authorized JavaScript origins.
+      - Set that value in wrangler.toml GOOGLE_CLIENT_ID and index.html RICKY.googleClientId.
+   b) Enable Gmail API and generate refresh token for sending alert emails:
+      - Use OAuth credentials tied to the sender mailbox in ALERT_FROM_EMAIL.
+      - Ensure refresh token has Gmail send scope.
+      - Save credentials as GMAIL_CLIENT_ID / GMAIL_CLIENT_SECRET / GMAIL_REFRESH_TOKEN secrets.
+
+7) Website wiring (index.html):
+   - RICKY.backendEndpoint = "https://YOUR_WORKER_SUBDOMAIN.workers.dev"
+   - RICKY.inquiryReadEndpoint = "https://YOUR_WORKER_SUBDOMAIN.workers.dev/inquiries"
+   - RICKY.googleClientId = "YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com"
+   - RICKY.managerEmails = ["you@example.com"]
+   Note: For local file testing only, include "null" in ALLOWED_ORIGINS; remove it in production.
+
+8) Deploy:
    wrangler deploy
-5) Create Google OAuth Web Client ID:
-   - In Google Cloud Console, configure OAuth consent screen
-   - Create an OAuth Client ID of type "Web application"
-   - Add your deployed site origin under Authorized JavaScript origins
-   - Copy the client id into:
-     - wrangler.toml -> GOOGLE_CLIENT_ID
-     - index.html -> RICKY.googleClientId
 
-6) Wire website to backend + inquiry manager:
-   In index.html set:
-   RICKY.backendEndpoint = "https://YOUR_WORKER_SUBDOMAIN.workers.dev"
-   RICKY.inquiryReadEndpoint = "https://YOUR_WORKER_SUBDOMAIN.workers.dev/inquiries"
-   RICKY.googleClientId = "YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com"
-   RICKY.managerEmails = ["you@example.com"]
-   Note: For local file testing only, include "null" in ALLOWED_ORIGINS; remove it for stricter production CORS.
+9) Automation trigger:
+   - Scheduled dispatch runs through worker `scheduled()` and fetches LISTING_FEED_URL.
+   - Configure cron in wrangler.toml [triggers]. Example:
+     crons = ["0 */6 * * *"]
 
-7) Test from browser:
-   a) Open website in an incognito window.
-      - Guest overlay should appear immediately when not logged in.
-   b) Submit overlay form and verify a new GitHub issue is created under labels:
-   - lead
-   - website
-   - investor-lead / buyer-lead / seller-lead (as applicable)
-   c) Sign in with Google and open Inquiries section.
-      - Linked inquiries should load from Worker /inquiries endpoint.
+10) Endpoints:
+   - POST /           => lead capture (existing forms)
+   - GET /inquiries   => manager-protected lead read API
+   - POST /alerts/subscribe => listing alert subscription upsert (notify form)
+   - POST /alerts/dispatch  => manager-protected manual dispatch trigger
+
+11) Quick verification flow:
+   a) Submit lead form/overlay and confirm GitHub issue labels include:
+      lead, website (+ buyer/seller/investor label)
+   b) Submit "Notify Me by Email" form and confirm issue labels include:
+      listing-alert-subscription, listing-alert, website
+   c) Confirm listing feed returns JSON array/object with listings and fields like id/address/city/area/propertyType/price/url/status.
+   d) Trigger manual dispatch on /alerts/dispatch with manager Google bearer token, or wait for cron execution.

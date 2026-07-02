@@ -9,11 +9,128 @@ const json = (body, status = 200, origin = "*") =>
     }
   });
 
+const textResponse = (body, status = 200, origin = "*", contentType = "text/plain; charset=utf-8", contentDisposition = "") =>
+  new Response(body, {
+    status,
+    headers: {
+      "Content-Type": contentType,
+      "Access-Control-Allow-Origin": origin,
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      ...(contentDisposition ? { "Content-Disposition": contentDisposition } : {})
+    }
+  });
+
 const ALERT_SUBSCRIPTION_LABEL = "listing-alert-subscription";
 const ALERT_EMAIL_LABEL = "listing-alert";
 const LEAD_LABEL = "lead";
 const WEBSITE_LABEL = "website";
 const MAX_SENT_LISTING_IDS = 250;
+const INQUIRY_STATUS_VALID_READY_NOW = "VALID + READY NOW";
+const INQUIRY_STATUS_VALID_COMING_SOON = "VALID + COMING SOON";
+const INQUIRY_STATUS_INVALID_NEEDS_FOLLOW_UP = "INVALID / NEEDS FOLLOW-UP";
+const DEFAULT_LISTING_FEED = [
+  {
+    listing_id: "vic-downtown-condo-001",
+    address: "838 Broughton St",
+    city: "Victoria",
+    area: "Downtown",
+    property_type: "Condo",
+    list_price: 529000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/deals.html?q=Victoria"
+  },
+  {
+    listing_id: "vic-james-bay-townhome-002",
+    address: "355 Simcoe St",
+    city: "Victoria",
+    area: "James Bay",
+    property_type: "Townhome",
+    list_price: 789000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/deals.html?q=Victoria"
+  },
+  {
+    listing_id: "langford-detached-003",
+    address: "1127 Goldstream Ave",
+    city: "Langford",
+    area: "City Centre",
+    property_type: "Detached",
+    list_price: 899000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/homes-for-sale-langford-bc.html"
+  },
+  {
+    listing_id: "saanich-family-home-004",
+    address: "4095 Quadra St",
+    city: "Saanich",
+    area: "Saanich East",
+    property_type: "Detached",
+    list_price: 1125000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/homes-for-sale-saanich-bc.html"
+  },
+  {
+    listing_id: "oak-bay-character-005",
+    address: "1966 Beach Dr",
+    city: "Oak Bay",
+    area: "South Oak Bay",
+    property_type: "Detached",
+    list_price: 1499000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/homes-for-sale-oak-bay-bc.html"
+  },
+  {
+    listing_id: "colwood-townhome-006",
+    address: "1928 Sooke Rd",
+    city: "Colwood",
+    area: "Royal Bay",
+    property_type: "Townhome",
+    list_price: 729000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/homes-for-sale-colwood-bc.html"
+  },
+  {
+    listing_id: "esquimalt-condo-007",
+    address: "845 Dunsmuir Rd",
+    city: "Esquimalt",
+    area: "Esquimalt Village",
+    property_type: "Condo",
+    list_price: 589000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/homes-for-sale-esquimalt-bc.html"
+  },
+  {
+    listing_id: "victoria-investment-duplex-008",
+    address: "2604 Quadra St",
+    city: "Victoria",
+    area: "Hillside",
+    property_type: "Investment",
+    list_price: 1299000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/deals.html?q=Victoria"
+  },
+  {
+    listing_id: "vic-fernwood-rancher-009",
+    address: "1215 Balmoral Rd",
+    city: "Victoria",
+    area: "Fernwood",
+    property_type: "Detached",
+    list_price: 869000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/deals.html?q=Victoria"
+  },
+  {
+    listing_id: "saanich-broadmead-condo-010",
+    address: "4357 Tyndall Ave",
+    city: "Saanich",
+    area: "Broadmead",
+    property_type: "Condo",
+    list_price: 639000,
+    status: "active",
+    url: "https://rickikohlirealty.github.io/homes-for-sale-saanich-bc.html"
+  }
+];
 
 const parseAllowedOrigins = (env) =>
   String(env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || "")
@@ -52,6 +169,42 @@ const escapeRegex = (value) => String(value || "").replace(/[.*+?^${}()|[\]\\]/g
 const parseBudgetNumber = (value) => {
   const numeric = Number(String(value || "").replace(/[^\d.]/g, ""));
   return Number.isFinite(numeric) && numeric > 0 ? Math.round(numeric) : null;
+};
+const hasMinimumText = (value, min = 2) => clampText(value, 300).length >= min;
+const isValidEmail = (value) => EMAIL_REGEX.test(normalizeEmail(value));
+const getInquiryTypeLabel = (kind) => (kind === "alert" ? "NOTIFY ME / LISTING ALERT SUBSCRIPTION" : "WEBSITE LEAD INQUIRY");
+const normalizeTimelineValue = (value) => clampText(value, 120).toLowerCase();
+const isComingSoonTimeline = (timeline) => {
+  const normalized = normalizeTimelineValue(timeline);
+  if (!normalized) return false;
+  return (
+    normalized.includes("3-6") ||
+    normalized.includes("6+") ||
+    normalized.includes("research") ||
+    normalized.includes("coming soon") ||
+    normalized.includes("later") ||
+    normalized.includes("future")
+  );
+};
+const getInquiryStatusTag = (kind, payload) => {
+  const nameValid = hasMinimumText(payload?.name, 2);
+  const emailValid = isValidEmail(payload?.email);
+  const consentValid = toBoolean(payload?.consentToContact);
+  const baseValid = nameValid && emailValid && consentValid;
+
+  if (kind === "alert") {
+    const targetAreaValid = hasMinimumText(payload?.targetArea, 2);
+    if (!baseValid || !targetAreaValid) return INQUIRY_STATUS_INVALID_NEEDS_FOLLOW_UP;
+  } else {
+    const leadTypeValid = hasMinimumText(payload?.type, 2);
+    if (!baseValid || !leadTypeValid) return INQUIRY_STATUS_INVALID_NEEDS_FOLLOW_UP;
+  }
+  return isComingSoonTimeline(payload?.timeline) ? INQUIRY_STATUS_VALID_COMING_SOON : INQUIRY_STATUS_VALID_READY_NOW;
+};
+const escapeCsvValue = (value) => {
+  const raw = String(value ?? "");
+  if (/[",\n]/.test(raw)) return `"${raw.replace(/"/g, "\"\"")}"`;
+  return raw;
 };
 
 const sanitizeLead = (lead) => {
@@ -153,6 +306,8 @@ const createLeadIssueBody = (lead) => {
     `- **Email:** ${lead.email}`,
     `- **Phone:** ${lead.phone || "(not provided)"}`,
     `- **Type:** ${lead.type}`,
+    `- **Inquiry kind:** ${getInquiryTypeLabel("lead")}`,
+    `- **Status tag:** ${getInquiryStatusTag("lead", lead)}`,
     `- **Target area:** ${lead.targetArea || "(not provided)"}`,
     `- **Budget max:** ${formatBudget(lead.budgetMax)}`,
     `- **Timeline:** ${lead.timeline || "(not provided)"}`,
@@ -194,6 +349,8 @@ const createAlertSubscriptionIssueBody = (subscription, state = {}) => {
     `- **Email:** ${subscription.email}`,
     `- **Phone:** ${subscription.phone || "(not provided)"}`,
     `- **Type:** ${subscription.type}`,
+    `- **Inquiry kind:** ${getInquiryTypeLabel("alert")}`,
+    `- **Status tag:** ${getInquiryStatusTag("alert", subscription)}`,
     `- **Target area:** ${subscription.targetArea}`,
     `- **Property type:** ${subscription.propertyType || "any"}`,
     `- **Budget max:** ${formatBudget(subscription.budgetMax)}`,
@@ -240,21 +397,15 @@ const extractSection = (body, heading) => {
 
 const parseLeadIssue = (issue) => {
   const body = issue.body || "";
-  return {
-    issueNumber: issue.number,
-    issueUrl: issue.html_url,
-    title: issue.title,
-    status: issue.state,
-    createdAt: issue.created_at,
-    updatedAt: issue.updated_at,
+  const lead = {
     name: extractLineField(body, "Name"),
-    email: extractLineField(body, "Email"),
+    email: normalizeEmail(extractLineField(body, "Email")),
     phone: extractLineField(body, "Phone"),
     type: extractLineField(body, "Type"),
     targetArea: extractLineField(body, "Target area"),
-    budgetMax: extractLineField(body, "Budget max"),
+    budgetMax: parseBudgetNumber(extractLineField(body, "Budget max")),
     timeline: extractLineField(body, "Timeline"),
-    consentToContact: extractLineField(body, "Consent to contact"),
+    consentToContact: toBoolean(extractLineField(body, "Consent to contact")),
     submittedAt: extractLineField(body, "Submitted at"),
     landingPage: extractLineField(body, "Landing page"),
     utmSource: extractLineField(body, "UTM source"),
@@ -271,6 +422,18 @@ const parseLeadIssue = (issue) => {
     message: extractSection(body, "### Message"),
     source: (body.match(/Source:\s*(.*)/) || [])[1] || ""
   };
+  const statusTag = extractLineField(body, "Status tag") || getInquiryStatusTag("lead", lead);
+  return {
+    issueNumber: issue.number,
+    issueUrl: issue.html_url,
+    title: issue.title,
+    status: issue.state,
+    createdAt: issue.created_at,
+    updatedAt: issue.updated_at,
+    ...lead,
+    inquiryTypeLabel: getInquiryTypeLabel("lead"),
+    statusTag
+  };
 };
 
 const parseAlertSubscriptionIssue = (issue) => {
@@ -280,12 +443,7 @@ const parseAlertSubscriptionIssue = (issue) => {
     sentIdsValue && sentIdsValue !== "(none)"
       ? dedupeSentListingIds(sentIdsValue.split(",").map((entry) => entry.trim()))
       : [];
-  return {
-    issueNumber: issue.number,
-    issueUrl: issue.html_url,
-    issueTitle: issue.title,
-    issueStatus: issue.state,
-    issueBody: body,
+  const subscription = {
     name: extractLineField(body, "Name"),
     email: normalizeEmail(extractLineField(body, "Email")),
     phone: extractLineField(body, "Phone"),
@@ -310,7 +468,18 @@ const parseAlertSubscriptionIssue = (issue) => {
     firstUtmMedium: extractLineField(body, "First UTM medium"),
     firstUtmCampaign: extractLineField(body, "First UTM campaign"),
     message: extractSection(body, "### Notes"),
-    source: (body.match(/Source:\s*(.*)/) || [])[1] || "listing-alert-subscribe",
+    source: (body.match(/Source:\s*(.*)/) || [])[1] || "listing-alert-subscribe"
+  };
+  const statusTag = extractLineField(body, "Status tag") || getInquiryStatusTag("alert", subscription);
+  return {
+    issueNumber: issue.number,
+    issueUrl: issue.html_url,
+    issueTitle: issue.title,
+    issueStatus: issue.state,
+    issueBody: body,
+    ...subscription,
+    inquiryTypeLabel: getInquiryTypeLabel("alert"),
+    statusTag,
     sentListingIds,
     lastNotifiedAt: extractLineField(body, "Last notified at"),
     fingerprint: extractLineField(body, "Subscription fingerprint")
@@ -424,6 +593,141 @@ const listAlertSubscriptions = async (env) => {
   return issues.map(parseAlertSubscriptionIssue);
 };
 
+const buildUnifiedInquiryFeed = (leads, subscriptions) => {
+  const leadEntries = (leads || []).map((lead) => ({
+    kind: "lead",
+    inquiryType: "lead",
+    inquiryTypeLabel: lead.inquiryTypeLabel || getInquiryTypeLabel("lead"),
+    statusTag: lead.statusTag || getInquiryStatusTag("lead", lead),
+    channel: lead.source || "website",
+    name: lead.name,
+    email: lead.email,
+    phone: lead.phone,
+    type: lead.type,
+    targetArea: lead.targetArea,
+    budgetMax: lead.budgetMax,
+    timeline: lead.timeline,
+    consentToContact: lead.consentToContact,
+    message: lead.message,
+    receivedAt: lead.submittedAt || lead.createdAt || "",
+    issueNumber: lead.issueNumber,
+    issueUrl: lead.issueUrl
+  }));
+  const subEntries = (subscriptions || []).map((sub) => ({
+    kind: "alert",
+    inquiryType: "notify-me",
+    inquiryTypeLabel: sub.inquiryTypeLabel || getInquiryTypeLabel("alert"),
+    statusTag: sub.statusTag || getInquiryStatusTag("alert", sub),
+    channel: sub.source || "listing-alert-subscribe",
+    name: sub.name,
+    email: sub.email,
+    phone: sub.phone,
+    type: sub.type,
+    targetArea: sub.targetArea,
+    budgetMax: sub.budgetMax,
+    timeline: sub.timeline,
+    consentToContact: sub.consentToContact,
+    propertyType: sub.propertyType,
+    alertFrequency: sub.alertFrequency,
+    message: sub.message,
+    receivedAt: sub.submittedAt || "",
+    issueNumber: sub.issueNumber,
+    issueUrl: sub.issueUrl
+  }));
+  return [...leadEntries, ...subEntries].sort((a, b) => {
+    const at = new Date(a.receivedAt).getTime() || 0;
+    const bt = new Date(b.receivedAt).getTime() || 0;
+    return bt - at;
+  });
+};
+
+const buildParticipantEmailList = (inquiries = []) => {
+  const grouped = new Map();
+
+  for (const entry of inquiries) {
+    const email = normalizeEmail(entry?.email);
+    if (!email) continue;
+
+    const timestamp = clampText(entry?.receivedAt, 40);
+    const existing = grouped.get(email) || {
+      email,
+      name: "",
+      totalInquiries: 0,
+      inquiryTypes: new Set(),
+      statusTags: new Set(),
+      targetAreas: new Set(),
+      channels: new Set(),
+      issueNumbers: new Set(),
+      lastReceivedAt: "",
+      lastIssueUrl: ""
+    };
+
+    existing.totalInquiries += 1;
+    if (clampText(entry?.name, 120)) existing.name = clampText(entry.name, 120);
+    if (clampText(entry?.inquiryTypeLabel, 120)) existing.inquiryTypes.add(clampText(entry.inquiryTypeLabel, 120));
+    if (clampText(entry?.statusTag, 80)) existing.statusTags.add(clampText(entry.statusTag, 80));
+    if (clampText(entry?.targetArea, 120)) existing.targetAreas.add(clampText(entry.targetArea, 120));
+    if (clampText(entry?.channel, 120)) existing.channels.add(clampText(entry.channel, 120));
+    if (entry?.issueNumber !== undefined && entry?.issueNumber !== null) existing.issueNumbers.add(String(entry.issueNumber));
+
+    const currentTs = new Date(timestamp).getTime() || 0;
+    const previousTs = new Date(existing.lastReceivedAt).getTime() || 0;
+    if (currentTs >= previousTs) {
+      existing.lastReceivedAt = timestamp;
+      existing.lastIssueUrl = clampText(entry?.issueUrl, 500);
+    }
+
+    grouped.set(email, existing);
+  }
+
+  return [...grouped.values()]
+    .map((entry) => ({
+      email: entry.email,
+      name: entry.name || "(not provided)",
+      totalInquiries: entry.totalInquiries,
+      inquiryTypes: [...entry.inquiryTypes],
+      statusTags: [...entry.statusTags],
+      targetAreas: [...entry.targetAreas],
+      channels: [...entry.channels],
+      issueNumbers: [...entry.issueNumbers],
+      lastReceivedAt: entry.lastReceivedAt || "",
+      lastIssueUrl: entry.lastIssueUrl || ""
+    }))
+    .sort((a, b) => {
+      const at = new Date(a.lastReceivedAt).getTime() || 0;
+      const bt = new Date(b.lastReceivedAt).getTime() || 0;
+      return bt - at;
+    });
+};
+
+const buildParticipantEmailCsv = (participants = []) => {
+  const headers = [
+    "email",
+    "name",
+    "total_inquiries",
+    "inquiry_types",
+    "status_tags",
+    "target_areas",
+    "channels",
+    "last_received_at",
+    "issue_numbers",
+    "last_issue_url"
+  ];
+  const rows = participants.map((participant) => [
+    participant.email,
+    participant.name,
+    participant.totalInquiries,
+    (participant.inquiryTypes || []).join(" | "),
+    (participant.statusTags || []).join(" | "),
+    (participant.targetAreas || []).join(" | "),
+    (participant.channels || []).join(" | "),
+    participant.lastReceivedAt || "",
+    (participant.issueNumbers || []).join(" | "),
+    participant.lastIssueUrl || ""
+  ]);
+  return [headers, ...rows].map((row) => row.map(escapeCsvValue).join(",")).join("\n");
+};
+
 const findRecentDuplicateLead = async (env, fingerprint) => {
   const issues = await listIssuesByLabels(env, [LEAD_LABEL, WEBSITE_LABEL], { state: "all", perPage: 40, direction: "desc" });
   const cutoff = Date.now() - 12 * 60 * 60 * 1000;
@@ -517,9 +821,44 @@ const normalizeListingsPayload = (payload) => {
   return rows.map(normalizeListingRecord).filter(Boolean);
 };
 
+const getWorkerListingsFeed = (url) => {
+  const cityNeedle = clampText(
+    url.searchParams.get("city") ||
+      url.searchParams.get("q") ||
+      url.searchParams.get("location") ||
+      url.searchParams.get("targetArea"),
+    120
+  ).toLowerCase();
+  const limitValue = Number(url.searchParams.get("limit"));
+  const limit =
+    Number.isFinite(limitValue) && limitValue > 0 ? Math.min(Math.round(limitValue), 200) : DEFAULT_LISTING_FEED.length;
+
+  let rows = normalizeListingsPayload(DEFAULT_LISTING_FEED).filter(isListingActive);
+  if (cityNeedle) {
+    rows = rows.filter((row) =>
+      `${row.city || ""} ${row.area || ""} ${row.address || ""}`.toLowerCase().includes(cityNeedle)
+    );
+  }
+  return rows.slice(0, limit);
+};
+
+const getDefaultListingsFeed = () => normalizeListingsPayload(DEFAULT_LISTING_FEED).filter(isListingActive);
+
 const fetchListingsFromIngestion = async (env) => {
   const feedUrl = clampText(env.LISTING_FEED_URL, 500);
-  if (!feedUrl) return [];
+  if (!feedUrl) return getDefaultListingsFeed();
+  let parsedUrl = null;
+  try {
+    parsedUrl = new URL(feedUrl);
+  } catch {
+    return getDefaultListingsFeed();
+  }
+  if (
+    parsedUrl.hostname === "ricky-website-leads.ricky-website-leads.workers.dev" &&
+    (parsedUrl.pathname === "/listings" || parsedUrl.pathname === "/listings/index")
+  ) {
+    return getWorkerListingsFeed(parsedUrl);
+  }
   const headers = { Accept: "application/json" };
   if (env.LISTING_FEED_TOKEN) {
     headers.Authorization = `Bearer ${env.LISTING_FEED_TOKEN}`;
@@ -643,6 +982,120 @@ const sendGmailMessage = async (env, toEmail, subject, textBody) => {
     const detail = await response.text().catch(() => "");
     throw new Error(`Gmail send failed (${response.status}): ${detail}`);
   }
+};
+
+const textOrFallback = (value, fallback = "(not provided)") => {
+  const normalized = clampText(value, 1500);
+  return normalized || fallback;
+};
+
+const buildManagerInquirySubject = (kind, payload) => {
+  const channel = kind === "alert" ? "Listing Alert" : "Website Lead";
+  return `RKR Inquiry Package • ${channel} • ${payload.name || "Unknown"} • ${payload.email || "No email"}`;
+};
+
+const buildManagerLeadDigestBody = (lead, meta = {}) =>
+  [
+    "RKR Inquiry Package",
+    "===================",
+    `Kind: Lead Inquiry`,
+    `Outlet: ${textOrFallback(lead.source, "website")}`,
+    `Event: ${meta.event || "created"}`,
+    `Issue #: ${textOrFallback(meta.issueNumber, "(none)")}`,
+    `Issue URL: ${textOrFallback(meta.issueUrl, "(none)")}`,
+    "",
+    "Contact",
+    "-------",
+    `Name: ${textOrFallback(lead.name)}`,
+    `Email: ${textOrFallback(lead.email)}`,
+    `Phone: ${textOrFallback(lead.phone)}`,
+    `Consent to contact: ${lead.consentToContact ? "Yes" : "No"}`,
+    "",
+    "Inquiry Details",
+    "---------------",
+    `Inquiry type label: ${getInquiryTypeLabel("lead")}`,
+    `Status tag: ${getInquiryStatusTag("lead", lead)}`,
+    `Type: ${textOrFallback(lead.type)}`,
+    `Target area: ${textOrFallback(lead.targetArea)}`,
+    `Budget max: ${formatBudget(lead.budgetMax)}`,
+    `Timeline: ${textOrFallback(lead.timeline)}`,
+    `Submitted at: ${textOrFallback(lead.submittedAt)}`,
+    "",
+    "Message",
+    "-------",
+    textOrFallback(lead.message, "(none)"),
+    "",
+    "Attribution",
+    "-----------",
+    `Landing page: ${textOrFallback(lead.landingPage)}`,
+    `Referrer: ${textOrFallback(lead.referrer, "(direct)")}`,
+    `UTM source / medium / campaign: ${textOrFallback(lead.utmSource, "(none)")} / ${textOrFallback(
+      lead.utmMedium,
+      "(none)"
+    )} / ${textOrFallback(lead.utmCampaign, "(none)")}`
+  ].join("\n");
+
+const buildManagerAlertDigestBody = (subscription, meta = {}) =>
+  [
+    "RKR Inquiry Package",
+    "===================",
+    `Kind: Listing Alert Subscription`,
+    `Outlet: ${textOrFallback(subscription.source, "listing-alert-subscribe")}`,
+    `Event: ${meta.event || "created"}`,
+    `Issue #: ${textOrFallback(meta.issueNumber, "(none)")}`,
+    `Issue URL: ${textOrFallback(meta.issueUrl, "(none)")}`,
+    "",
+    "Contact",
+    "-------",
+    `Name: ${textOrFallback(subscription.name)}`,
+    `Email: ${textOrFallback(subscription.email)}`,
+    `Phone: ${textOrFallback(subscription.phone)}`,
+    `Consent to contact: ${subscription.consentToContact ? "Yes" : "No"}`,
+    "",
+    "Subscription Details",
+    "--------------------",
+    `Inquiry type label: ${getInquiryTypeLabel("alert")}`,
+    `Status tag: ${getInquiryStatusTag("alert", subscription)}`,
+    `Type: ${textOrFallback(subscription.type, "Listing Alert Subscription")}`,
+    `Target area: ${textOrFallback(subscription.targetArea)}`,
+    `Property type: ${textOrFallback(subscription.propertyType, "any")}`,
+    `Budget max: ${formatBudget(subscription.budgetMax)}`,
+    `Timeline: ${textOrFallback(subscription.timeline)}`,
+    `Alert frequency: ${textOrFallback(subscription.alertFrequency, "daily")}`,
+    `Submitted at: ${textOrFallback(subscription.submittedAt)}`,
+    "",
+    "Notes",
+    "-----",
+    textOrFallback(subscription.message, "(none)"),
+    "",
+    "Attribution",
+    "-----------",
+    `Landing page: ${textOrFallback(subscription.landingPage)}`,
+    `Referrer: ${textOrFallback(subscription.referrer, "(direct)")}`,
+    `UTM source / medium / campaign: ${textOrFallback(subscription.utmSource, "(none)")} / ${textOrFallback(
+      subscription.utmMedium,
+      "(none)"
+    )} / ${textOrFallback(subscription.utmCampaign, "(none)")}`
+  ].join("\n");
+
+const notifyManagersForInquiry = async (env, kind, payload, meta = {}) => {
+  const recipients = [...new Set(parseManagerEmails(env.MANAGER_EMAILS))];
+  if (!recipients.length) return { ok: false, skipped: true, reason: "No manager recipients configured." };
+  if (!hasGmailConfig(env)) return { ok: false, skipped: true, reason: "Gmail configuration incomplete." };
+
+  const subject = buildManagerInquirySubject(kind, payload);
+  const body = kind === "alert" ? buildManagerAlertDigestBody(payload, meta) : buildManagerLeadDigestBody(payload, meta);
+  const errors = [];
+
+  for (const recipient of recipients) {
+    try {
+      await sendGmailMessage(env, recipient, subject, body);
+    } catch (error) {
+      errors.push({ recipient, message: error?.message || "Unknown email send error." });
+    }
+  }
+
+  return { ok: errors.length === 0, recipients, errors };
 };
 
 const mergeSentListingIds = (existingIds, newIds) =>
@@ -798,9 +1251,26 @@ export default {
     }
 
     const url = new URL(request.url);
+    const isListingsRoute = pathMatches(url.pathname, "/listings") || pathMatches(url.pathname, "/listings/index");
     const isInquiryRoute = pathMatches(url.pathname, "/inquiries");
+    const isInquiryParticipantsRoute = pathMatches(url.pathname, "/inquiries/participants");
+    const isInquiryParticipantsCsvRoute = pathMatches(url.pathname, "/inquiries/participants.csv");
     const isAlertSubscribeRoute = pathMatches(url.pathname, "/alerts/subscribe");
     const isAlertDispatchRoute = pathMatches(url.pathname, "/alerts/dispatch");
+    if (request.method === "GET" && isListingsRoute) {
+      const listings = getWorkerListingsFeed(url);
+      return json(
+        {
+          ok: true,
+          count: listings.length,
+          listings,
+          source: "worker-default-feed",
+          updatedAt: new Date().toISOString()
+        },
+        200,
+        origin
+      );
+    }
 
     if (request.method === "GET" && isInquiryRoute) {
       const authHeader = request.headers.get("Authorization") || "";
@@ -812,16 +1282,71 @@ export default {
 
       try {
         const inquiries = await listLeadIssues(env);
-        return json({ ok: true, authenticatedEmail: authResult.email, inquiries }, 200, origin);
+        const alertInquiries = await listAlertSubscriptions(env);
+        const allInquiries = buildUnifiedInquiryFeed(inquiries, alertInquiries);
+        const participants = buildParticipantEmailList(allInquiries);
+        return json(
+          {
+            ok: true,
+            authenticatedEmail: authResult.email,
+            inquiries,
+            alertInquiries,
+            allInquiries,
+            participants
+          },
+          200,
+          origin
+        );
       } catch (error) {
         return json({ ok: false, error: error.message || "Failed to load inquiries." }, 502, origin);
+      }
+    }
+
+    if (request.method === "GET" && (isInquiryParticipantsRoute || isInquiryParticipantsCsvRoute)) {
+      const authHeader = request.headers.get("Authorization") || "";
+      const idToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+      const authResult = await verifyGoogleIdToken(idToken, env);
+      if (!authResult.ok) {
+        return json({ ok: false, error: authResult.error }, 401, origin);
+      }
+
+      try {
+        const inquiries = await listLeadIssues(env);
+        const alertInquiries = await listAlertSubscriptions(env);
+        const allInquiries = buildUnifiedInquiryFeed(inquiries, alertInquiries);
+        const participants = buildParticipantEmailList(allInquiries);
+        if (isInquiryParticipantsCsvRoute) {
+          const fileDate = new Date().toISOString().slice(0, 10);
+          const filename = `rkr-participant-email-list-${fileDate}.csv`;
+          return textResponse(
+            buildParticipantEmailCsv(participants),
+            200,
+            origin,
+            "text/csv; charset=utf-8",
+            `attachment; filename="${filename}"`
+          );
+        }
+        return json({ ok: true, authenticatedEmail: authResult.email, count: participants.length, participants }, 200, origin);
+      } catch (error) {
+        return json({ ok: false, error: error.message || "Failed to build participant email list." }, 502, origin);
       }
     }
 
     if (request.method === "POST" && isAlertSubscribeRoute) {
       const payload = await readJsonPayload(request);
       if (!payload) return json({ ok: false, error: "Invalid JSON payload." }, 400, origin);
+      const subscriptionForDigest = sanitizeAlertSubscription(payload);
       const result = await upsertAlertSubscription(env, payload);
+      if (result.ok) {
+        const digestResult = await notifyManagersForInquiry(env, "alert", subscriptionForDigest, {
+          event: result.duplicate ? "updated" : "created",
+          issueNumber: result.issueNumber,
+          issueUrl: result.issueUrl
+        });
+        if (!digestResult.ok) {
+          console.warn("Manager alert digest not fully delivered:", JSON.stringify(digestResult));
+        }
+      }
       return json(result, result.status || 200, origin);
     }
 
@@ -866,6 +1391,14 @@ export default {
     try {
       const duplicate = await findRecentDuplicateLead(env, leadFingerprint);
       if (duplicate) {
+        const digestResult = await notifyManagersForInquiry(env, "lead", lead, {
+          event: "duplicate_submission",
+          issueNumber: duplicate.number,
+          issueUrl: duplicate.html_url
+        });
+        if (!digestResult.ok) {
+          console.warn("Manager lead digest not fully delivered:", JSON.stringify(digestResult));
+        }
         return json(
           {
             ok: true,
@@ -887,6 +1420,14 @@ export default {
         body: createLeadIssueBody(lead),
         labels: deriveLeadLabels(lead)
       });
+      const digestResult = await notifyManagersForInquiry(env, "lead", lead, {
+        event: "created",
+        issueNumber: created.number,
+        issueUrl: created.html_url
+      });
+      if (!digestResult.ok) {
+        console.warn("Manager lead digest not fully delivered:", JSON.stringify(digestResult));
+      }
       return json({ ok: true, issueUrl: created.html_url, issueNumber: created.number }, 200, origin);
     } catch (error) {
       return json({ ok: false, error: error.message || "Lead capture failed." }, 502, origin);

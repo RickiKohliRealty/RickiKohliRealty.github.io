@@ -770,6 +770,7 @@
         <a href="#victoria">Victoria Focus</a>
         <a href="#process">Process</a>
         <a href="#listings">Listings</a>
+        <a href="#manager-view">Manager View</a>
         <a href="#testimonials">Testimonials</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
@@ -1081,6 +1082,20 @@
           <p class="hint">You can unsubscribe any time by replying to an alert email.</p>
         </div>
       </section>
+      <section id="manager-view" class="card" style="margin-top:14px;">
+        <div class="cardInner">
+          <h3 style="margin:0; font-size:18px;">Manager inquiry view</h3>
+          <p class="hSub" style="margin-top:8px;">
+            Signed-in managers can review every inquiry type, see explicit status tags, and export a participant email list file.
+          </p>
+          <div class="ctaRow" style="margin-top:12px;">
+            <button class="btn btnPrimary" type="button" id="managerRefreshBtn">Refresh Inquiry Feed</button>
+            <button class="btn" type="button" id="managerExportCsvBtn">Download Participant Email List (CSV)</button>
+          </div>
+          <p class="hint" id="managerFeedMeta" style="margin-top:10px;">Sign in with an authorized Google account to load manager inquiries.</p>
+          <div class="list" id="managerInquiriesList" style="margin-top:10px;"></div>
+        </div>
+      </section>
 
       <section id="victoria" class="card" style="margin-top:14px;">
         <div class="cardInner">
@@ -1351,7 +1366,7 @@
       listingsCity: "Victoria",        // default city query at page access
       listingsCatalogLimit: 50000,     // cap for front-page indexing
       googleClientId: "265571946126-stb48gav8hr4k1qf2n1bd2thdhmt0b3v.apps.googleusercontent.com",
-      managerEmails: ["rkohli09@outlook.com", "kohli.basketball.24@hotmail.com"],
+      managerEmails: ["rickikohlirealty@gmail.com", "rkohli09@outlook.com", "kohli.basketball.24@hotmail.com"],
       serviceAreas: ["Victoria", "Saanich", "Langford", "Colwood", "Oak Bay", "Esquimalt"],
       website: (window.location.origin && window.location.origin !== "null") ? window.location.origin : "https://rickikohlirealty.github.io"
     };
@@ -1485,6 +1500,7 @@
       setManagerSession(token, email);
       refreshAuthUi();
       setOverlayState(false);
+      loadManagerInquiries();
       toast(`Signed in as ${email}`);
     };
     const initializeGoogleAuth = ()=>{
@@ -1772,6 +1788,169 @@ Referrer: ${alert.referrer || "(direct)"}`;
         }
       }
       writeAlertSubQueue(unsent);
+    };
+    const managerInquiryEndpoint = ()=>{
+      if (RICKY.inquiryReadEndpoint && /^https?:\/\//.test(RICKY.inquiryReadEndpoint)) return RICKY.inquiryReadEndpoint;
+      return buildWorkerEndpoint("/inquiries");
+    };
+    const managerParticipantsCsvEndpoint = ()=> buildWorkerEndpoint("/inquiries/participants.csv");
+    const escapeManagerHtml = (value)=> String(value ?? "").replace(/[&<>"']/g, (char)=>({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;"
+    }[char] || char));
+    const getInquiryTypeLabelForView = (entry)=>{
+      const explicit = sanitizeText(entry?.inquiryTypeLabel, 120);
+      if (explicit) return explicit;
+      return entry?.kind === "alert" ? "NOTIFY ME / LISTING ALERT SUBSCRIPTION" : "WEBSITE LEAD INQUIRY";
+    };
+    const getStatusTagForView = (entry)=>{
+      const explicit = sanitizeText(entry?.statusTag, 80);
+      if (explicit) return explicit;
+      const hasName = sanitizeText(entry?.name, 120).length >= 2;
+      const hasEmail = emailLooksValid(entry?.email || "");
+      const hasConsent = String(entry?.consentToContact || "").toLowerCase() === "true" || String(entry?.consentToContact || "").toLowerCase() === "yes";
+      const hasTargetArea = sanitizeText(entry?.targetArea, 120).length >= 2;
+      const hasLeadType = sanitizeText(entry?.type, 120).length >= 2;
+      const isAlert = entry?.kind === "alert";
+      const valid = hasName && hasEmail && hasConsent && (isAlert ? hasTargetArea : hasLeadType);
+      if (!valid) return "INVALID / NEEDS FOLLOW-UP";
+      const timeline = sanitizeText(entry?.timeline, 80).toLowerCase();
+      if (timeline.includes("3-6") || timeline.includes("6+") || timeline.includes("research") || timeline.includes("coming soon")) {
+        return "VALID + COMING SOON";
+      }
+      return "VALID + READY NOW";
+    };
+    const getStatusTagStyle = (statusTag)=>{
+      if (statusTag === "VALID + READY NOW") {
+        return "display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;border:1px solid rgba(100,224,140,.55);background:rgba(100,224,140,.18);color:#dfffe9;font-size:11.5px;font-weight:700;letter-spacing:.01em;";
+      }
+      if (statusTag === "VALID + COMING SOON") {
+        return "display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;border:1px solid rgba(238,195,94,.56);background:rgba(238,195,94,.16);color:#fff4d1;font-size:11.5px;font-weight:700;letter-spacing:.01em;";
+      }
+      return "display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;border:1px solid rgba(255,112,120,.56);background:rgba(255,112,120,.16);color:#ffdfe1;font-size:11.5px;font-weight:700;letter-spacing:.01em;";
+    };
+    const formatManagerTimestamp = (value)=>{
+      const iso = sanitizeText(value, 60);
+      if (!iso) return "(not provided)";
+      const stamp = new Date(iso);
+      if (Number.isNaN(stamp.getTime())) return iso;
+      return stamp.toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" });
+    };
+    const setManagerFeedMeta = (message)=>{
+      const meta = $("#managerFeedMeta");
+      if (!meta) return;
+      meta.textContent = message;
+    };
+    const renderManagerInquiries = (entries = [])=>{
+      const list = $("#managerInquiriesList");
+      if (!list) return;
+      if (!entries.length) {
+        list.innerHTML = `<p class="hint" style="margin:0;">No inquiries found yet.</p>`;
+        return;
+      }
+      list.innerHTML = entries.slice(0, 120).map((entry)=>{
+        const typeLabel = getInquiryTypeLabelForView(entry);
+        const statusTag = getStatusTagForView(entry);
+        const timeline = sanitizeText(entry?.timeline, 80) || "(not provided)";
+        const channel = sanitizeText(entry?.channel, 80) || "(unknown)";
+        const message = sanitizeText(entry?.message, 220) || "(none)";
+        const name = sanitizeText(entry?.name, 120) || "(not provided)";
+        const email = sanitizeText(entry?.email, 200) || "(not provided)";
+        const issueUrl = sanitizeText(entry?.issueUrl, 500);
+        const issueLabel = entry?.issueNumber ? `#${entry.issueNumber}` : "(none)";
+        return `
+          <div class="card feature" style="background:rgba(255,255,255,.02); box-shadow:none;">
+            <div class="cardInner">
+              <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                <span style="display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;border:1px solid rgba(126,185,255,.45);background:rgba(126,185,255,.12);color:#ddebff;font-size:11.5px;font-weight:700;letter-spacing:.01em;">${escapeManagerHtml(typeLabel)}</span>
+                <span style="${getStatusTagStyle(statusTag)}">${escapeManagerHtml(statusTag)}</span>
+              </div>
+              <p class="hSub" style="margin:0 0 8px 0;"><b>${escapeManagerHtml(name)}</b> · ${escapeManagerHtml(email)}</p>
+              <p class="hint" style="margin:0;"><b>Timeline:</b> ${escapeManagerHtml(timeline)} · <b>Channel:</b> ${escapeManagerHtml(channel)}</p>
+              <p class="hint" style="margin:6px 0 0 0;"><b>Received:</b> ${escapeManagerHtml(formatManagerTimestamp(entry?.receivedAt))}</p>
+              <p class="hint" style="margin:6px 0 0 0;"><b>Issue:</b> ${issueUrl ? `<a href="${escapeManagerHtml(issueUrl)}" target="_blank" rel="noopener">${escapeManagerHtml(issueLabel)}</a>` : escapeManagerHtml(issueLabel)}</p>
+              <p class="hint" style="margin:6px 0 0 0;"><b>Message/Notes:</b> ${escapeManagerHtml(message)}</p>
+            </div>
+          </div>
+        `;
+      }).join("");
+    };
+    const loadManagerInquiries = async ()=>{
+      const endpoint = managerInquiryEndpoint();
+      if (!endpoint) {
+        setManagerFeedMeta("Inquiry endpoint is not configured.");
+        renderManagerInquiries([]);
+        return;
+      }
+      const token = managerToken();
+      const email = managerEmail();
+      if (!token || !email) {
+        setManagerFeedMeta("Sign in with an authorized Google account to load manager inquiries.");
+        renderManagerInquiries([]);
+        return;
+      }
+      try{
+        setManagerFeedMeta("Loading manager inquiries…");
+        const response = await fetch(endpoint, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) {
+          const detail = await response.text().catch(()=> "");
+          throw new Error(`Inquiry load failed (${response.status}) ${detail}`.trim());
+        }
+        const payload = await response.json();
+        const entries = Array.isArray(payload?.allInquiries) ? payload.allInquiries : [];
+        const participantCount = Array.isArray(payload?.participants) ? payload.participants.length : 0;
+        renderManagerInquiries(entries);
+        setManagerFeedMeta(`${entries.length} inquiries loaded · ${participantCount} unique participants · Updated ${new Date().toLocaleTimeString("en-CA", { hour12: false })}`);
+      }catch(err){
+        console.error(err);
+        setManagerFeedMeta("Failed to load manager inquiries. Check sign-in and worker status.");
+        renderManagerInquiries([]);
+      }
+    };
+    const downloadParticipantEmailListCsv = async ()=>{
+      const endpoint = managerParticipantsCsvEndpoint();
+      if (!endpoint) {
+        toast("Participant email list endpoint is not configured.");
+        return;
+      }
+      const token = managerToken();
+      if (!token) {
+        toast("Sign in first to download the participant email list.");
+        return;
+      }
+      try{
+        const response = await fetch(endpoint, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) {
+          const detail = await response.text().catch(()=> "");
+          throw new Error(`CSV export failed (${response.status}) ${detail}`.trim());
+        }
+        const blob = await response.blob();
+        const disposition = response.headers.get("content-disposition") || "";
+        const matched = disposition.match(/filename=\"?([^"]+)\"?/i);
+        const fallbackName = `rkr-participant-email-list-${new Date().toISOString().slice(0, 10)}.csv`;
+        const filename = sanitizeText(matched?.[1] || fallbackName, 160) || fallbackName;
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(blobUrl);
+        toast("Participant email list downloaded.");
+      }catch(err){
+        console.error(err);
+        toast("Could not download participant email list.");
+      }
     };
     const LISTINGS_BROWSER_PAGE_SIZE = 3;
     const LISTINGS_BROWSER_MAX_CAP = 50000;
@@ -2444,7 +2623,14 @@ Referrer: ${alert.referrer || "(direct)"}`;
       refreshAuthUi();
       if (window.google?.accounts?.id) window.google.accounts.id.disableAutoSelect();
       setOverlayState(true);
+      loadManagerInquiries();
       toast("Logged out.");
+    });
+    $("#managerRefreshBtn")?.addEventListener("click", ()=>{
+      loadManagerInquiries();
+    });
+    $("#managerExportCsvBtn")?.addEventListener("click", ()=>{
+      downloadParticipantEmailListCsv();
     });
 
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
@@ -2458,6 +2644,7 @@ Referrer: ${alert.referrer || "(direct)"}`;
     });
     initializeGoogleAuth();
     refreshAuthUi();
+    loadManagerInquiries();
     initListingsBrowser();
     flushQueuedLeads();
     flushQueuedAlertSubscriptions();
